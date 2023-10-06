@@ -1,0 +1,48 @@
+version: '3'
+services:
+  auth:
+    build:
+      context: ./backend/api/auth
+    ports:
+      - "3001:3001"
+    depends_on:
+      - db-auth
+  company:
+    build:
+      context: ./backend/api/company
+    ports:
+      - "3002:3002"
+    depends_on:
+      - db-company
+  schedule:
+    build:
+      context: ./backend/api/schedule
+    ports:
+      - "3003:3003"
+    depends_on:
+      - db-schedule
+  db-auth:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: at_auth
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+  db-company:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: at_company
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5433:5432"
+  db-schedule:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: at_schedule
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5434:5432"
+  
