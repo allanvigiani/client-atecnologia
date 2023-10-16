@@ -22,19 +22,19 @@ class AuthController {
                 return {message: errorMessage, status: 400};
             }
 
-            const user = await this.authRepository.getUserByEmail(email);
+            const user = await this.authRepository.getCompanyByEmail(email);
             if (!user){
                 const errorMessage = `Email ou senha incorretos.`;
                 return {message: errorMessage, status: 400};
             }
 
-            const passwordIsValid = await bcrypt.compare(password, user.hash_password);
+            const passwordIsValid = await bcrypt.compare(password, user.password);
             if (!passwordIsValid){
                 const errorMessage = `Email ou senha incorretos.`;
                 return {message: errorMessage, status: 400};
             }
 
-            const verifyLoginSession = await this.authRepository.getUserSession(user.id);
+            const verifyLoginSession = await this.authRepository.getCompanySession(user.id);
             if (verifyLoginSession) {
                 
                 const now = new Date();
@@ -43,7 +43,7 @@ class AuthController {
                 const differenceInDays = (now - timestampDate) / (24 * 60 * 60 * 1000);
 
                 if (differenceInDays > 1) {
-                    await this.authRepository.deleteUserSession(verifyLoginSession.id);
+                    await this.authRepository.deleteCompanySession(verifyLoginSession.id);
                 } else {
 
                     const token = verifyLoginSession.token;
@@ -66,7 +66,7 @@ class AuthController {
                 expiresIn: process.env.AUTH_EXPIRES_IN,
             });
             
-            await this.authRepository.createUserSession(id, token);
+            await this.authRepository.createCompanySession(id, token);
 
             return {
                 message: {
@@ -85,8 +85,8 @@ class AuthController {
 
     async logout(userData) {
         try { 
-
-            await this.authRepository.deleteUserSessionByUserId(userData.payload.id);
+            console.log(userData);
+            await this.authRepository.deleteCompanySessionByUserId(userData.payload.id);
 
             return {
                 message: {
