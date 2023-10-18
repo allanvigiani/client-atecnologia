@@ -1,19 +1,19 @@
 version: '3'
 services:
-  auth:
-    build:
-      context: ./backend/api/auth
-    ports:
-      - "3001:3001"
-    depends_on:
-      - db-atecnologia
-  company:
-    build:
-      context: ./backend/api/company
-    ports:
-      - "3002:3002"
-    depends_on:
-      - db-atecnologia
+  # auth:
+  #   build:
+  #     context: ./backend/api/auth
+  #   ports:
+  #     - "3001:3001"
+  #   depends_on:
+  #     - db-atecnologia
+  # company:
+  #   build:
+  #     context: ./backend/api/company
+  #   ports:
+  #     - "3002:3002"
+  #   depends_on:
+  #     - db-atecnologia
   schedule:
     build:
       context: ./backend/api/schedule

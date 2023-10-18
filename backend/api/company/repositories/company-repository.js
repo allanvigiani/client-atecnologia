@@ -35,6 +35,20 @@ class CompanyRepository {
         }
     }
 
+    async verifyRevogedToken(token) {
+        try {
+            await this.conn.connect();
+            const result = await this.conn.query(`
+            SELECT us.id, us.start_login, us.end_login, us.token FROM company_sessions us 
+                WHERE us.end_login IS NOT NULL AND us.token = $1;
+        `, [token]);
+
+            return result.rows;
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
 }
 
 export default CompanyRepository;

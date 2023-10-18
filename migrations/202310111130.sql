@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS "services" (
     "professional_name" TEXT,
     "price" DOUBLE PRECISION NOT NULL,
     "company_id" INTEGER NOT NULL,
+    "deleted_at" TIMESTAMP,
 
     CONSTRAINT "services_pkey" PRIMARY KEY ("id")
 );
