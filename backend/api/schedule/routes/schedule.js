@@ -6,14 +6,14 @@ const scheduleController = new ScheduleController();
 
 const router = express.Router();
 
-router.post('/', async (req, res) => {
-    const result = await companyController.createCompany(req.body);
+router.post('/', authenticateToken, async (req, res) => {
+    const result = await scheduleController.createSchedule(req.body);
     res.status(result.status).json({ message: result.message });
 });
 
 router.put('/', authenticateToken, async (req, res) => {
     const userId = req.user.payload.id;
-    const result = await companyController.changeCompanyInformation(req.body, userId);
+    const result = await scheduleController.changeCompanyInformation(req.body, userId);
     res.status(result.status).json({ message: result.message });
 });
 

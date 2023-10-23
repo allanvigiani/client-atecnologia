@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS "services" (
     "professional_name" TEXT,
     "price" DOUBLE PRECISION NOT NULL,
     "company_id" INTEGER NOT NULL,
-    "deleted_at" TIMESTAMP,
+    "deleted_at" TIMESTAMP(3),
 
     CONSTRAINT "services_pkey" PRIMARY KEY ("id")
 );
@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS "service_hours" (
 );
 
 -- CreateTable
-CREATE TABLE IF NOT EXISTS "shedule" (
+CREATE TABLE IF NOT EXISTS "schedule" (
     "id" SERIAL NOT NULL,
     "service_id" INTEGER NOT NULL,
     "service_hour_id" INTEGER NOT NULL,
@@ -64,6 +64,8 @@ CREATE TABLE IF NOT EXISTS "shedule" (
     "client_contact" TEXT,
     "client_email" TEXT NOT NULL,
     "status_id" INTEGER NOT NULL,
+    "deleted_at" TIMESTAMP(3),
+    "company_id" INTEGER NOT NULL,
 
     CONSTRAINT "shedule_pkey" PRIMARY KEY ("id")
 );
@@ -76,6 +78,8 @@ ALTER TABLE "company_sessions" ADD CONSTRAINT "company_sessions_company_id_fkey"
 
 -- AddForeignKey
 ALTER TABLE "services" ADD CONSTRAINT "services_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "company"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+ALTER TABLE "schedule" ADD CONSTRAINT "schedule_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "company"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "service_hours" ADD CONSTRAINT "service_hours_service_id_fkey" FOREIGN KEY ("service_id") REFERENCES "services"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

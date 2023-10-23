@@ -9,10 +9,10 @@ import schedule from './routes/schedule.js';
 dotenv.config();
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 
-// app.use('/schedule', schedule);
 app.use('/service', service);
 app.use('/schedule', schedule);
 
