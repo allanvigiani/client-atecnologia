@@ -14,13 +14,20 @@ services:
   #     - "3002:3002"
   #   depends_on:
   #     - db-atecnologia
-  schedule:
-    build:
-      context: ./backend/api/schedule
-    ports:
-      - "3003:3003"
-    depends_on:
-      - db-atecnologia
+  # schedule:
+  #   build:
+  #     context: ./backend/api/schedule
+  #   ports:
+  #     - "3003:3003"
+  #   depends_on:
+  #     - db-atecnologia
+  # schedule-confirmation:
+  #   build:
+  #     context: ./backend/api/schedule-confirmation
+  #   ports:
+  #     - "3004:3004"
+  #   depends_on:
+  #     - mongodb
   db-atecnologia:
     image: postgres:latest
     environment:
@@ -32,3 +39,7 @@ services:
     volumes:
       - ./migrations:/docker-entrypoint-initdb.d
     entrypoint: ["docker-entrypoint.sh", "postgres"]
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"

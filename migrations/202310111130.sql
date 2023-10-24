@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS "schedule" (
     "deleted_at" TIMESTAMP(3),
     "company_id" INTEGER NOT NULL,
 
-    CONSTRAINT "shedule_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "schedule_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -85,10 +85,10 @@ ALTER TABLE "schedule" ADD CONSTRAINT "schedule_company_id_fkey" FOREIGN KEY ("c
 ALTER TABLE "service_hours" ADD CONSTRAINT "service_hours_service_id_fkey" FOREIGN KEY ("service_id") REFERENCES "services"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "shedule" ADD CONSTRAINT "shedule_service_id_fkey" FOREIGN KEY ("service_id") REFERENCES "services"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "schedule" ADD CONSTRAINT "schedule_service_id_fkey" FOREIGN KEY ("service_id") REFERENCES "services"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "shedule" ADD CONSTRAINT "shedule_service_hour_id_fkey" FOREIGN KEY ("service_hour_id") REFERENCES "service_hours"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "schedule" ADD CONSTRAINT "schedule_service_hour_id_fkey" FOREIGN KEY ("service_hour_id") REFERENCES "service_hours"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "shedule" ADD CONSTRAINT "shedule_status_id_fkey" FOREIGN KEY ("status_id") REFERENCES "status"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "schedule" ADD CONSTRAINT "schedule_status_id_fkey" FOREIGN KEY ("status_id") REFERENCES "status"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
