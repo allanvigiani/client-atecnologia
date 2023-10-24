@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        .header {
+            background-color: #3498db;
+            color: #ffffff;
+            padding: 10px;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .signature {
+            background-color: #3498db;
+            color: #ffffff;
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h2>Confirmação de Serviço</h2>
+        </div>
+        <div class="content">
+            <p>Prezado, {{client_name}}</p>
+
+            <p>Este é para confirmar o agendamento do serviço com os seguintes detalhes:</p>
+
+            <ul>
+                <li><strong>Nome do Serviço:</strong> {{service_name}}</li>
+                <li><strong>Horário do Serviço:</strong> {{service_hour}}</li>
+                <li><strong>Profissinal responsável:</strong> {{professional_name}}</li>
+                <li><strong>Local:</strong> {{company_address}}</li>
+                <li><strong>Código do serviço:</strong> {{service_code}}</li>
+            </ul>
+
+            <p>Agradecemos por escolher os nossos serviços. Estamos ansiosos para atendê-lo(a) no horário agendado.</p>
+
+            <p>Se você tiver alguma dúvida ou precisar reagendar, entre em contato conosco o mais rápido possível.</p>
+
+            <p>Atenciosamente,</p>
+            <p>{{company_name}}</p>
+        </div>
+        <div class="signature">
+            <p>Entre em contato: {{company_email}}</p>
+        </div>
+    </div>
+</body>
+
+</html>

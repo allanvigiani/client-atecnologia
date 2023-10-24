@@ -1,48 +1,45 @@
 version: '3'
 services:
-  auth:
-    build:
-      context: ./backend/api/auth
-    ports:
-      - "3001:3001"
-    depends_on:
-      - db-auth
-  company:
-    build:
-      context: ./backend/api/company
-    ports:
-      - "3002:3002"
-    depends_on:
-      - db-company
-  schedule:
-    build:
-      context: ./backend/api/schedule
-    ports:
-      - "3003:3003"
-    depends_on:
-      - db-schedule
-  db-auth:
+  # auth:
+  #   build:
+  #     context: ./backend/api/auth
+  #   ports:
+  #     - "3001:3001"
+  #   depends_on:
+  #     - db-atecnologia
+  # company:
+  #   build:
+  #     context: ./backend/api/company
+  #   ports:
+  #     - "3002:3002"
+  #   depends_on:
+  #     - db-atecnologia
+  # schedule:
+  #   build:
+  #     context: ./backend/api/schedule
+  #   ports:
+  #     - "3003:3003"
+  #   depends_on:
+  #     - db-atecnologia
+  # schedule-confirmation:
+  #   build:
+  #     context: ./backend/api/schedule-confirmation
+  #   ports:
+  #     - "3004:3004"
+  #   depends_on:
+  #     - mongodb
+  db-atecnologia:
     image: postgres:latest
     environment:
-      POSTGRES_DB: at_auth
+      POSTGRES_DB: atecnologia
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
     ports:
       - "5432:5432"
-  db-company:
-    image: postgres:latest
-    environment:
-      POSTGRES_DB: at_company
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
+    volumes:
+      - ./migrations:/docker-entrypoint-initdb.d
+    entrypoint: ["docker-entrypoint.sh", "postgres"]
+  mongodb:
+    image: mongo:latest
     ports:
-      - "5433:5432"
-  db-schedule:
-    image: postgres:latest
-    environment:
-      POSTGRES_DB: at_schedule
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
-    ports:
-      - "5434:5432"
-  
+      - "27017:27017"
