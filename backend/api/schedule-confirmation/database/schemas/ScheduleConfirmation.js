@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-mongoose.connect('mongodb://localhost/atecnologia');
+mongoose.connect(process.env.MONGO_URL);
 
 const ScheduleConfirmation = new mongoose.Schema({
     service_code: {

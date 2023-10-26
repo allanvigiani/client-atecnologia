@@ -31,8 +31,19 @@ class ScheduleConfirmationController {
 
     async sendEmail(body) {
         try {
-            const {company_name, company_email, company_address, client_name, client_email, service_id, service_name, service_hour, professional_name} = body;
+            const {
+                company_name,
+                company_email,
+                company_address,
+                client_name,
+                client_email,
+                service_id,
+                service_name,
+                service_hour,
+                professional_name
+            } = body;
 
+            // TODO -> Atrelhar esse código ao serviço para saber se for realizado ou não
             const service_code = uuidv4();
 
             let templateHtml = fs.readFileSync('./confirmation-template.html').toString();
@@ -66,10 +77,10 @@ class ScheduleConfirmationController {
                 this.scheduleConfirmationRepository.createEmailLog(logs);
             }
 
-            return {message: `Email enviado com sucesso!`, status: 200};
+            return { message: `Email enviado com sucesso!`, status: 200 };
 
         } catch (error) {
-            return {message: error, status: 500};
+            return { message: error, status: 500 };
         }
     }
 
