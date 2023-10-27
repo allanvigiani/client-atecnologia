@@ -1,10 +1,6 @@
-import ServiceRepository from "../repositories/service-repository.js";
-
-const serviceRepository = new ServiceRepository();
-
 class ServiceController {
 
-    constructor() {
+    constructor(serviceRepository) {
         this.serviceRepository = serviceRepository;
     }
 

@@ -2,7 +2,10 @@ import express from 'express';
 import authenticateToken from '../middleware/auth.js';
 import AuthController from '../controllers/auth-controller.js';
 
-const authController = new AuthController();
+import AuthRepository from '../repositories/auth-repository.js';
+const authRepository = new AuthRepository();
+
+const authController = new AuthController(authRepository);
 
 const router = express.Router();
 

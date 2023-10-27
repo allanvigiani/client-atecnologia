@@ -2,7 +2,10 @@ import express from 'express';
 import authenticateToken from '../middleware/auth.js';
 import ScheduleController from '../controllers/schedule-controller.js';
 
-const scheduleController = new ScheduleController();
+import ScheduleRepository from '../repositories/schedule-repository.js';
+const scheduleRepository = new ScheduleRepository();
+
+const scheduleController = new ScheduleController(scheduleRepository);
 
 const router = express.Router();
 

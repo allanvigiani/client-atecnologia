@@ -2,7 +2,10 @@ import express from 'express';
 import authenticateToken from '../middleware/auth.js';
 import CompanyController from '../controllers/company-controller.js';
 
-const companyController = new CompanyController();
+import CompanyRepository from '../repositories/company-repository.js';
+const companyRepository = new CompanyRepository();
+
+const companyController = new CompanyController(companyRepository);
 
 const router = express.Router();
 

@@ -2,14 +2,11 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv';
 
-import AuthRepository from "../repositories/auth-repository.js";
-const authRepository = new AuthRepository();
-
 dotenv.config();
 
 class AuthController {
 
-    constructor() {
+    constructor(authRepository) {
         this.authRepository = authRepository;
     }
 
@@ -85,7 +82,6 @@ class AuthController {
 
     async logout(userData) {
         try { 
-            console.log(userData);
             await this.authRepository.deleteCompanySessionByUserId(userData.payload.id);
 
             return {
