@@ -38,7 +38,7 @@ class CompanyRepository {
     async getCompanyById(userId) {
         try {
             const result = await this.conn.query(`
-            SELECT * FROM company WHERE id = $1;
+            SELECT name, email, url_name, address FROM company WHERE id = $1;
         `, [`${userId}`]);
 
         return result.rows[0];
