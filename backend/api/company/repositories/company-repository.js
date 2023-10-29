@@ -8,14 +8,14 @@ class CompanyRepository {
 
     async createCompany(data) {
         try {
-            const { name, email, password, address, created_at } = data;
+            const { name, email, password, address, url_name, created_at } = data;
 
             await this.conn.connect();
             const result = await this.conn.query(`
                 INSERT INTO public.company
-                    (name, email, password, address, created_at)
-                    VALUES ($1, $2, $3, $4, $5) RETURNING id;
-            `, [`${name}`, `${email}`, `${password}`, `${address}`, created_at]);
+                    (name, email, password, address, url_name, created_at)
+                    VALUES ($1, $2, $3, $4, $5, $6) RETURNING id;
+            `, [`${name}`, `${email}`, `${password}`, `${address}`, `${url_name}`,  created_at]);
     
             return result.rows[0];
         } catch (error) {
@@ -30,6 +30,18 @@ class CompanyRepository {
         `, [`${email}`]);
 
         return result.rows.length == 0 ? true : false;
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
+    async getCompanyById(userId) {
+        try {
+            const result = await this.conn.query(`
+            SELECT * FROM company WHERE id = $1;
+        `, [`${userId}`]);
+
+        return result.rows[0];
         } catch (error) {
             throw new Error(error);
         }

@@ -38,11 +38,14 @@ class CompanyController {
 
             const hash = await bcrypt.hash(password, this.saltRandsPassword);
 
+            const url_name = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+
             const company = {
                 name: name,
                 email: email,
                 password: hash,
                 address: address,
+                url_name: url_name,
                 created_at: new Date(),
             }
 
@@ -53,6 +56,30 @@ class CompanyController {
             }
 
             return {message: `Empresa cadastrada com sucesso!`, status: 201};
+        } catch (error) {
+            return {message: error, status: 500};
+        }
+    }
+
+    async changeCompanyInformation(body) {
+        try { 
+            return {message: `Empresa cadastrada com sucesso!`, status: 201};
+        } catch (error) {
+            return {message: error, status: 500};
+        }
+    }
+
+    async getCompanyInformation(userId) {
+        try { 
+
+            const company = await this.companyRepository.getCompanyById(userId);
+
+            if (!company){
+                const errorMessage = `Empresa não encontrada na nossa base de dados.`;
+                return {message: errorMessage, status: 500};
+            }
+
+            return {message: company, status: 201};
         } catch (error) {
             return {message: error, status: 500};
         }
