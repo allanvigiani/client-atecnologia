@@ -1,10 +1,6 @@
-import ScheduleRepository from "../repositories/schedule-repository.js";
-
-const scheduleRepository = new ScheduleRepository();
-
 class ScheduleController {
 
-    constructor() {
+    constructor(scheduleRepository) {
         this.scheduleRepository = scheduleRepository;
     }
 

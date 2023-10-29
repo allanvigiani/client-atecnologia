@@ -1,15 +1,11 @@
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 
-import CompanyRepository from "../repositories/company-repository.js";
-
-const companyRepository = new CompanyRepository();
-
 dotenv.config();
 
 class CompanyController {
 
-    constructor() {
+    constructor(companyRepository) {
         this.companyRepository = companyRepository;
         this.saltRandsPassword = 10;
     }

@@ -2,7 +2,10 @@ import express from 'express';
 import authenticateToken from '../middleware/auth.js';
 import ServiceController from '../controllers/service-controller.js';
 
-const serviceController = new ServiceController();
+import ServiceRepository from '../repositories/service-repository.js';
+const serviceRepository = new ServiceRepository();
+
+const serviceController = new ServiceController(serviceRepository);
 
 const router = express.Router();
 

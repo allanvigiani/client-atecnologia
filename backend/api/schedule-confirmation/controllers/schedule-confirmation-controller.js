@@ -5,9 +5,6 @@ import { v4 as uuidv4 } from 'uuid';
 
 dotenv.config();
 
-import ScheduleConfirmationRepository from "../repositories/schedule-confirmation-repository.js";
-const scheduleConfirmationRepository = new ScheduleConfirmationRepository();
-
 import SMTP_CONFIG from '../config/smtp.js';
 
 const SMTP_TRANSPORTER = nodemailer.createTransport({
@@ -25,7 +22,7 @@ const SMTP_TRANSPORTER = nodemailer.createTransport({
 
 class ScheduleConfirmationController {
 
-    constructor() {
+    constructor(scheduleConfirmationRepository) {
         this.scheduleConfirmationRepository = scheduleConfirmationRepository;
     }
 
