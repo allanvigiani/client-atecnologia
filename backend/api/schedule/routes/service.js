@@ -24,17 +24,17 @@ router.get('/:serviceId?', authenticateToken, async (req, res) => {
     res.status(result.status).json({ message: result.message });
 });
 
-router.post('/service-hours/:serviceId', authenticateToken, async (req, res) => {
-    const result = await serviceController.createServiceHours(req.body, req.params.serviceId);
+router.post('/service-hours', authenticateToken, async (req, res) => {
+    const result = await serviceController.createServiceHours(req.body);
     res.status(result.status).json({ message: result.message });
 });
 
-router.get('/:serviceId', authenticateToken, async (req, res) => {
+router.get('/service-hours/:serviceId', authenticateToken, async (req, res) => {
     const result = await serviceController.getServiceHours(req.params.serviceId, req.user.payload.id);
     res.status(result.status).json({ message: result.message });
 });
 
-router.delete('/:serviceHourId', authenticateToken, async (req, res) => {
+router.delete('/service-hours/:serviceHourId', authenticateToken, async (req, res) => {
     const result = await serviceController.deleteServiceHour(req.params.serviceHourId);
     res.status(result.status).json({ message: result.message });
 });

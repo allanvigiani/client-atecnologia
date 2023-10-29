@@ -27,7 +27,7 @@ class ServiceController {
                 company_id: companyId,
             }
 
-            const result = this.serviceRepository.createService(service);
+            const result = await this.serviceRepository.createService(service);
             if (!result){
                 const errorMessage = `Erro ao cadastrar serviço. Tente novamente mais tarde`;
                 return {message: errorMessage, status: 500};
@@ -47,7 +47,7 @@ class ServiceController {
                 return {message: errorMessage, status: 400};
             }
 
-            const result = this.serviceRepository.deleteService(serviceId, companyId);
+            const result = await this.serviceRepository.deleteService(serviceId, companyId);
             if (!result){
                 const errorMessage = `Erro ao deletar serviço. Tente novamente mais tarde`;
                 return {message: errorMessage, status: 500};
@@ -63,9 +63,9 @@ class ServiceController {
         try {
             let result;
             if (serviceId) {
-                result = this.serviceRepository.getServiceById(serviceId, companyId);
+                result = await this.serviceRepository.getServiceById(serviceId, companyId);
             }else {
-                result = this.serviceRepository.getAllServices(companyId);
+                result = await this.serviceRepository.getAllServices(companyId);
             }
 
             return {message: {result}, status: 201};
@@ -74,21 +74,21 @@ class ServiceController {
         }
     }
 
-    async createServiceHours(body, serviceId) {
+    async createServiceHours(body) {
         try { 
-            const { start_time, end_time } = body;
+            const { start_time, end_time, service_id } = body;
 
             if (!start_time || !end_time) {
                 const errorMessage = `Campos não recebidos.`;
                 return {message: errorMessage, status: 400};
             }
 
-            if (!serviceId) {
+            if (!service_id) {
                 const errorMessage = `ID do serviço não encontrado ou não foi passado.`;
                 return {message: errorMessage, status: 400};
             }
 
-            const verifyExistingService = await this.serviceRepository.getServiceInHour(start_time, end_time);
+            const verifyExistingService = await this.serviceRepository.getServiceInHour(start_time, end_time, service_id);
 
             if (!verifyExistingService){
                 const errorMessage = `Já existe hora para esse serviço.`;
@@ -98,10 +98,10 @@ class ServiceController {
             const serviceHour = {
                 start_time: start_time,
                 end_time: end_time,
-                service_id: serviceId
+                service_id: service_id
             }
 
-            const result = this.serviceRepository.createServiceHour(serviceHour);
+            const result = await this.serviceRepository.createServiceHour(serviceHour);
             if (!result){
                 const errorMessage = `Erro ao cadastrar horário serviço. Tente novamente mais tarde.`;
                 return {message: errorMessage, status: 500};
@@ -116,7 +116,7 @@ class ServiceController {
     async getServiceHours(serviceId, companyId) {
         try {
 
-            const result = this.serviceRepository.getServiceHourById(serviceId, companyId);
+            const result = await this.serviceRepository.getServiceHourById(serviceId, companyId);
             if (!result){
                 const errorMessage = `Erro ao buscar os horários do serviço. Tente novamente mais tarde`;
                 return {message: errorMessage, status: 500};
@@ -136,7 +136,7 @@ class ServiceController {
                 return {message: errorMessage, status: 400};
             }
 
-            const result = this.serviceRepository.deleteServiceHour(serviceHourId);
+            const result = await this.serviceRepository.deleteServiceHour(serviceHourId);
             if (!result){
                 const errorMessage = `Erro ao deletar serviço. Tente novamente mais tarde`;
                 return {message: errorMessage, status: 500};

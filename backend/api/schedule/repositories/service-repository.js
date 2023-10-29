@@ -38,7 +38,7 @@ class ServiceRepository {
     async getServiceById(id, companyId) {
         try {
             const result = await this.conn.query(`
-            SELECT * FROM services WHERE id = $1 AND company_id = $2 AND deleted_at IS NOT NULL;
+            SELECT * FROM services WHERE id = $1 AND company_id = $2 AND deleted_at IS NULL;
         `, [id, companyId]);
 
             return result.rows[0];
@@ -50,7 +50,7 @@ class ServiceRepository {
     async getAllServices(companyId) {
         try {
             const result = await this.conn.query(`
-            SELECT * FROM services WHERE company_id = $1 AND deleted_at IS NOT NULL;
+            SELECT * FROM services WHERE company_id = $1 AND deleted_at IS NULL;
         `, [companyId]);
 
             return result.rows;
@@ -85,12 +85,12 @@ class ServiceRepository {
         }
     }
 
-    async getServiceInHour(startTime, endTime) {
+    async getServiceInHour(startTime, endTime, serviceId) {
         try {
             const result = await this.conn.query(`
             SELECT * FROM service_hours
-                WHERE $1 >= start_time AND $2 <= end_time;
-        `, [`${startTime}`, `${endTime}`]);
+                WHERE $1 >= start_time AND $2 <= end_time AND service_id = $3;
+        `, [`${startTime}`, `${endTime}`, serviceId]);
 
             return result.rows.length == 0 ? true : false;
         } catch (error) {
@@ -118,9 +118,9 @@ class ServiceRepository {
     async getServiceHourById(serviceId, companyId) {
         try {
             const result = await this.conn.query(`
-            SELECT * FROM service_hours sh 
+            SELECT sh.id, start_time, end_time FROM service_hours sh 
             INNER JOIN services s ON s.id = sh.service_id
-            WHERE s.company_id = $1 AND sh.service_id = $2 AND s.deleted_at IS NOT NULL;
+            WHERE s.company_id = $1 AND sh.service_id = $2 AND s.deleted_at IS NULL;
         `, [companyId, serviceId]);
 
             return result.rows;
@@ -132,7 +132,7 @@ class ServiceRepository {
     async deleteServiceHour(serviceHourId) {
         try {
             const result = await this.conn.query(`
-            DELETE service_hours WHERE id = $1;
+            DELETE FROM service_hours WHERE id = $1;
         `, [serviceHourId]);
 
             return result.rows;

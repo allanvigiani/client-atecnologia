@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS "services" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "professional_name" TEXT,
-    "price" DOUBLE PRECISION NOT NULL,
+    "price" DOUBLE PRECISION,
     "company_id" INTEGER NOT NULL,
     "deleted_at" TIMESTAMP(3),
 
@@ -48,8 +48,8 @@ CREATE TABLE IF NOT EXISTS "status" (
 -- CreateTable
 CREATE TABLE IF NOT EXISTS "service_hours" (
     "id" SERIAL NOT NULL,
-    "start_time" TIMESTAMP(3) NOT NULL,
-    "end_time" TIMESTAMP(3) NOT NULL,
+    "start_time" TIME NOT NULL,
+    "end_time" TIME NOT NULL,
     "service_id" INTEGER NOT NULL,
 
     CONSTRAINT "service_hours_pkey" PRIMARY KEY ("id")
