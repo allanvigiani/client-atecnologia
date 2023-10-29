@@ -1,11 +1,14 @@
-import AuthService from '../controllers/auth-controller.js';
-import authRepository from '../repositories/auth-repository.js';
+import AuthController from '../controllers/auth-controller.mjs';
+import AuthRepository from '../repositories/auth-repository.mjs';
 
+const authRepository = new AuthRepository();
+
+// Mock da implementação do repositório
 jest.mock('../repositories/auth-repository.js');
 
-describe('AuthService login', () => {
+describe('AuthController login', () => {
   it('deve retornar sucesso ao fornecer informações de login corretas', async () => {
-    const authService = new AuthService(authRepository);
+    const authController = new AuthController(authRepository);
 
     const body = { email: 'user@example.com', password: 'password' };
     const expectedResult = {
@@ -32,12 +35,12 @@ describe('AuthService login', () => {
 
     jwt.sign.mockReturnValue('mockedToken');
 
-    const result = await authService.login(body);
+    const result = await authController.login(body);
     expect(result).toEqual(expectedResult);
   });
 
   it('deve retornar erro ao fornecer informações de login incorretas', async () => {
-    const authService = new AuthService(authRepository);
+    const authController = new AuthController(authRepository);
 
     const body = { email: 'user@example.com', password: 'wrongPassword' };
     const expectedResult = {
@@ -47,7 +50,7 @@ describe('AuthService login', () => {
 
     authRepository.getCompanyByEmail.mockResolvedValue(null);
 
-    const result = await authService.login(body);
+    const result = await authController.login(body);
     expect(result).toEqual(expectedResult);
   });
 
