@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS "company" (
     "name" TEXT,
     "password" TEXT NOT NULL,
     "address" VARCHAR(250),
+    "url_name" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),
 
@@ -72,6 +73,7 @@ CREATE TABLE IF NOT EXISTS "schedule" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX IF NOT EXISTS "company_email_key" ON "company"("email");
+CREATE UNIQUE INDEX IF NOT EXISTS "company_name_key" ON "company"("name");
 
 -- AddForeignKey
 ALTER TABLE "company_sessions" ADD CONSTRAINT "company_sessions_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "company"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

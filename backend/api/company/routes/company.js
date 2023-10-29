@@ -20,4 +20,10 @@ router.put('/', authenticateToken, async (req, res) => {
     res.status(result.status).json({ message: result.message });
 });
 
+router.get('/', authenticateToken, async (req, res) => {
+    const userId = req.user.payload.id;
+    const result = await companyController.getCompanyInformation(userId);
+    res.status(result.status).json({ message: result.message });
+});
+
 export default router;
