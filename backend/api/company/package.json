@@ -17,6 +17,7 @@
     "pg-promise": "^11.5.4"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "swagger-ui-express": "^5.0.0"
   }
 }

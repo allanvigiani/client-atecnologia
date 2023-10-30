@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import swaggerUi from 'swagger-ui-express';
 
 import auth from './routers/auth.js';
-// import * as swaggerJsonDocs from './swagger.json';
+
 import { readFile } from 'fs/promises';
 const swaggerJsonDocs = JSON.parse(
   await readFile(
