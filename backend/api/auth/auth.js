@@ -4,14 +4,21 @@ import dotenv from 'dotenv';
 import swaggerUi from 'swagger-ui-express';
 
 import auth from './routers/auth.js';
-// import * as swaggerJsonDocs from './swagger.json';
+
+import { readFile } from 'fs/promises';
+const swaggerJsonDocs = JSON.parse(
+  await readFile(
+    new URL('./swagger.json', import.meta.url)
+  )
+);
 
 dotenv.config();
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
-// app.use('auth-api-docs', swaggerUi.serve, swaggerUi.setup(swaggerJsonDocs));
+app.use('/auth-api-docs', swaggerUi.serve, swaggerUi.setup(swaggerJsonDocs));
 
 app.use('/auth', auth);
 

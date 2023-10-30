@@ -1,9 +1,9 @@
 {
     "openapi": "3.1.0",
     "info": {
-        "title": "Auth",
-        "description": "Authentication microservice (auth) documentation",
-        "version": "1.0.1",
+        "title": "Company",
+        "description": "Comapny microservice documentation",
+        "version": "1.0.0",
         "termsOfService": "http://swagger.io/terms/",
         "contact": {
         "email": "vigianiallan@gmail.com"
@@ -13,68 +13,71 @@
             "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
         }
     },
-    "host": "localhost:3001/",
-    "basePath": "/auth",
+    "host": "localhost:3002/",
+    "basePath": "/company",
     "paths": {
-        "/auth/login": {
+        "/company": {
             "post": {
                 "tags": [
-                    "Authentication"
+                    "Company"
                 ],
-                "description": "Login do usuário",
+                "description": "Cadastro do usuário",
                 "requestBody": {
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/RequestLogin"
+                                "$ref": "#/components/schemas/RequestCompany"
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ResponseLogin"
-                                }
-                            }
-                        }
+                        "description": "Empresa cadastrada com sucesso!"
                     },
                     "400": {
-                        "description": "Email ou senha incorretos."
+                        "description": "Email não é válido ou Campos não recebidos"
+                    },
+                    "404": {
+                        "description": "Erro ao cadastrar empresa."
+                    },
+                    "422": {
+                        "drescription": "Já existe uma empresa cadastrada com esse email"
                     },
                     "500": {
                         "description": "Internal Server Error."
                     }
                 }
-            }
-        },
-        "/auth/logout": {
-            "post": {
+            },
+            "get": {
                 "tags": [
-                    "Authentication"
+                    "Company"
                 ],
                 "security": [
                     {
                         "bearerAuth": []
                     }
                 ],
-                "description": "Logout do usuário",
+                "description": "Informações da empresa",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ResponseLogout"
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ResponseCompany"
+                                    }
                                 }
                             }
                         }
                     },
                     "401": {
                         "description": "Token fornecido é inválido ou Token não fornecido."
+                    },
+                    "404": {
+                        "description": "Empresa não encontrada na nossa base de dados."
                     },
                     "500": {
                         "description": "Internal Server Error."
@@ -86,65 +89,63 @@
     "components": {
         "securitySchemes": {
             "bearerAuth": {
+                "description": "Autenticação com JWT",
                 "type": "http",
                 "scheme": "bearer",
                 "bearerFormat": "JWT"
             }
         },
         "schemas": {
-            "RequestLogin": {
+            "RequestCompany": {
                 "type": "object",
                 "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Nome para cadastro",
+                        "example": "Company LTDA."
+                    },
                     "email": {
                         "type": "string",
-                        "description": "Email para login",
-                        "example": "teste@gmail.com"
+                        "description": "Email para cadastro",
+                        "example": "company@gmail.com"
                     },
                     "password": {
                         "type": "string",
-                        "description": "Senha para login",
+                        "description": "Senha para cadastro",
                         "example": "123456"
+                    },
+                    "address": {
+                        "type": "string",
+                        "description": "Endereço da empresa para cadastro",
+                        "example": "Rua X - cidade y - UF"
                     }
                 }
             },
-            "ResponseLogin": {
+            "ResponseCompany": {
                 "type": "object",
                 "properties": {
-                    "success": {
+                    "name": {
                         "type": "string",
-                        "description": "Mensagem de sucesso",
-                        "example": "Login realizado com sucesso!"
-                    },
-                    "id": {
-                        "type": "integer",
-                        "description": "ID do usuário",
-                        "example": 1
+                        "description": "Nome da empresa cadastrada",
+                        "example": "Company LTDA."
                     },
                     "email": {
                         "type": "string",
-                        "description": "Email do usuário",
-                        "example": "teste@gmail.com"
+                        "description": "Email da empresa cadastrada",
+                        "example": "company@gmail.com"
                     },
-                    "name": {
+                    "url_name": {
                         "type": "string",
-                        "description": "Nome do usuário",
-                        "example": "Nome do usuário"
+                        "description": "URL da empresa cadastrada",
+                        "example": "123456"
                     },
-                    "token": {
+                    "address": {
                         "type": "string",
-                        "description": "Token do usuário"
+                        "description": "Endereço da empresa cadastrada",
+                        "example": "Rua X - cidade y - UF"
                     }
                 }
-            },
-            "ResponseLogout": {
-                "type": "object",
-                "properties": {
-                    "success": {
-                        "type": "string",
-                        "description": "Mensagem de sucesso",
-                        "example": "Logout realizado!"
-                    }                    
-                }
+                
             }
         }
     }

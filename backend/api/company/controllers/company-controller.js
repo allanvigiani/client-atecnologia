@@ -29,7 +29,7 @@ class CompanyController {
 
             if (!verifyExistingCompany){
                 const errorMessage = `Já existe uma empresa cadastrada com esse email.`;
-                return {message: errorMessage, status: 500};
+                return {message: errorMessage, status: 422};
             }
 
             const hash = await bcrypt.hash(password, this.saltRandsPassword);
@@ -48,7 +48,7 @@ class CompanyController {
             const result = this.companyRepository.createCompany(company);
             if (!result){
                 const errorMessage = `Erro ao cadastrar empresa.`;
-                return {message: errorMessage, status: 500};
+                return {message: errorMessage, status: 404};
             }
 
             return {message: `Empresa cadastrada com sucesso!`, status: 201};
@@ -72,10 +72,10 @@ class CompanyController {
 
             if (!company){
                 const errorMessage = `Empresa não encontrada na nossa base de dados.`;
-                return {message: errorMessage, status: 500};
+                return {message: errorMessage, status: 404};
             }
 
-            return {message: company, status: 201};
+            return {message: company, status: 200};
         } catch (error) {
             return {message: error, status: 500};
         }
