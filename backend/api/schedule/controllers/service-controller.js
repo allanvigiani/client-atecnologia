@@ -17,7 +17,7 @@ class ServiceController {
 
             if (!verifyExistingService){
                 const errorMessage = `Já existe um serviço cadastrada com esse nome.`;
-                return {message: errorMessage, status: 500};
+                return {message: errorMessage, status: 404};
             }
 
             const service = {
@@ -68,7 +68,7 @@ class ServiceController {
                 result = await this.serviceRepository.getAllServices(companyId);
             }
 
-            return {message: {result}, status: 201};
+            return {message: {result}, status: 200};
         } catch (error) {
             return {message: error, status: 500};
         }
