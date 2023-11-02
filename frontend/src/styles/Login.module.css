@@ -1,0 +1,227 @@
+.container {
+    width: 100%;
+    margin: 0 auto;
+}
+
+.main__login {
+    width: 100vw;
+    height: 100vh;
+    background: #201b2c;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.left__login {
+    width: 50vw;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 15px;
+    background-color: #201b2c;
+    margin-left: -10px;
+
+}
+
+.left__login>h1 {
+    color: #77ffc0;
+}
+
+.left__image {
+    width: 35vw;
+}
+
+.right__login {
+    width: 50vw;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 15px;
+
+    background-color: #201b2c;
+
+}
+
+.wrap__login {
+    width: 60%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 30px 35px;
+    background: #2f2841;
+    border-radius: 20px;
+    box-shadow: 0px 10px 40px #00000056;
+}
+
+.right__form {
+    width: 100%;
+}
+
+.right__form__title {
+    display: block;
+    font-size: 30px;
+
+    line-height: 1.2;
+    text-align: center;
+
+    color: #77ffc0;
+    font-weight: 800;
+    margin: 0;
+    margin-top: 10%;
+}
+
+.right__form__title img {
+    width: 10%;
+}
+
+.wrap__input {
+    width: 100%;
+    position: relative;
+    border-bottom: 2px solid #adadad;
+    margin-bottom: 37px;
+}
+
+.input {
+    font-size: 15px;
+    color: #fff;
+    line-height: 1.2;
+    border: none;
+    display: block;
+    width: 100%;
+    height: 45px;
+
+    background-color: transparent;
+    padding: 0 5px;
+}
+
+.focus__input {
+    position: absolute;
+    display: block;
+    width: 100%;
+    height: 100%;
+
+    top: 0;
+    left: 0;
+
+    pointer-events: none;
+    color: #adadad;
+}
+
+.focus__input::before {
+    content: "";
+    display: block;
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+
+
+    -webkit-transition: all 0.4s;
+    -o-transition: all 0.4s;
+    -moz-transition: all 0.4s;
+
+    background: -webkit-transition(to left, #30f026, #77ffc0);
+    background: -o-transition(to left, #30f026, #77ffc0);
+    background: -moz-transitio(to left, #30f026, #77ffc0);
+    background: linear-gradient(to left, #30f026, #77ffc0);
+}
+
+.focus__input::after {
+    font-size: 15px;
+    color: #999999;
+    line-height: 1.2;
+
+    content: attr(data__placeholder);
+    display: block;
+    width: 100%;
+    position: absolute;
+    top: 16px;
+    left: 0px;
+
+    padding-left: 5px;
+
+    -webkit-transition: all 0.4s;
+    -o-transition: all 0.4s;
+    -moz-transition: all 0.4s;
+}
+
+.input:focus {
+    outline: 0;
+}
+
+.input:focus+.focus__input::after {
+    top: -15px;
+}
+
+.input:focus+.focus__input::before {
+    width: 100%;
+}
+
+.has__val+.focus__input::after {
+    top: -15px;
+}
+
+.container__right__form__btn {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-bottom: 13px;
+}
+
+.right__form__btn {
+    width: 100%;
+    padding: 16px 0px;
+    margin: 25px;
+    border: none;
+    border-radius: 8px;
+    outline: none;
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: 3px;
+    color: #2b134b;
+
+    background: -webkit-transition(to left, #10a608, #77ffc0);
+    background: -o-transition(to left, #10a608, #77ffc0);
+    background: -moz-transitio(to left, #10a608, #77ffc0);
+    background: linear-gradient(to left, #10a608, #77ffc0);
+}
+
+.right__form__btn:hover {
+    cursor: pointer;
+}
+
+.text__center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    margin-top: 50px;
+}
+
+.text__create {
+    font-size: 14px;
+    color: #adadad;
+    line-height: 1.5;
+    padding-right: 5px;
+    text-decoration: none;
+}
+
+.text__create__ancora {
+    font-size: 14px;
+    color: #77ffc0;
+    line-height: 1.5;
+    text-decoration: none;
+}
+
+.password__strength__message {
+    font-size: 14px;
+    margin-top: 5px;
+    color: #ff0000;
+    /* Cor do texto */
+}
