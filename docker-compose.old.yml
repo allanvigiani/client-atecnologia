@@ -1,0 +1,59 @@
+version: '3'
+services:
+  db-atecnologia:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: atecnologia
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./migrations:/docker-entrypoint-initdb.d
+    entrypoint: ["docker-entrypoint.sh", "postgres"]
+    networks:
+      - atecnologia
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    networks:
+      - atecnologia
+  auth:
+    build:
+      context: ./backend/api/auth
+    ports:
+      - "3001:3001"
+    depends_on:
+      - db-atecnologia
+    networks:
+      - atecnologia
+  company:
+    build:
+      context: ./backend/api/company
+    ports:
+      - "3002:3002"
+    depends_on:
+      - db-atecnologia
+    networks:
+      - atecnologia
+  schedule:
+    build:
+      context: ./backend/api/schedule
+    ports:
+      - "3003:3003"
+    depends_on:
+      - db-atecnologia
+    networks:
+      - atecnologia
+  schedule-confirmation:
+    build:
+      context: ./backend/api/schedule-confirmation
+    ports:
+      - "3004:3004"
+    depends_on:
+      - mongodb
+    networks:
+      - atecnologia
+networks:
+  atecnologia:

@@ -1,5 +1,5 @@
-import AuthController from '../controllers/auth-controller.mjs';
-import AuthRepository from '../repositories/auth-repository.mjs';
+import AuthController from '../controllers/auth-controller.js';
+import AuthRepository from '../repositories/auth-repository.js';
 
 const authRepository = new AuthRepository();
 
