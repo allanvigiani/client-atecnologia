@@ -77,7 +77,7 @@ class ScheduleConfirmationController {
             return { message: `Email enviado com sucesso!`, status: 200 };
 
         } catch (error) {
-            return { message: error, status: 500 };
+            return { message: error.message, status: 500 };
         }
     }
 

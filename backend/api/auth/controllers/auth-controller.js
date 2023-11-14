@@ -76,7 +76,7 @@ class AuthController {
                 status: 200
             };
         } catch (error) {
-            return {message: error, status: 500};
+            return {message: error.message, status: 500};
         }
     }
 
@@ -92,7 +92,7 @@ class AuthController {
             };
         
         } catch (error) {
-            return {message: error, status: 500};
+            return {message: error.message, status: 500};
         }
     }
 

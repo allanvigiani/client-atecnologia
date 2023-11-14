@@ -35,7 +35,7 @@ class ServiceController {
 
             return {message: `Serviço cadastrado com sucesso!`, status: 201};
         } catch (error) {
-            return {message: error, status: 500};
+            return {message: error.message, status: 500};
         }
     }
 
@@ -55,7 +55,7 @@ class ServiceController {
 
             return {message: `Serviço deletado com sucesso!`, status: 201};
         } catch (error) {
-            return {message: error, status: 500};
+            return {message: error.message, status: 500};
         }
     }
 
@@ -70,7 +70,7 @@ class ServiceController {
 
             return {message: {result}, status: 200};
         } catch (error) {
-            return {message: error, status: 500};
+            return {message: error.message, status: 500};
         }
     }
 
@@ -109,7 +109,7 @@ class ServiceController {
 
             return {message: `Horário do serviço cadastrado com sucesso!`, status: 201};
         } catch (error) {
-            return {message: error, status: 500};
+            return {message: error.message, status: 500};
         }
     }
 
@@ -124,7 +124,7 @@ class ServiceController {
 
             return {message: {result}, status: 201};
         } catch (error) {
-            return {message: error, status: 500};
+            return {message: error.message, status: 500};
         }
     }
 
@@ -144,7 +144,7 @@ class ServiceController {
 
             return {message: `Serviço deletado com sucesso!`, status: 201};
         } catch (error) {
-            return {message: error, status: 500};
+            return {message: error.message, status: 500};
         }
     }
 }

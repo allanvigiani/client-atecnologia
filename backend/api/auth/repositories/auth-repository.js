@@ -18,7 +18,7 @@ class AuthRepository {
 
     async getCompanySession(comapnyId) {
         try {
-            const conn = await this.database.generateConnection();
+            const conn = await database.generateConnection();
             const result = await conn.query(`
                 SELECT us.id, us.start_login, us.end_login, us.token FROM company_sessions us 
                     WHERE us.company_id = $1 AND us.end_login IS NULL
@@ -32,7 +32,7 @@ class AuthRepository {
 
     async deleteCompanySession(sessionId) {
         try {
-            const conn = await this.database.generateConnection();
+            const conn = await database.generateConnection();
             const result = await conn.query(`
                 UPDATE company_sessions us SET end_login = NOW() WHERE us.id = $1; 
             `, [sessionId]);
@@ -45,7 +45,7 @@ class AuthRepository {
 
     async deleteCompanySessionByUserId(companyId) {
         try {
-            const conn = await this.database.generateConnection();
+            const conn = await database.generateConnection();
             const result = await conn.query(`
                 UPDATE company_sessions us SET end_login = NOW() WHERE us.company_id = $1 AND us.end_login IS NULL; 
             `, [companyId]);
@@ -58,7 +58,7 @@ class AuthRepository {
 
     async createCompanySession(companyId, token) {
         try {
-            const conn = await this.database.generateConnection();
+            const conn = await database.generateConnection();
             const result = await conn.query(`
                 INSERT INTO company_sessions (company_id, start_login, token)
                     VALUES ($1, NOW(), $2);
@@ -72,7 +72,7 @@ class AuthRepository {
 
     async verifyRevogedToken(token) {
         try {
-            const conn = await this.database.generateConnection();
+            const conn = await database.generateConnection();
             const result = await conn.query(`
             SELECT us.id, us.start_login, us.end_login, us.token FROM company_sessions us 
                 WHERE us.end_login IS NOT NULL AND us.token = $1;
