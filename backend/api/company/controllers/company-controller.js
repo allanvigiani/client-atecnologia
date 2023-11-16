@@ -53,7 +53,7 @@ class CompanyController {
 
             return {message: `Empresa cadastrada com sucesso!`, status: 201};
         } catch (error) {
-            return {message: error, status: 500};
+            return {message: error.message, status: 500};
         }
     }
 
@@ -61,7 +61,7 @@ class CompanyController {
         try { 
             return {message: `Empresa cadastrada com sucesso!`, status: 201};
         } catch (error) {
-            return {message: error, status: 500};
+            return {message: error.message, status: 500};
         }
     }
 
@@ -77,7 +77,7 @@ class CompanyController {
 
             return {message: company, status: 200};
         } catch (error) {
-            return {message: error, status: 500};
+            return {message: error.message, status: 500};
         }
     }
 

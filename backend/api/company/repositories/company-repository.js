@@ -1,17 +1,13 @@
-import conn from './connection.js';
+import database from './connection.js';
 
 class CompanyRepository {
-
-    constructor() {
-        this.conn = conn;
-    }
 
     async createCompany(data) {
         try {
             const { name, email, password, address, url_name, created_at } = data;
 
-            await this.conn.connect();
-            const result = await this.conn.query(`
+            const conn = await database.generateConnection();
+            const result = await conn.query(`
                 INSERT INTO public.company
                     (name, email, password, address, url_name, created_at)
                     VALUES ($1, $2, $3, $4, $5, $6) RETURNING id;
@@ -25,7 +21,8 @@ class CompanyRepository {
 
     async getCompanyByEmail(email) {
         try {
-            const result = await this.conn.query(`
+            const conn = await database.generateConnection();
+            const result = await conn.query(`
             SELECT * FROM company WHERE email = $1;
         `, [`${email}`]);
 
@@ -37,7 +34,8 @@ class CompanyRepository {
 
     async getCompanyById(userId) {
         try {
-            const result = await this.conn.query(`
+            const conn = await database.generateConnection();
+            const result = await conn.query(`
             SELECT name, email, url_name, address FROM company WHERE id = $1;
         `, [`${userId}`]);
 
@@ -49,8 +47,8 @@ class CompanyRepository {
 
     async verifyRevogedToken(token) {
         try {
-            await this.conn.connect();
-            const result = await this.conn.query(`
+            const conn = await database.generateConnection();
+            const result = await conn.query(`
             SELECT us.id, us.start_login, us.end_login, us.token FROM company_sessions us 
                 WHERE us.end_login IS NOT NULL AND us.token = $1;
         `, [token]);
