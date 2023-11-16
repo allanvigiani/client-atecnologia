@@ -1,0 +1,118 @@
+/* Empresa.Modulo.css */
+
+.home {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+
+}
+
+.home .container {
+    z-index: 888;
+    color: #fff;
+    width: 70%;
+    margin-top: 50px;
+}
+
+.home .container>h1 {
+    font-size: 4em;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    line-height: 75px;
+    margin-bottom: 40px;
+}
+
+.home .container>p {
+    margin-bottom: 65px;
+}
+
+.home .media__icons {
+    z-index: 888;
+    position: absolute;
+    right: 20vh;
+    display: flex;
+    flex-direction: column;
+    transition: 0.5s ease;
+}
+
+.home .media__icons>a {
+    color: #fff;
+    font-size: 2.2em;
+    transition: 0.3s ease;
+
+}
+
+.home .media__icons>a:not(:last-child) {
+    margin-bottom: 20px;
+}
+
+
+.home .media__icons>a:hover {
+    transform: scale(1.3);
+}
+
+.home__grid {
+    position: relative;
+    width: 100%;
+    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container__grid {
+    z-index: 888;
+    color: #fff;
+    width: 70%;
+    margin-top: 50px;
+}
+
+.tr__grid>th {
+    text-align: center;
+    border-bottom: inset;
+    padding-bottom: 5px;
+}
+
+.tbody__grid>tr>td {
+    padding-top: 20px;
+    text-align: center;
+    width: auto;
+}
+
+.home__grid .div__grid {
+    max-height: 350px;
+    overflow-y: auto;
+}
+
+.form {
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem;
+}
+
+@media screen and (max-width: 1330px) {
+    .form-image {
+        display: none;
+    }
+
+    .container {
+        width: 50%;
+    }
+
+    .form {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 1064px) {
+    .container {
+        width: 90%;
+        height: auto;
+    }
+}
