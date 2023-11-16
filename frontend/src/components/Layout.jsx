@@ -3,7 +3,7 @@ import Footer from "./Footer.jsx";
 
 import Head from "next/head";
 
-const Layout = ({ children }) => {
+export default function Layout({ children }) {
   return (
     <>
       <Head>
@@ -16,5 +16,3 @@ const Layout = ({ children }) => {
     </>
   );
 };
-
-export default Layout;

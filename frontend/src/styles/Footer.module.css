@@ -1,10 +1,75 @@
-/* components/Footer.module.css */
-
-footer {
-    background-color: #333;
-    color: #fff;
-    padding: 10px;
-    text-align: center;
+.section__padding {
+    padding:4rem 4rem;
+    display: flex;
+    flex-direction: column;
 }
 
-/* Adicione estilos adicionais conforme necessário */
+.footer {
+    background-color: #2d2d32;
+}
+
+.links {
+ display: flex;
+ justify-content: space-between;
+ align-items: flex-start;
+ flex-direction: row;
+ flex-wrap: wrap;
+ width: 100%;
+ text-align: left;
+ margin-bottom: 2rem;
+}
+
+.links_div {
+    width: 150px;
+    margin: 1rem;
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    color: #fff;
+}
+
+.links_div>a {
+    color: rgb(175, 175, 179);
+    text-decoration: none;
+}
+
+.below__links>a{
+    color: rgb(175, 175, 179);
+    text-decoration: none;
+}
+
+.links_div>h4 {
+    font-size: 14px;
+    line-height: 17px;
+    margin-bottom: 0.9rem;
+
+}
+
+.links_div>p {
+    font-size: 12px;
+    line-height: 15px;
+    margin: 0.5rem 0;
+    cursor: pointer;
+}
+
+.below {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 0.2rem;
+}
+
+.below__links {
+    font-size: 13px;
+    line-height: 15px;
+    margin-left: 2rem;
+    color: #fff;
+    font-weight: 600;
+}
+
+.copyright {
+    font-size: 13px;
+    line-height: 15px;
+    color: rgb(255, 255, 255);
+    font-weight: 600;
+}

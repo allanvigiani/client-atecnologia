@@ -1,0 +1,226 @@
+.home {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+
+}
+
+.home .container {
+    z-index: 888;
+    color: #fff;
+    width: 70%;
+    margin-top: 50px;
+}
+
+.home .container>h1 {
+    font-size: 4em;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    line-height: 75px;
+}
+
+.home .media__icons {
+    z-index: 888;
+    position: absolute;
+    right: 20vh;
+    display: flex;
+    flex-direction: column;
+    transition: 0.5s ease;
+}
+
+.home .media__icons>a {
+    color: #fff;
+    font-size: 2.2em;
+    transition: 0.3s ease;
+
+}
+
+.home .media__icons>a:not(:last-child) {
+    margin-bottom: 20px;
+}
+
+
+.home .media__icons>a:hover {
+    transform: scale(1.3);
+}
+
+.home__grid {
+    padding: 0 0 5vw 0;
+}
+
+.wrapper {
+    width: 80vw;
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, .5);
+    border-radius: 20px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 0 30px rgba(0, 0, 0, .5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    transform: scale(1);
+    display: block;
+    transition: height .2s ease;
+    z-index: 1000;
+}
+
+.wrapper .form__box {
+    width: 100%;
+    padding: 40px;
+}
+
+.tbody__grid .btn__popup {
+    position: relative;
+    color: #171817;
+    font-size: 2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.wrapper .icon__close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 45px;
+    height: 45px;
+    background: #171817;
+    font-size: 2em;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom-left-radius: 20px;
+    cursor: pointer;
+}
+
+.form__box .title {
+    font-family: 'Merriweather', serif;
+    font-size: 25px;
+    font-weight: 800;
+    position: relative;
+    transition: 0.5s;
+    color: #fff;
+}
+
+.form__box .title {
+    position: relative;
+}
+
+.wrapper form .service__details {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 20px 0 12px 0;
+}
+
+
+.input__box {
+    position: relative;
+    width: 100%;
+}
+
+.service__details {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 20px 0 12px 0;
+}
+
+.service__details .input__box {
+    margin-bottom: 15px;
+    width: calc(100% / 2 - 10vw);
+}
+
+.service__details .input__box .details {
+    display: flex;
+    font-weight: 500;
+    margin-bottom: 10px;
+    color: #fff;
+}
+
+
+form .service__details .input__box {
+    margin-bottom: 15px;
+    width: calc(100% / 2 - 20px);
+}
+
+.service__details .input__box input {
+    height: 45px;
+    width: 100%;
+    outline: none;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding-left: 15px;
+    font-size: 16px;
+    border-bottom-width: 2px;
+    transition: all 0.3 ease;
+    cursor: pointer;
+
+}
+
+.input__time input:focus,
+.input__time input:valid {
+    border-color: #77ffc0;
+}
+
+.service__details .input__box input:focus,
+.service__details .input__box input:valid {
+    border-color: #77ffc0;
+}
+
+.container__form__btn {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-bottom: 13px;
+}
+
+.right__form__btn {
+    width: 20%;
+    padding: 16px 0px;
+    margin: 25px;
+    border: none;
+    border-radius: 8px;
+    outline: none;
+    text-transform: uppercase;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: 3px;
+    
+
+    background: -webkit-transition(to left, #10a608, #77ffc0);
+    background: -o-transition(to left, #10a608, #77ffc0);
+    background: -moz-transitio(to left, #10a608, #77ffc0);
+    background: linear-gradient(to left, #10a608, #77ffc0);
+}
+
+.right__form__btn:hover {
+    cursor: pointer;
+}
+
+@media (max-width: 600px) {
+    .container {
+        max-width: 100%;
+    }
+
+    form .service__details .input__box {
+        margin-bottom: 15px;
+        width: 100%
+    }
+
+    .container form .service__details {
+        max-height: 300px;
+        overflow-y: scroll;
+    }
+
+    .service__details::-webkit-scrollbar {
+        margin: 0;
+    }
+}

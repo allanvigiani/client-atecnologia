@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Montserrat:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@800&family=Montserrat:wght@400;700&display=swap');
 
 * {
   font-family: 'Montserrat', sans-serif;
@@ -17,4 +17,56 @@ body {
   background-position: center;
   align-items: center;
 
+}
+
+main {
+  display: grid;
+  justify-content: center;
+  min-height: 100vh;
+  background: transparent;
+  background-size: cover;
+  background-position: center;
+  align-items: center;
+  flex-direction: row;
+}
+
+section {
+  padding: 5vw 60vh;
+}
+
+table {
+  width: 100%;
+  background: #fff;
+  padding: 1vw;
+  box-shadow: 0px 0px 10px #ccc;
+  border-radius: 5px;
+  max-width: 93%;
+  margin: 0 0 0 4vw;
+  word-break: break-all;
+  border-collapse: collapse;
+  margin: 0 auto;
+}
+
+table th,
+table td {
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+table th {
+  background: #f0f0f0;
+  font-weight: bold;
+}
+
+table tr:last-child td {
+  border-bottom-left-radius: 10px;
+}
+
+table tr:last-child td:last-child {
+  border-bottom-right-radius: 10px;
+}
+
+hr {
+  color: #fff;
+  width: 100%;
 }
