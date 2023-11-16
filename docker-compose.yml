@@ -32,6 +32,15 @@ services:
     networks:
       - mynetwork
 
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:3000"
+    networks:
+      - mynetwork
+
+
 networks:
   mynetwork:
     driver: bridge
