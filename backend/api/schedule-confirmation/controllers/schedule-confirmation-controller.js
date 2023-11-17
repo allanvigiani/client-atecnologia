@@ -63,6 +63,7 @@ class ScheduleConfirmationController {
 
             if (sendEmail) {
 
+                
                 const logs = {
                     service_code: service_code,
                     email_status: "Enviado",
