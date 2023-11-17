@@ -1,4 +1,6 @@
-# ATecnologia - SaaS de Agendamento V.0.0.1
+# ATecnologia - SaaS de Agendamento
+
+![version](https://img.shields.io/badge/version-0.1-blue)
 
 ## Por que a criação do projeto?
 
@@ -13,11 +15,14 @@ Nosso sitema é baseada na ideia de Sofware as a Service (Software como serviço
 
 ### Tecnologias utilizadas.
 
-- Backend: ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
-- Frontend: ![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white)
-- Banco de Dados: ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white) | ![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white)
-- ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white) e docker-compose
-- ![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white) (deploy)
+![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white) 
+![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white)
+![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
+![Jest](https://img.shields.io/badge/-jest-%23C21325?style=for-the-badge&logo=jest&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white)
+![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
+![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
+![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white)
 
 ### Arquitetura.
 
@@ -28,3 +33,12 @@ Microserviços:
 - company
 - schedule
 - schedule-confirmation
+
+### TDD.
+
+### APIs.
+
+### Modelagem do banco de dados.
+![image](https://github.com/allanvigiani/ATecnologia/assets/64793591/351fb9b8-91c0-4027-93b5-546673992da4)
+
+## Instale na sua máquina.
