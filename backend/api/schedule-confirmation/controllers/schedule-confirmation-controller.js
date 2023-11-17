@@ -56,7 +56,7 @@ class ScheduleConfirmationController {
 
             const sendEmail = await SMTP_TRANSPORTER.sendMail({
                 subject: "Confirmação de agendamento!",
-                from: `${company_name}`,
+                from: `${company_email}`,
                 to: client_email,
                 html: templateHtml
             });
