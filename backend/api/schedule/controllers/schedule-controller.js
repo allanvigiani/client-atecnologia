@@ -36,6 +36,8 @@ class ScheduleController {
                 return {message: errorMessage, status: 500};
             }
 
+            // TODO fazer um fetch para chamar o microserviço de envio de email.
+
             return {message: `Serviço cadastrado com sucesso!`, status: 201};
         } catch (error) {
             return {message: error.message, status: 500};
