@@ -5,10 +5,10 @@ class ScheduleController {
     }
 
     async createSchedule(body, companyId) {
-        try { 
-            const { service_id, service_hour_id, client_name, client_contact, client_email } = body;
+        try {
+            const { service_id, service_hour_id, schedule_date, client_name, client_contact, client_email } = body;
 
-            if (!service_id || !service_hour_id || !client_name || !client_email) {
+            if (!service_id || !service_hour_id || !client_name || !client_email || schedule_date) {
                 const errorMessage = `Campos não recebidos.`;
                 return {message: errorMessage, status: 400};
             }
@@ -26,7 +26,8 @@ class ScheduleController {
                 client_contact: client_contact != undefined ? client_contact : null,
                 client_email: client_email,
                 company_id: companyId,
-                status: 1
+                status: 1,
+                schedule_date: schedule_date,
             }
 
             const result = this.scheduleRepository.createSchedule(schedule);
