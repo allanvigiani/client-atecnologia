@@ -48,6 +48,9 @@ class AuthController {
                     return {
                         message: {
                           success: `Usuário já está logado!`,
+                          id: user.id,
+                          email: user.email,
+                          name: user.name,
                           token  
                         },
                         status: 200

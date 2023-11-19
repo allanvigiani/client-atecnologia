@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "@/styles/Register.module.css";
+import { ToastContainer, toast } from "react-toastify";
+import axios from "axios";
 
 export default function Register() {
   const [nomeStyle, setNomeStyle] = useState("");
@@ -51,8 +53,6 @@ export default function Register() {
   };
 
   const isEmailMatch = (email, confirmarEmail) => {
-    console.log(email);
-    console.log(confirmarEmail);
     return email === confirmarEmail;
   };
 
@@ -65,6 +65,11 @@ export default function Register() {
       setErrorMessage("");
     }
   };
+
+  const generateError = (err) =>
+    toast.error(err, {
+      position: "bottom-right",
+    });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -90,34 +95,32 @@ export default function Register() {
     } else {
       if (!isStrong) {
         setErrorMessage("");
-        console.log("Valores a serem enviados:", values);
-        // Realize a ação de envio do formulário aqui
+        try {
+          const { data } = await axios.post(
+            "http://localhost:3002/company/",
+            { ...values }
+          );
+
+          const responseData = data;
+          toast.success(responseData);
+        } catch (err) {
+          if (err.response && err.response.data) {
+            const apiError = err.response.data;
+
+            generateError(
+              apiError.message ||
+                "Ocorreu um erro ao processar o registro. Tente novamente."
+            );
+          } else {
+            generateError(
+              "Ocorreu um erro ao processar o registro. Tente novamente."
+            );
+          }
+        }
       } else {
         setErrorMessage("A senha não atende aos critérios de força.");
       }
     }
-
-    try {
-      const { data } = await axios.post(
-        "http://localhost:3000/register",
-        {
-          ...values,
-        },
-        {
-          withCredentials: true,
-        }
-      );
-      console.log(data);
-      if (data) {
-        if (data.errors) {
-          for (const error of data.errors) {
-            generateError(error);
-          }
-        } else {
-          navigate("/");
-        }
-      }
-    } catch (err) {}
   };
 
   return (
@@ -126,7 +129,6 @@ export default function Register() {
         <div className={`${styles.main__login}`}>
           <div className={`${styles.left__login}`}>
             <h1>
-              {" "}
               Registre-se e faça parte <br /> da nossa comunidade!
             </h1>
             <img
@@ -280,6 +282,7 @@ export default function Register() {
                   </a>
                 </div>
               </form>
+              <ToastContainer />
             </div>
           </div>
         </div>

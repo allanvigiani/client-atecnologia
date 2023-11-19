@@ -1,3 +1,13 @@
+.main {
+    display: grid;
+    justify-content: center;
+    min-width: 100vw;
+    min-height: 100vh;
+    background: transparent;
+    background-size: cover;
+    background-position: center;
+    align-items: center;
+}
 
 .container {
     margin-top: 10%;
@@ -9,6 +19,7 @@
     background: #fff;
     padding: 25px 30px;
     border-radius: 5px;
+    margin-bottom: 5%;
 }
 
 .container .title {
@@ -64,28 +75,32 @@ form .service__details .input__box {
 }
 
 .input__time {
-    margin-top: 1vw;
-    width: calc(100% / 2 - 20px);
     display: flex;
-    gap: 1em;
     font-weight: 500;
     margin-bottom: 10px;
 }
 
-.input__time input {
+.input__time>span {
+    margin-right: 10px;
+}
+
+.dinamic__field {
+    display: block;
+    justify-content: space-between;
+    width: 100%;
+}
+.dinamic__field .input__time input {
     height: 45px;
-    width: 40vw;
+    width: 100%;
     outline: none;
     border-radius: 5px;
     border: 1px solid #ccc;
-    padding-left: 15px;
     font-size: 16px;
-    border-bottom-width: 2px;
     transition: all 0.3 ease;
-
+    margin-right: 10px;
 }
 
-.small__image {
+.dinamic__field .small__image {
     width: 30px;
     height: 30px;
 }

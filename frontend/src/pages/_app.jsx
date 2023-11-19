@@ -1,4 +1,6 @@
-import '../styles/globals.css'; // Importe o arquivo CSS global
+import "../styles/globals.css";
+import "react-toastify/dist/ReactToastify.css";
+import React from "react";
 
 function MyApp({ Component, pageProps }) {
   return <Component {...pageProps} />;

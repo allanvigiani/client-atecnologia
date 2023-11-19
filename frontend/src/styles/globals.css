@@ -9,7 +9,7 @@
 }
 
 body {
-  display: flex;
+  display: relative;
   justify-content: center;
   min-height: 100vh;
   background: #201b2c;
@@ -69,4 +69,10 @@ table tr:last-child td:last-child {
 hr {
   color: #fff;
   width: 100%;
+}
+
+@media (max-width: 767px) {
+  table {
+    width: 60%;
+  }
 }

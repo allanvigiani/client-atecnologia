@@ -1,22 +1,23 @@
 .section__padding {
-    padding:4rem 4rem;
+    padding: 4rem 4rem;
     display: flex;
     flex-direction: column;
 }
 
 .footer {
-    background-color: #2d2d32;
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 100vw;
 }
 
 .links {
- display: flex;
- justify-content: space-between;
- align-items: flex-start;
- flex-direction: row;
- flex-wrap: wrap;
- width: 100%;
- text-align: left;
- margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    text-align: left;
+    margin-bottom: 2rem;
 }
 
 .links_div {
@@ -33,7 +34,7 @@
     text-decoration: none;
 }
 
-.below__links>a{
+.below__links>a {
     color: rgb(175, 175, 179);
     text-decoration: none;
 }

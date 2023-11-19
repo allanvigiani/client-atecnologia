@@ -11,11 +11,15 @@
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",
     "axios": "^1.5.1",
+    "cookies-next": "^4.1.0",
+    "dotenv": "^16.3.1",
+    "jsonwebtoken": "^9.0.2",
     "next": "13.5.4",
     "react": "^18",
-    "react-dom": "^18",
     "react-hook-form": "^7.47.0",
     "react-icons": "^4.11.0",
-    "react-phone-number-input": "^3.3.7"
+    "react-phone-number-input": "^3.3.7",
+    "react-router-dom": "^6.19.0",
+    "react-toastify": "^9.1.3"
   }
 }

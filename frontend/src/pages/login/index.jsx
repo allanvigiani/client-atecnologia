@@ -1,24 +1,37 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import styles from "@/styles/Login.module.css";
+import { ToastContainer, toast } from "react-toastify";
+import axios from "axios";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { setCookie } from "cookies-next";
+import { deleteCookie, hasCookie, getCookie } from "cookies-next";
 
 export default function Login() {
-  const [emailStyle, setEmailStyle] = useState("");
-  const [passwordStyle, setPasswordStyle] = useState("");
-  const [passwordStrengthMessage, setErrorMessage] = useState("");
-  const [randomValue, setRandomValue] = useState(Math.random());
-
-  const [values, setValues] = useState({
-    email: "",
-    password: "",
-  });
-
   useEffect(() => {
+    const verifyUser = async () => {
+      if (hasCookie("user_auth_information")) {
+        router.push("/company");
+      }
+    };
+    verifyUser();
+
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, []);
+
+  const [emailStyle, setEmailStyle] = useState("");
+  const [passwordStyle, setPasswordStyle] = useState("");
+  const [passwordStrengthMessage, setErrorMessage] = useState("");
+  const [randomValue, setRandomValue] = useState(Math.random());
+  const router = useRouter();
+
+  const [values, setValues] = useState({
+    email: "",
+    password: "",
+  });
 
   const handleBeforeUnload = () => {
     setRandomValue(Math.random());
@@ -50,6 +63,11 @@ export default function Login() {
     }
   };
 
+  const generateError = (err) =>
+    toast.error(err, {
+      position: "bottom-right",
+    });
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const email = e.target.elements.email.value;
@@ -63,33 +81,37 @@ export default function Login() {
     } else {
       if (!isStrong) {
         setErrorMessage("");
-        console.log("Email:", email);
-        console.log("Senha:", password);
+        try {
+          const { data } = await axios.post(
+            "http://localhost:3001/auth/login/",
+            { ...values }
+          );
+
+          if (data.message.success) {
+            const response = data.message.success;
+            toast.success(response);
+
+            setCookie("user_auth_information", data.message.token);
+            router.push("/");
+          }
+        } catch (err) {
+          if (err.response && err.response.data) {
+            const apiError = err.response.data;
+
+            generateError(
+              apiError.message ||
+                "Ocorreu um erro ao processar o registro. Tente novamente."
+            );
+          } else {
+            generateError(
+              "Ocorreu um erro ao processar o registro. Tente novamente."
+            );
+          }
+        }
       } else {
         setErrorMessage("A senha não atende aos critérios de força.");
       }
     }
-
-    try {
-      const { data } = await axios.post(
-        "http://localhost:3000/login",
-        {
-          ...values,
-        },
-        {
-          withCredentials: true,
-        }
-      );
-      if (data) {
-        if (data.errors) {
-          for (const error of data.errors) {
-            generateError(error);
-          }
-        } else {
-          navigate("/");
-        }
-      }
-    } catch (err) {}
   };
 
   return (
@@ -183,6 +205,7 @@ export default function Login() {
                 </a>
               </div>
             </form>
+            <ToastContainer />
           </div>
         </div>
       </div>

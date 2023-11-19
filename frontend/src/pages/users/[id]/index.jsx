@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styles from "@/styles/Dynamic.module.css";
-import Layout from "../../components/Layout";
-import Modal from "../../components/Modal";
+import Layout from "../../../components/Layout";
+import Modal from "../../../components/Modal";
 import PhoneInput from "react-phone-number-input/react-hook-form-input";
 import { useRouter } from "next/router";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { FaFacebook, FaInstagram } from "react-icons/fa";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { GiArchiveRegister } from "react-icons/gi";
 
-export default function userDynamic() {
+export default function userDynamic({params}) {
   const router = useRouter();
   const { nomeDinamico } = router.query;
+  console.log(params);
   const { register, handleSubmit, control, reset } = useForm();
 
   const [isOpen, setIsOpen] = useState(false);
