@@ -1,6 +1,4 @@
-# ATecnologia - SaaS de Agendamento
-
-![version](https://img.shields.io/badge/version-0.1-blue)
+# ATecnologia - SaaS de Agendamento ![version](https://img.shields.io/badge/version-0.1-blue)
 
 ## Por que a criação do projeto?
 
@@ -38,7 +36,25 @@ Microserviços:
 
 ### APIs.
 
+Toda documentação das APIs está disponível nas seguintes rotas após a incialização do projeto:
+Auth - ```http://localhost:3001/auth-api-docs```
+Company - ```http://localhost:3002/company-api-docs```
+Schedule - ```http://localhost:3003/schedule-api-docs```
+
 ### Modelagem do banco de dados.
 ![image](https://github.com/allanvigiani/ATecnologia/assets/64793591/351fb9b8-91c0-4027-93b5-546673992da4)
 
 ## Instale na sua máquina.
+
+Clone o repositório:
+```sh
+git clone https://github.com/allanvigiani/ATecnologia.git
+```
+Entre na pasta do projeto
+```sh
+cd ATecnologia
+```
+Configure os .env do projeto e após isso inicialize o projeto utlizando o Docker Compose
+```sh
+sudo docker-compose up
+```
