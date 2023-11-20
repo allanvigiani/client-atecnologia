@@ -45,6 +45,17 @@ class CompanyRepository {
         }
     }
 
+    async getAllCompanies() {
+        try {
+            const conn = await database.generateConnection();
+            const result = await conn.query(`SELECT id, name, email, url_name, address FROM company;`);
+
+        return result.rows;
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
     async verifyRevogedToken(token) {
         try {
             const conn = await database.generateConnection();

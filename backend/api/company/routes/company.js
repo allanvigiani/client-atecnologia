@@ -26,4 +26,10 @@ router.get('/', authenticateToken, async (req, res) => {
     res.status(result.status).json({ message: result.message });
 });
 
+router.get('/all-companies/:companyId?', async (req, res) => {
+    const result = await companyController.getAllCompanies(req.params.companyId);
+    res.status(result.status).json({ message: result.message });
+});
+
+
 export default router;

@@ -150,6 +150,27 @@ class ServiceController {
             return {message: error.message, status: 500};
         }
     }
+
+    async getServicesByCompany(companyId) {
+        try {
+
+            if (!companyId) {
+                const errorMessage = `ID da empresa não informada.`;
+                return {message: errorMessage, status: 400};
+            }
+
+            const services = await this.serviceRepository.getAllServicesByCompany(companyId);
+            if (!services){
+                const errorMessage = `Erro ao buscar os serviços da empresa.`;
+                return {message: errorMessage, status: 500};
+            }
+
+            return {message: services, status: 201};
+        } catch (error) {
+            return {message: error.message, status: 500};
+        }
+    }
+
 }
 
 export default ServiceController;

@@ -45,6 +45,19 @@ class ServiceRepository {
         }
     }
 
+    async getAllServicesByCompany(companyId) {
+        try {
+            const conn = await database.generateConnection();
+            const result = await conn.query(`
+            SELECT * FROM services WHERE company_id = $2 AND deleted_at IS NULL;
+        `, [companyId]);
+
+            return result.rows;
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+    
     async getAllServices(companyId) {
         try {
             const conn = await database.generateConnection();
