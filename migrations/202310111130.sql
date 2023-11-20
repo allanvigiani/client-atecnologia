@@ -60,6 +60,7 @@ CREATE TABLE IF NOT EXISTS "schedule" (
     "id" SERIAL NOT NULL,
     "service_id" INTEGER NOT NULL,
     "service_hour_id" INTEGER NOT NULL,
+    "schedule_date" DATE,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "client_name" TEXT NOT NULL,
     "client_contact" TEXT,
