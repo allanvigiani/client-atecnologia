@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from "@/styles/Register.module.css";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 export default function Register() {
   const [nomeStyle, setNomeStyle] = useState("");
@@ -18,6 +19,7 @@ export default function Register() {
     address: "",
     password: "",
   });
+  const router = useRouter();
 
   useEffect(() => {
     window.addEventListener("beforeunload", handleBeforeUnload);
@@ -96,13 +98,15 @@ export default function Register() {
       if (!isStrong) {
         setErrorMessage("");
         try {
-          const { data } = await axios.post(
-            "http://localhost:3002/company/",
-            { ...values }
-          );
+          const { data } = await axios.post("http://localhost:3002/company/", {
+            ...values,
+          });
 
-          const responseData = data;
+          const responseData = data.message;
           toast.success(responseData);
+          setTimeout(() => {
+            router.push("/login");
+          }, 2000);
         } catch (err) {
           if (err.response && err.response.data) {
             const apiError = err.response.data;

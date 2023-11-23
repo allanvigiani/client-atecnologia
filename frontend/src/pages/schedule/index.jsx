@@ -17,14 +17,6 @@ export default function Schedule() {
     const verifyUser = async () => {
       if (!hasCookie("user_auth_information")) {
         router.push("/login");
-      } else {
-        const Token = getCookie("user_auth_information");
-
-        const config = {
-          headers: {
-            Authorization: `Bearer ${Token}`,
-          },
-        };
       }
     };
     verifyUser();
@@ -39,37 +31,8 @@ export default function Schedule() {
     name: "",
     professional_name: "",
     price: "",
-    start_time: "",
-    end_time: "",
   });
   const [valor, setValor] = useState("");
-
-  const formatarCampo = (e) => {
-    const inputElement = e.target;
-    const inputValue = inputElement.value;
-
-    const cursorStart = inputElement.selectionStart;
-    const cursorEnd = inputElement.selectionEnd;
-
-    const valorNumerico =
-      parseFloat(inputValue.replace(/[^\d,]/g, "").replace(",", ".")) || 0;
-
-    const valorFormatado = valorNumerico.toLocaleString("pt-BR", {
-      maximumFractionDigits: 2,
-    });
-
-    setValor(valorFormatado);
-
-    const novaPosicaoCursorStart =
-      cursorStart + (valorFormatado.length - inputValue.length);
-    const novaPosicaoCursorEnd =
-      cursorEnd + (valorFormatado.length - inputValue.length);
-
-    inputElement.setSelectionRange(
-      novaPosicaoCursorStart,
-      novaPosicaoCursorEnd
-    );
-  };
 
   const generateError = (err) =>
     toast.error(err, {
@@ -90,12 +53,30 @@ export default function Schedule() {
           },
         }
       );
-      if (data.message.success) {
-        const response = data.message.success;
+      if (data.message) {
+        const service_id = data.id.result.id;
+
+        const formData = {
+          ...values,
+          service_id,
+        };
+
+        const { dataHora } = await axios.post(
+          "http://localhost:3003/service/service-hours",
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const response = data.message;
         toast.success(response);
+        reset();
       }
     } catch (err) {
-      console.error(err)
+      generateError(err.response.data.message);
     }
   };
 
@@ -160,27 +141,34 @@ export default function Schedule() {
                       <span>Hora Inicio:</span>
                       <input
                         type="time"
-                        name="start_time"
+                        name={`times[${index}].start_time`}
                         {...register(`times.${index}.start_time`)}
                         required
                         onChange={(e) => {
-                          setValues({
-                            ...values,
-                            start_time: e.target.value,
-                          });
+                          setValues((prevValues) => ({
+                            ...prevValues,
+                            times: [
+                              ...(prevValues.times || []),
+                              { start_time: e.target.value, end_time: "" },
+                            ],
+                          }));
                         }}
                         placeholder="08:00"
                       />
                       <span>Hora Fim:</span>
                       <input
                         type="time"
-                        name="end_time"
+                        name={`times.${index}.end_time`}
                         {...register(`times.${index}.end_time`)}
                         required
                         onChange={(e) => {
-                          setValues({
-                            ...values,
-                            end_time: e.target.value,
+                          setValues((prevValues) => {
+                            const newTimes = [...(prevValues.times || [])];
+                            newTimes[index] = {
+                              ...newTimes[index],
+                              end_time: e.target.value,
+                            };
+                            return { ...prevValues, times: newTimes };
                           });
                         }}
                         placeholder="17:00"

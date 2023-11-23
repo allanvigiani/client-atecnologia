@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.post('/', authenticateToken, async (req, res) => {
     const result = await serviceController.createService(req.body, req.user.payload.id);
-    res.status(result.status).json({ message: result.message });
+    res.status(result.status).json({ message: result.message, id: result.id });
 });
 
 router.delete('/:serviceId', authenticateToken, async (req, res) => {

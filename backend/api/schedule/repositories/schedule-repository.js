@@ -2,7 +2,7 @@ import database from './connection.js';
 
 class ScheduleRepository {
 
-    async createService(data) {
+    async createSchedule(data) {
         try {
             const { service_id, service_hour_id, created_at, client_name, client_contact, client_email, company_id, status, schedule_date } = data;
 

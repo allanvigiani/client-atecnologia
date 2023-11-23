@@ -81,18 +81,18 @@ class CompanyController {
         }
     }
 
-    async getAllCompanies(companyId) {
+    async getAllCompanies(companyUrl) {
         try { 
 
             let result;
 
-            if (!companyId) {
+            if (!companyUrl) {
                 result = await this.companyRepository.getAllCompanies();
             }else {
-                result = await this.companyRepository.getCompanyById(companyId);
+                result = await this.companyRepository.getCompanyByUrl(companyUrl);
             }
 
-            if (!companies){
+            if (!result){
                 const errorMessage = `Nenhuma empresa encontrada.`;
                 return {message: errorMessage, status: 404};
             }

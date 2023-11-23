@@ -1,38 +1,100 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "@/styles/Dynamic.module.css";
-import Layout from "../../../components/Layout";
-import Modal from "../../../components/Modal";
+import Layout from "../../components/Layout";
+import Modal from "../../components/Modal";
 import PhoneInput from "react-phone-number-input/react-hook-form-input";
-import { useRouter } from "next/router";
+import axios from "axios";
 import { useForm } from "react-hook-form";
 import { FaFacebook, FaInstagram } from "react-icons/fa";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { GiArchiveRegister } from "react-icons/gi";
 
-export default function userDynamic({params}) {
-  const router = useRouter();
-  const { nomeDinamico } = router.query;
-  console.log(params);
-  const { register, handleSubmit, control, reset } = useForm();
+export async function getStaticPaths() {
+  try {
+    const response = await fetch(
+      "http://localhost:3002/company/all-companies/"
+    );
+    const data = await response.json();
 
+    const paths = data.message.map((todo) => {
+      return {
+        params: {
+          url: `${todo.url_name}`,
+        },
+      };
+    });
+    return { paths, fallback: true };
+  } catch (error) {
+    return { paths: [], fallback: false };
+  }
+}
+
+export async function getStaticProps(context) {
+  const { params } = context;
+  const data = await fetch(
+    `http://localhost:3002/company/all-companies/${params.url}`
+  );
+
+  const todo = await data.json();EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+
+  return {
+    props: { todo },
+  };
+}
+
+export default function Users({ todo }) {
+  const { register, handleSubmit, control, reset } = useForm();
+  const [serviceData, setServiceData] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [serviceId, setServiceId] = useState("");
   const [companyId, setCompanyId] = useState("");
+  const [serviceIdHour, setServiceIdHour] = useState("");
+  const [serviceId, setServiceId] = useState("");
 
   const [values, setValues] = useState({
     client_name: "",
     client_contact: "",
     client_email: "",
+    schedule_date: "",
   });
 
-  const onSubmit = (data, e, reset) => {
+  useEffect(() => { 
+    const verifyService = async () => {
+      try {
+        const { data: serviceData } = await axios.get(
+          `http://localhost:3003/service/company-services/${todo.message.id}`
+        );
+
+        setServiceData(serviceData.message);
+      } catch (error) {
+        console.error("Erro na solicitação GET:", error);
+      }
+    };
+
+    verifyService();
+  }, []);
+
+  const onSubmit = async (data, e, reset) => {
+    e.preventDefault();
+
+    const service_id = serviceId;
+    const service_hour_id = serviceIdHour;
+
     const formData = {
+      service_id,
+      service_hour_id,
       ...data,
-      serviceId,
       companyId,
     };
 
-    console.log(formData);
+    try {
+      const { data } = await axios.post(
+        "http://localhost:3003/schedule/",
+          formData, 
+      );
+
+    } catch (err) {
+      console.error(err);
+    }
 
     reset();
 
@@ -41,7 +103,7 @@ export default function userDynamic({params}) {
       client_contact: "",
       client_email: "",
     });
-    setServiceId("");
+    setServiceIdHour("");
     setCompanyId("");
     setIsOpen(false);
   };
@@ -51,8 +113,8 @@ export default function userDynamic({params}) {
       <Layout>
         <section className={`${styles.home}`}>
           <div className={`${styles.container}`}>
-            <h1> Nome Empresa</h1>
-            <p>informações da empresa</p>
+            <h1> {todo.message.name}</h1>
+            <p>{todo.message.address}</p>
           </div>
           <div className={`${styles.media__icons}`}>
             <a href="https://www.facebook.com/" target="_blank">
@@ -81,24 +143,26 @@ export default function userDynamic({params}) {
                 </tr>
               </thead>
               <tbody className={`${styles.tbody__grid}`}>
-                <tr>
-                  <td hidden> 1</td>
-                  <td> Allan</td>
-                  <td> João</td>
-                  <td> 11:00</td>
-                  <td> 13:00</td>
-                  <td>
-                    <span className={`${styles.btn__popup}`}>
-                      <GiArchiveRegister
-                        onClick={() => {
-                          setIsOpen(true);
-                          setServiceId(1);
-                          setCompanyId(1);
-                        }}
-                      ></GiArchiveRegister>
-                    </span>
-                  </td>
-                </tr>
+                {serviceData.map((item) => (
+                  <tr key={item.id}>
+                    <td>{item.name}</td>
+                    <td>{item.professional_name}</td>
+                    <td>{item.start_time}</td>
+                    <td>{item.end_time}</td>
+                    <td>
+                      <span className={`${styles.btn__popup}`}>
+                        <GiArchiveRegister
+                          onClick={() => {
+                            setIsOpen(true);
+                            setServiceId(item.id);
+                            setServiceIdHour(item.service_id);
+                            setCompanyId(todo.message.id);
+                          }}
+                        ></GiArchiveRegister>
+                      </span>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
@@ -154,6 +218,21 @@ export default function userDynamic({params}) {
                         control={control}
                         rules={{ required: true, maxLength: 14 }}
                         country="BR"
+                      />
+                    </div>
+                    <div className={`${styles.input__box}`}>
+                      <span className={`${styles.details}`}>Data:</span>
+                      <input
+                        type="date"
+                        name="schedule_date"
+                        {...register("schedule_date")}
+                        required
+                        onChange={(e) => {
+                          setValues({
+                            ...values,
+                            [e.target.name]: e.target.value,
+                          });
+                        }}
                       />
                     </div>
                   </div>

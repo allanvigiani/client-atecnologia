@@ -9,7 +9,7 @@ const scheduleController = new ScheduleController(scheduleRepository);
 
 const router = express.Router();
 
-router.post('/', authenticateToken, async (req, res) => {
+router.post('/', async (req, res) => {
     const result = await scheduleController.createSchedule(req.body);
     res.status(result.status).json({ message: result.message });
 });

@@ -36,7 +36,8 @@ class ServiceController {
             // TODO tratar o recebimento dos horários do serviço.
             // Chamar o método createServiceHours.
 
-            return {message: `Serviço cadastrado com sucesso!`, status: 201};
+            return { id: {result},
+                     message: `Serviço cadastrado com sucesso!`, status: 201};
         } catch (error) {
             return {message: error.message, status: 500};
         }
