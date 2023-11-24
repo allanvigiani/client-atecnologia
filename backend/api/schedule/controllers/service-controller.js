@@ -6,7 +6,7 @@ class ServiceController {
 
     async createService(body, companyId) {
         try { 
-            const { name, professional_name, price } = body;
+            const { name, professional_name, price, times } = body;
 
             if (!name || !price) {
                 const errorMessage = `Campos não recebidos.`;
@@ -33,11 +33,19 @@ class ServiceController {
                 return {message: errorMessage, status: 500};
             }
 
-            // TODO tratar o recebimento dos horários do serviço.
-            // Chamar o método createServiceHours.
+            const promises = times.map(async (e) => {
+                const hours = {
+                    start_time: e.start_time,
+                    end_time: e.end_time,
+                    service_id: result.id
+                };
+            
+                return this.createServiceHours(hours);
+            });
+            
+            await Promise.all(promises);
 
-            return { id: {result},
-                     message: `Serviço cadastrado com sucesso!`, status: 201};
+            return { id: {result}, message: `Serviço cadastrado com sucesso!`, status: 201};
         } catch (error) {
             return {message: error.message, status: 500};
         }
