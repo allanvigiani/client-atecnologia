@@ -40,7 +40,6 @@ class ScheduleConfirmationController {
                 professional_name
             } = body;
 
-            // TODO -> Atrelhar esse código ao serviço para saber se for realizado ou não
             const service_code = uuidv4();
 
             let templateHtml = fs.readFileSync('./confirmation-template.html').toString();
@@ -63,7 +62,6 @@ class ScheduleConfirmationController {
 
             if (sendEmail) {
 
-                
                 const logs = {
                     service_code: service_code,
                     email_status: "Enviado",

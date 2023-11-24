@@ -1,5 +1,5 @@
 import express from 'express';
-import authenticateToken from '../middleware/auth.js';
+// import authenticateToken from '../middleware/auth.js';
 import ScheduleConfirmationController from '../controllers/schedule-confirmation-controller.js';
 
 import ScheduleConfirmationRepository from '../repositories/schedule-confirmation-repository.js';
@@ -9,7 +9,7 @@ const scheduleConfirmationController = new ScheduleConfirmationController(schedu
 
 const router = express.Router();
 
-router.post('/send-email', authenticateToken, async (req, res) => {
+router.post('/send-email', async (req, res) => {
     const result = await scheduleConfirmationController.sendEmail(req.body);
     res.status(result.status).json({ message: result.message });
 });
