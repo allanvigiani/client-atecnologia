@@ -24,6 +24,10 @@ router.get('/:serviceId?', authenticateToken, async (req, res) => {
     res.status(result.status).json({ message: result.message });
 });
 
+router.get('/scheduled-services/:companyId?',authenticateToken, async (req, res) => {
+    const result = await serviceController.getScheduledServicesByCompany(req.params.companyId);
+    res.status(result.status).json({ message: result.message });
+});
 
 router.get('/company-services/:companyId?', async (req, res) => {
     const result = await serviceController.getServicesByCompany(req.params.companyId);

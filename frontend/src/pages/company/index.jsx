@@ -3,9 +3,8 @@ import styles from "@/styles/Company.module.css";
 import Layout from "../../components/Layout";
 import axios from "axios";
 import { FaFacebook, FaInstagram } from "react-icons/fa";
-import { deleteCookie, hasCookie, getCookie } from "cookies-next";
+import { hasCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/router";
-import { ToastContainer, toast } from "react-toastify";
 
 export default function Company() {
   const router = useRouter();
@@ -22,16 +21,8 @@ export default function Company() {
           const token = getCookie("user_auth_information");
 
           try {
-            const { data } = await axios.get("http://localhost:3002/company/", {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            });
-            setCompanyName(data.message.name);
-            setCompanyInformation(data.message.email);
-
-            const { data: serviceData } = await axios.get(
-              "http://localhost:3003/service/",
+            const { data: companyData } = await axios.get(
+              "http://localhost:3002/company/",
               {
                 headers: {
                   Authorization: `Bearer ${token}`,
@@ -39,7 +30,18 @@ export default function Company() {
               }
             );
 
-            setServiceData(serviceData.message.result);
+            setCompanyName(companyData.message.name);
+            setCompanyInformation(companyData.message.email);
+
+            const { data: serviceData } = await axios.get(
+              `http://localhost:3003/service/scheduled-services/${companyData.message.id}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+            setServiceData(serviceData.message);
           } catch (error) {
             console.error("Erro na solicitação GET:", error);
           }
@@ -54,46 +56,68 @@ export default function Company() {
   return (
     <Layout>
       <>
-        <section className={`${styles.home}`}>
-          <div className={`${styles.container}`}>
-            <h1> {companyName}</h1>
+        <section className={styles.home}>
+          <div className={styles.container}>
+            <h1>{companyName}</h1>
             <p>{companyInformation}</p>
           </div>
-          <div className={`${styles.media__icons}`}>
-            <a href="https://www.facebook.com/" target="_blank">
+          <div className={styles.media__icons}>
+            <a
+              href="https://www.facebook.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <i>
                 <FaFacebook />
               </i>
             </a>
-            <a href="https://www.instagram.com/" target="_blank">
+            <a
+              href="https://www.instagram.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <i>
                 <FaInstagram />
               </i>
             </a>
           </div>
         </section>
-        <div className={`${styles.home__grid}`}>
-          <div className={`${styles.div__grid}`}>
-            <table>
-              <thead className={`${styles.thead__grid}`}>
-                <tr className={`${styles.tr__grid}`}>
-                  <th>Nome Cliente</th>
-                  <th>Funcionário</th>
-                  <th>Hora Início</th>
-                  <th>Hora Fim</th>
-                </tr>
-              </thead>
-              <tbody className={`${styles.tbody__grid}`}>
-                {serviceData.map((item) => (
-                  <tr key={item.id}>
-                    <td>{item.name}</td>
-                    <td>{item.professional_name}</td>
+        {serviceData && serviceData.length > 0 ? (
+          <div className={styles.home__grid}>
+            <div className={styles.div__grid}>
+              <table>
+                <thead className={styles.thead__grid}>
+                  <tr className={styles.tr__grid}>
+                    <th>Nome Cliente</th>
+                    <th>Funcionário</th>
+                    <th>Hora Início</th>
+                    <th>Hora Fim</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className={styles.tbody__grid}>
+                  {serviceData.map(
+                    ({
+                      id,
+                      client_name,
+                      professional_name,
+                      start_time,
+                      end_time,
+                    }) => (
+                      <tr key={id}>
+                        <td>{client_name}</td>
+                        <td>{professional_name}</td>
+                        <td>{start_time?.slice(0, 5)}</td>
+                        <td>{end_time?.slice(0, 5)}</td>
+                      </tr>
+                    )
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
+        ) : (
+          ""
+        )}
       </>
     </Layout>
   );

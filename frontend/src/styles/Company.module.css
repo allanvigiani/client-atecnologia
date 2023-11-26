@@ -63,6 +63,69 @@
     flex-direction: column;
 }
 
+.home__grid .div__grid {
+    max-height: 350px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}
+
+.home__grid .div__grid table {
+    width: 100%;
+    border-spacing: 0;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.home__grid .div__grid th,
+.home__grid .div__grid td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ccc;
+}
+
+.home__grid .div__grid th {
+    background-color: #333;
+    color: #fff;
+}
+
+.home__grid .div__grid td:last-child {
+    text-align: center;
+}
+
+.home__grid .div__grid .btn__popup {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.home__grid .div__grid .btn__popup svg {
+    font-size: 1.5em;
+    cursor: pointer;
+    color: #333;
+    transition: color 0.3s ease;
+}
+
+.home__grid .div__grid .btn__popup svg:hover {
+    color: #10a608;
+}
+
+/* Adicionando algum espaçamento para melhor legibilidade */
+.home__grid .div__grid th,
+.home__grid .div__grid td {
+    padding: 12px 16px;
+}
+
+/* Estilo de fundo alternado para melhor legibilidade */
+.home__grid .div__grid tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Adicionando um hover sutil nas linhas da tabela */
+.home__grid .div__grid tbody tr:hover {
+    background-color: #e1e1e1;
+}
+
+
 .container__grid {
     z-index: 888;
     color: #fff;
@@ -80,11 +143,6 @@
     padding-top: 20px;
     text-align: center;
     width: auto;
-}
-
-.home__grid .div__grid {
-    max-height: 350px;
-    overflow-y: auto;
 }
 
 .form {

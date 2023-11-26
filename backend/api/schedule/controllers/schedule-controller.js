@@ -38,7 +38,11 @@ class ScheduleController {
                 return { message: errorMessage, status: 500 };
             }
 
-            await this.sendConfirmationEmail(body);
+            const email = await this.sendConfirmationEmail(body);
+            if (!email) {
+                const errorMessage = `Erro ao agendar o serviço. Tente novamente mais tarde`;
+                return { message: errorMessage, status: 500 };
+            }
 
             return { message: `Serviço agendado com sucesso!`, status: 201 };
         } catch (error) {
@@ -48,7 +52,7 @@ class ScheduleController {
 
     async sendConfirmationEmail(body) {
         try {
-            const urlEmail = 'http://localhost:3004/schedule-confirmation/send-email';
+            const urlEmail = 'http://localhost:3004/schedule-confirmation/send-email/';
 
             const config = {
                 headers: {
@@ -72,11 +76,12 @@ class ScheduleController {
                 professional_name: service.professional_name
             }
 
-            const response = await axios.post(urlEmail, fields, config);
+            const { data } = await axios.post(urlEmail, fields, config);
 
-            console.log('Dados da API:', response.data);
-        } catch (erro) {
-            console.error('Erro ao chamar a API:', erro.message);
+            console.log(data);
+            return { message: `Email enviado com sucesso!`, status: 201 };
+        } catch (error) {
+            return { message: error.message, status: 500 };
         }
     }
 }

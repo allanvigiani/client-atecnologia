@@ -19,12 +19,12 @@ class ServiceRepository {
         }
     }
 
-    async getServiceByName(name) {
+    async getServiceByName(name, companyId) {
         try {
             const conn = await database.generateConnection();
             const result = await conn.query(`
-            SELECT * FROM services WHERE name ILIKE $1;
-        `, [`%${name}%`]);
+            SELECT * FROM services WHERE name ILIKE $1 AND company_id = $2 ;
+        `, [`%${name}%`, `${companyId}`]);
 
             return result.rows.length == 0 ? true : false;
         } catch (error) {
@@ -49,7 +49,26 @@ class ServiceRepository {
         try {
             const conn = await database.generateConnection();
             const result = await conn.query(`
-            SELECT * FROM services INNER JOIN service_hours ON services.id = service_hours.service_id WHERE company_id = $1 AND deleted_at IS NULL;
+            SELECT * FROM services 
+            INNER JOIN service_hours ON services.id = service_hours.service_id 
+            LEFT JOIN schedule ON schedule.service_hour_id = service_hours.id
+            WHERE services.company_id = $1 AND services.deleted_at IS NULL AND schedule.id IS NULL;
+        `, [companyId]);
+
+            return result.rows;
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
+    async getAllScheduledServicesByCompany(companyId) {
+        try {
+            const conn = await database.generateConnection();
+            const result = await conn.query(`
+            SELECT * FROM services 
+            INNER JOIN service_hours ON services.id = service_hours.service_id 
+            INNER JOIN schedule ON schedule.service_hour_id = service_hours.id
+            WHERE services.company_id = $1 AND services.deleted_at IS NULL;
         `, [companyId]);
 
             return result.rows;

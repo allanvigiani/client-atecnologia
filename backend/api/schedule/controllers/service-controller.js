@@ -13,7 +13,7 @@ class ServiceController {
                 return {message: errorMessage, status: 400};
             }
 
-            const verifyExistingService = await this.serviceRepository.getServiceByName(name);
+            const verifyExistingService = await this.serviceRepository.getServiceByName(name, companyId);
 
             if (!verifyExistingService){
                 const errorMessage = `Já existe um serviço cadastrada com esse nome.`;
@@ -59,11 +59,13 @@ class ServiceController {
                 return {message: errorMessage, status: 400};
             }
 
-            const result = await this.serviceRepository.deleteService(serviceId, companyId);
+            const result = await this.serviceRepository.deleteServiceHour(serviceId);
             if (!result){
                 const errorMessage = `Erro ao deletar serviço. Tente novamente mais tarde`;
                 return {message: errorMessage, status: 500};
             }
+
+           await this.serviceRepository.deleteService(serviceId, companyId);
 
             return {message: `Serviço deletado com sucesso!`, status: 201};
         } catch (error) {
@@ -169,6 +171,26 @@ class ServiceController {
             }
 
             const services = await this.serviceRepository.getAllServicesByCompany(companyId);
+            if (!services){
+                const errorMessage = `Erro ao buscar os serviços da empresa.`;
+                return {message: errorMessage, status: 500};
+            }
+
+            return {message: services, status: 201};
+        } catch (error) {
+            return {message: error.message, status: 500};
+        }
+    }
+
+    async getScheduledServicesByCompany(companyId) {
+        try {
+
+            if (!companyId) {
+                const errorMessage = `ID da empresa não informada.`;
+                return {message: errorMessage, status: 400};
+            }
+
+            const services = await this.serviceRepository.getAllScheduledServicesByCompany(companyId);
             if (!services){
                 const errorMessage = `Erro ao buscar os serviços da empresa.`;
                 return {message: errorMessage, status: 500};

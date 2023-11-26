@@ -36,7 +36,7 @@ class CompanyRepository {
         try {
             const conn = await database.generateConnection();
             const result = await conn.query(`
-            SELECT name, email, url_name, address FROM company WHERE id = $1;
+            SELECT id, name, email, url_name, address FROM company WHERE id = $1;
         `, [`${userId}`]);
 
         return result.rows[0];

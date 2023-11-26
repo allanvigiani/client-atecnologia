@@ -6,23 +6,12 @@ import { ToastContainer, toast } from "react-toastify";
 import { useForm, useFieldArray } from "react-hook-form";
 import { deleteCookie, hasCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/router";
+import { RiDeleteBin2Line } from "react-icons/ri";
 
 export default function Schedule() {
   const router = useRouter();
-
-  useEffect(() => {
-    remove({ start_time: "", end_time: "" });
-    append({ start_time: "", end_time: "" });
-
-    const verifyUser = async () => {
-      if (!hasCookie("user_auth_information")) {
-        router.push("/login");
-      }
-    };
-    verifyUser();
-  }, []);
-
-  const { register, handleSubmit, control } = useForm();
+  const [serviceData, setServiceData] = useState([]);
+  const { register, handleSubmit, control, reset } = useForm();
   const { fields, append, remove } = useFieldArray({
     control,
     name: "times",
@@ -32,7 +21,53 @@ export default function Schedule() {
     professional_name: "",
     price: "",
   });
-  const [valor, setValor] = useState("");
+
+  useEffect(() => {
+    remove({ start_time: "", end_time: "" });
+    append({ start_time: "", end_time: "" });
+    verifyUser();
+  }, []);
+
+  const verifyUser = async () => {
+    if (!hasCookie("user_auth_information")) {
+      router.push("/login");
+    } else {
+      fetchData();
+    }
+  };
+
+  const fetchData = async () => {
+    const token = getCookie("user_auth_information");
+
+    try {
+      const { data: serviceData } = await axios.get(
+        "http://localhost:3003/service/",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setServiceData(serviceData.message.result);
+    } catch (error) {
+      console.error("Erro na solicitação GET:", error);
+    }
+  };
+
+  const formatarCampo = (e) => {
+    if (e.target.name === "price") {
+      const price = e.target.value.replace(/[^\d$,]/g, "");
+      e.target.value = price;
+
+      const formattedPrice = `$ ${price}`.replace(
+        /(\d{3})(?=(\d{3})*($|$))/,
+        "$1,"
+      );
+
+      return formattedPrice;
+    }
+  };
 
   const generateError = (err) =>
     toast.error(err, {
@@ -41,6 +76,10 @@ export default function Schedule() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    if (!hasCookie("user_auth_information")) {
+      router.push("/login");
+    }
+
     try {
       const token = getCookie("user_auth_information");
 
@@ -53,30 +92,45 @@ export default function Schedule() {
           },
         }
       );
-      if (data.message) {
-        const service_id = data.id.result.id;
 
-        const formData = {
-          ...values,
-          service_id,
-        };
+      const response = data.message;
+      toast.success(response);
 
-        const { dataHora } = await axios.post(
-          "http://localhost:3003/service/service-hours",
-          formData,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        const response = data.message;
-        toast.success(response);
-        reset();
-      }
+      await verifyUser();
+      reset({
+        name: "",
+        professional_name: "",
+        price: "",
+        times: [{ start_time: "", end_time: "" }],
+      });
     } catch (err) {
-      generateError(err.response.data.message);
+      generateError(err.response?.data?.message);
+    }
+  };
+
+  const onDelete = async (itemId) => {
+    if (!hasCookie("user_auth_information")) {
+      router.push("/login");
+    }
+
+    try {
+      const token = getCookie("user_auth_information");
+
+      const { data } = await axios.delete(
+        `http://localhost:3003/service/${itemId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const response = data.message;
+      toast.success(response);
+
+      await verifyUser();
+    } catch (err) {
+      generateError(err.response?.data?.message);
     }
   };
 
@@ -126,6 +180,7 @@ export default function Schedule() {
                     {...register("price")}
                     required
                     onChange={(e) => {
+                      formatarCampo(e);
                       setValues({
                         ...values,
                         price: e.target.value,
@@ -212,6 +267,42 @@ export default function Schedule() {
               </div>
             </form>
             <ToastContainer />
+          </div>
+          <div className={`${styles.home__grid}`}>
+            <div className={`${styles.div__grid}`}>
+              {serviceData.length > 0 && (
+                <table>
+                  <thead className={`${styles.thead__grid}]`}>
+                    <tr className={`${styles.tr__grid}`}>
+                      <th>Serviço</th>
+                      <th>Funcionário</th>
+                      <th>Hora Início</th>
+                      <th>Hora Fim</th>
+                      <th>Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody className={`${styles.tbody__grid}`}>
+                    {serviceData.map((item) => (
+                      <tr key={item.id}>
+                        <td>{item.name}</td>
+                        <td>{item.professional_name}</td>
+                        <td>{item.start_time.slice(0, 5)}</td>
+                        <td>{item.end_time.slice(0, 5)}</td>
+                        <td>
+                          <span className={`${styles.btn__popup}`}>
+                            <RiDeleteBin2Line
+                              onClick={() => {
+                                onDelete(item.service_id);
+                              }}
+                            ></RiDeleteBin2Line>
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
           </div>
         </div>
       </>
