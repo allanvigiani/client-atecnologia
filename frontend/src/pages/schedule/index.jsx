@@ -41,7 +41,7 @@ export default function Schedule() {
 
     try {
       const { data: serviceData } = await axios.get(
-        "http://localhost:3003/service/",
+        `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/service/`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -84,7 +84,7 @@ export default function Schedule() {
       const token = getCookie("user_auth_information");
 
       const { data } = await axios.post(
-        "http://localhost:3003/service/",
+        `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/service/`,
         values,
         {
           headers: {
@@ -117,7 +117,7 @@ export default function Schedule() {
       const token = getCookie("user_auth_information");
 
       const { data } = await axios.delete(
-        `http://localhost:3003/service/${itemId}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/service/${itemId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

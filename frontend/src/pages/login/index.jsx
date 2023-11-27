@@ -83,7 +83,7 @@ export default function Login() {
         setErrorMessage("");
         try {
           const { data } = await axios.post(
-            "http://localhost:3001/auth/login/",
+            `${process.env.NEXT_PUBLIC_BACKEND_URL_AUTH}/auth/login/`,
             { ...values }
           );
 

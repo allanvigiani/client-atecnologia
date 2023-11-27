@@ -13,7 +13,7 @@ import { GiArchiveRegister } from "react-icons/gi";
 const verifyService = async (companyId, setServiceData) => {
   try {
     const { data: serviceData } = await axios.get(
-      `http://localhost:3003/service/company-services/${companyId}`
+      `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/service/company-services/${companyId}`
     );
 
     setServiceData(serviceData.message);
@@ -25,7 +25,7 @@ const verifyService = async (companyId, setServiceData) => {
 export async function getStaticPaths() {
   try {
     const response = await fetch(
-      "http://localhost:3002/company/all-companies/"
+      `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY}/company/all-companies/`
     );
     const data = await response.json();
 
@@ -45,7 +45,7 @@ export async function getStaticPaths() {
 export async function getStaticProps(context) {
   const { params } = context;
   const data = await fetch(
-    `http://localhost:3002/company/all-companies/${params.url}`
+    `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY}/company/all-companies/${params.url}`
   );
 
   const todo = await data.json();
@@ -95,7 +95,7 @@ export default function Users({ todo }) {
 
     try {
       const { data } = await axios.post(
-        "http://localhost:3003/schedule/",
+        `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/schedule/`,
         formData
       );
 

@@ -13,7 +13,7 @@ export default function Navbar() {
       const token = getCookie("user_auth_information");
 
       const { data } = await axios.post(
-        "http://localhost:3001/auth/logout/",
+        `${process.env.NEXT_PUBLIC_BACKEND_URL_AUTH}/auth/logout/`,
         null,
         {
           headers: {

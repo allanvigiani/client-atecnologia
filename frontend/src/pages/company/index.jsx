@@ -22,7 +22,7 @@ export default function Company() {
 
           try {
             const { data: companyData } = await axios.get(
-              "http://localhost:3002/company/",
+              `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY}/company/`,
               {
                 headers: {
                   Authorization: `Bearer ${token}`,
@@ -34,7 +34,7 @@ export default function Company() {
             setCompanyInformation(companyData.message.email);
 
             const { data: serviceData } = await axios.get(
-              `http://localhost:3003/service/scheduled-services/${companyData.message.id}`,
+              `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/service/scheduled-services/${companyData.message.id}`,
               {
                 headers: {
                   Authorization: `Bearer ${token}`,

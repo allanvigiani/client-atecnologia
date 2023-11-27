@@ -98,7 +98,7 @@ export default function Register() {
       if (!isStrong) {
         setErrorMessage("");
         try {
-          const { data } = await axios.post("http://localhost:3002/company/", {
+          const { data } = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY}/company/`, {
             ...values,
           });
 
