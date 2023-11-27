@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import styles from "@/styles/Dynamic.module.css";
-import Layout from "../../../components/Layout";
-import Modal from  "../../../components/Modal";
+import Head from "next/head";
+import Navbar from "../../../components/NavbarUsers";
+import Footer from "../../../components/Footer";
+import Modal from "../../../components/Modal";
 import PhoneInput from "react-phone-number-input/react-hook-form-input";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
@@ -102,7 +104,7 @@ export default function Users({ todo }) {
       if (data) {
         const response = data.message;
         setTimeout(() => {
-          toast.success(response || 'Serviço agendado com sucesso');
+          toast.success(response || "Serviço agendado com sucesso");
         }, 500);
 
         reset();
@@ -125,7 +127,11 @@ export default function Users({ todo }) {
 
   return (
     <>
-      <Layout>
+      <Head>
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <title>ATecnologia</title>
+      </Head>
+      <Navbar/>
         <section className={`${styles.home}`}>
           <div className={`${styles.container}`}>
             <h1> {todo?.message?.name}</h1>
@@ -255,10 +261,7 @@ export default function Users({ todo }) {
                 </div>
 
                 <div className={`${styles.container__form__btn}`}>
-                  <button
-                    type="submit"
-                    className={`${styles.right__form__btn}`}
-                  >
+                  <button type="submit" className={`${styles.right__form__btn}`}>
                     Agendar
                   </button>
                 </div>
@@ -266,7 +269,7 @@ export default function Users({ todo }) {
             </div>
           </div>
         </Modal>
-      </Layout>
+      <Footer />
     </>
   );
 }
