@@ -3,6 +3,7 @@ import styles from "@/styles/Register.module.css";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 export default function Register() {
   const [nomeStyle, setNomeStyle] = useState("");
@@ -98,9 +99,12 @@ export default function Register() {
       if (!isStrong) {
         setErrorMessage("");
         try {
-          const { data } = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY}/company/`, {
-            ...values,
-          });
+          const { data } = await axios.post(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY}/company/`,
+            {
+              ...values,
+            }
+          );
 
           const responseData = data.message;
           toast.success(responseData);
@@ -129,6 +133,10 @@ export default function Register() {
 
   return (
     <>
+      <Head>
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <title>ATecnologia</title>
+      </Head>
       <div className={`${styles.container}`}>
         <div className={`${styles.main__login}`}>
           <div className={`${styles.left__login}`}>

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { setCookie } from "cookies-next";
 import { deleteCookie, hasCookie, getCookie } from "cookies-next";
+import Head from "next/head";
 
 export default function Login() {
   useEffect(() => {
@@ -115,100 +116,109 @@ export default function Login() {
   };
 
   return (
-    <div className={`${styles.container}`}>
-      <div className={`${styles.main__login}`}>
-        <div className={`${styles.left__login}`}>
-          <h1>
-            {" "}
-            Acesse sua conta <br /> para continuar
-          </h1>
-          <img
-            src={`/images/server.svg?${randomValue}`}
-            className={`${styles.left__image}`}
-            alt="login-animation"
-          />{" "}
-        </div>
-        <div className={`${styles.right__login}`}>
-          <div className={`${styles.wrap__login}`}>
-            <form
-              onSubmit={(e) => handleSubmit(e)}
-              className={`${styles.right__form}`}
-            >
-              <span className={`${styles.right__form__title}`}>LOGIN</span>
-              <span className={`${styles.right__form__title}`}>
-                <img src="" alt="" />
-              </span>
-              <div className={`${styles.wrap__input}`}>
-                <input
-                  className={`${
-                    emailStyle !== ""
-                      ? `${styles.has__val} ${styles.input}`
-                      : `${styles.input}`
-                  }`}
-                  type="email"
-                  value={emailStyle}
-                  name="email"
-                  onChange={(e) => {
-                    setEmailStyle(e.target.value);
-                    setValues({
-                      ...values,
-                      [e.target.name]: e.target.value,
-                    });
-                  }}
-                />
-                <span
-                  className={`${styles.focus__input}`}
-                  data__placeholder="E-mail"
-                ></span>
-              </div>
-              <div className={`${styles.wrap__input}`}>
-                <input
-                  className={`${
-                    passwordStyle !== ""
-                      ? `${styles.has__val} ${styles.input}`
-                      : `${styles.input}`
-                  }`}
-                  type="password"
-                  value={passwordStyle}
-                  name="password"
-                  onChange={(e) => {
-                    setPasswordStyle(e.target.value);
-                    setValues({
-                      ...values,
-                      [e.target.name]: e.target.value,
-                    });
-                    handlePasswordStrength();
-                  }}
-                />
-                <span
-                  className={`${styles.focus__input}`}
-                  data__placeholder="Senha"
-                ></span>
-              </div>
-              <div className={`${styles.password__strength__message}`}>
-                {passwordStrengthMessage}
-              </div>
-              <div className={`${styles.container__right__form__btn}`}>
-                <button type="submit" className={`${styles.right__form__btn}`}>
-                  Logar
-                </button>
-              </div>
-              <div className={`${styles.text__center}`}>
-                <span className={`${styles.text__create}`}>
-                  Não possui conta?
+    <>
+      <Head>
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <title>ATecnologia</title>
+      </Head>
+      <div className={`${styles.container}`}>
+        <div className={`${styles.main__login}`}>
+          <div className={`${styles.left__login}`}>
+            <h1>
+              {" "}
+              Acesse sua conta <br /> para continuar
+            </h1>
+            <img
+              src={`/images/server.svg?${randomValue}`}
+              className={`${styles.left__image}`}
+              alt="login-animation"
+            />{" "}
+          </div>
+          <div className={`${styles.right__login}`}>
+            <div className={`${styles.wrap__login}`}>
+              <form
+                onSubmit={(e) => handleSubmit(e)}
+                className={`${styles.right__form}`}
+              >
+                <span className={`${styles.right__form__title}`}>LOGIN</span>
+                <span className={`${styles.right__form__title}`}>
+                  <img src="" alt="" />
                 </span>
-                <a
-                  href="/register"
-                  className={`${styles.text__create__ancora}`}
-                >
-                  Criar Conta
-                </a>
-              </div>
-            </form>
-            <ToastContainer />
+                <div className={`${styles.wrap__input}`}>
+                  <input
+                    className={`${
+                      emailStyle !== ""
+                        ? `${styles.has__val} ${styles.input}`
+                        : `${styles.input}`
+                    }`}
+                    type="email"
+                    value={emailStyle}
+                    name="email"
+                    onChange={(e) => {
+                      setEmailStyle(e.target.value);
+                      setValues({
+                        ...values,
+                        [e.target.name]: e.target.value,
+                      });
+                    }}
+                  />
+                  <span
+                    className={`${styles.focus__input}`}
+                    data__placeholder="E-mail"
+                  ></span>
+                </div>
+                <div className={`${styles.wrap__input}`}>
+                  <input
+                    className={`${
+                      passwordStyle !== ""
+                        ? `${styles.has__val} ${styles.input}`
+                        : `${styles.input}`
+                    }`}
+                    type="password"
+                    value={passwordStyle}
+                    name="password"
+                    onChange={(e) => {
+                      setPasswordStyle(e.target.value);
+                      setValues({
+                        ...values,
+                        [e.target.name]: e.target.value,
+                      });
+                      handlePasswordStrength();
+                    }}
+                  />
+                  <span
+                    className={`${styles.focus__input}`}
+                    data__placeholder="Senha"
+                  ></span>
+                </div>
+                <div className={`${styles.password__strength__message}`}>
+                  {passwordStrengthMessage}
+                </div>
+                <div className={`${styles.container__right__form__btn}`}>
+                  <button
+                    type="submit"
+                    className={`${styles.right__form__btn}`}
+                  >
+                    Logar
+                  </button>
+                </div>
+                <div className={`${styles.text__center}`}>
+                  <span className={`${styles.text__create}`}>
+                    Não possui conta?
+                  </span>
+                  <a
+                    href="/register"
+                    className={`${styles.text__create__ancora}`}
+                  >
+                    Criar Conta
+                  </a>
+                </div>
+              </form>
+              <ToastContainer />
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
