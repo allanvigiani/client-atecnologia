@@ -85,10 +85,11 @@ export default function Schedule() {
 
       const { data } = await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/service/`,
-        values,
+        JSON.stringify(values),
         {
           headers: {
             Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
         }
       );
@@ -292,7 +293,7 @@ export default function Schedule() {
                           <span className={`${styles.btn__popup}`}>
                             <RiDeleteBin2Line
                               onClick={() => {
-                                onDelete(item.service_id);
+                                onDelete(item.id);
                               }}
                             ></RiDeleteBin2Line>
                           </span>

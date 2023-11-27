@@ -1,21 +1,30 @@
 name: Push-to-EC2
 on:
-  push:
-    branches:
-      - main
+  pull_request:
+    branches: ["main"]
 jobs:
-  deploy:
-    name: Deploy to EC2
+  build:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout the files
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Copy files with SSH
-      uses: easingthemes/ssh-deploy@main
-      env:
-        SSH_PRIVATE_KEY: ${{secrets.EC2_SSH_KEY}}
-        SOURCE: "./"
-        REMOTE_HOST: ${{secrets.REMOTE_HOST}}
-        REMOTE_USER: ${{secrets.REMOTE_USER}}
-        TARGET: ${{secrets.TARGET_DIR}}
+      - name: Login no Docker Hub
+        run: docker login -u ${{secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKER_PASSWORD}}
+
+      - name: Build docker image frontend
+        run: cd frontend && docker build -t atecnologia/frontend .
+      - name: Push image frontend
+        run: docker push atecnologia/frontend
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: Pull da image from Docker Hub frontend
+        run: docker pull frontend:latest
+
+      - name: Remove Docker container frontend
+        run: docker rm -f frontend
+
+      - name: Run Docker continer frontend
+        run: docker run -d -p 3000:3000 --name frontend atecnologia/frontend
