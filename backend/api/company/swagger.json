@@ -1,0 +1,152 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Company",
+        "description": "Comapny microservice documentation",
+        "version": "1.0.0",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+        "email": "vigianiallan@gmail.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        }
+    },
+    "host": "localhost:3002/",
+    "basePath": "/company",
+    "paths": {
+        "/company": {
+            "post": {
+                "tags": [
+                    "Company"
+                ],
+                "description": "Cadastro do usuário",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RequestCompany"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Empresa cadastrada com sucesso!"
+                    },
+                    "400": {
+                        "description": "Email não é válido ou Campos não recebidos"
+                    },
+                    "404": {
+                        "description": "Erro ao cadastrar empresa."
+                    },
+                    "422": {
+                        "drescription": "Já existe uma empresa cadastrada com esse email"
+                    },
+                    "500": {
+                        "description": "Internal Server Error."
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Company"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "description": "Informações da empresa",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ResponseCompany"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Token fornecido é inválido ou Token não fornecido."
+                    },
+                    "404": {
+                        "description": "Empresa não encontrada na nossa base de dados."
+                    },
+                    "500": {
+                        "description": "Internal Server Error."
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "description": "Autenticação com JWT",
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        },
+        "schemas": {
+            "RequestCompany": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Nome para cadastro",
+                        "example": "Company LTDA."
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "Email para cadastro",
+                        "example": "company@gmail.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "description": "Senha para cadastro",
+                        "example": "123456"
+                    },
+                    "address": {
+                        "type": "string",
+                        "description": "Endereço da empresa para cadastro",
+                        "example": "Rua X - cidade y - UF"
+                    }
+                }
+            },
+            "ResponseCompany": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Nome da empresa cadastrada",
+                        "example": "Company LTDA."
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "Email da empresa cadastrada",
+                        "example": "company@gmail.com"
+                    },
+                    "url_name": {
+                        "type": "string",
+                        "description": "URL da empresa cadastrada",
+                        "example": "123456"
+                    },
+                    "address": {
+                        "type": "string",
+                        "description": "Endereço da empresa cadastrada",
+                        "example": "Rua X - cidade y - UF"
+                    }
+                }
+                
+            }
+        }
+    }
+}

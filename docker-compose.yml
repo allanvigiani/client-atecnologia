@@ -1,6 +1,5 @@
 version: '3'
 services:
-
   frontend:
     build:
       context: ./frontend
@@ -9,6 +8,37 @@ services:
     networks:
       - mynetwork
 
+  auth:
+    build:
+      context: ./backend/api/auth
+    ports:
+      - "3001:3001"
+    networks:
+      - mynetwork
+
+  company:
+    build:
+      context: ./backend/api/company
+    ports:
+      - "3002:3002"
+    networks:
+      - mynetwork
+
+  schedule:
+    build:
+      context: ./backend/api/schedule
+    ports:
+      - "3003:3003"
+    networks:
+      - mynetwork
+
+  schedule-confirmation:
+    build:
+      context: ./backend/api/schedule-confirmation
+    ports:
+      - "3004:3004"
+    networks:
+      - mynetwork
 
 networks:
   mynetwork:

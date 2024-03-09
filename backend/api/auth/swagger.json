@@ -1,0 +1,151 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Auth",
+        "description": "Authentication microservice (auth) documentation",
+        "version": "1.0.1",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+        "email": "vigianiallan@gmail.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        }
+    },
+    "host": "localhost:3001/",
+    "basePath": "/auth",
+    "paths": {
+        "/auth/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "description": "Login do usuário",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RequestLogin"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ResponseLogin"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Email ou senha incorretos."
+                    },
+                    "500": {
+                        "description": "Internal Server Error."
+                    }
+                }
+            }
+        },
+        "/auth/logout": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "description": "Logout do usuário",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ResponseLogout"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Token fornecido é inválido ou Token não fornecido."
+                    },
+                    "500": {
+                        "description": "Internal Server Error."
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        },
+        "schemas": {
+            "RequestLogin": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "description": "Email para login",
+                        "example": "teste@gmail.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "description": "Senha para login",
+                        "example": "123456"
+                    }
+                }
+            },
+            "ResponseLogin": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "string",
+                        "description": "Mensagem de sucesso",
+                        "example": "Login realizado com sucesso!"
+                    },
+                    "id": {
+                        "type": "integer",
+                        "description": "ID do usuário",
+                        "example": 1
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "Email do usuário",
+                        "example": "teste@gmail.com"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Nome do usuário",
+                        "example": "Nome do usuário"
+                    },
+                    "token": {
+                        "type": "string",
+                        "description": "Token do usuário"
+                    }
+                }
+            },
+            "ResponseLogout": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "string",
+                        "description": "Mensagem de sucesso",
+                        "example": "Logout realizado!"
+                    }                    
+                }
+            }
+        }
+    }
+}
