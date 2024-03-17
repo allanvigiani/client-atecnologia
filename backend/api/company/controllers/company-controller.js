@@ -142,6 +142,32 @@ class CompanyController {
         }
     }
 
+    /**
+     * Método que busca dados da pesquisa feita pelo usuário, retornando a empresa através de palavras-chaves
+     * @date 05/03/2024 - 22:41:15
+     *
+     * @async
+     * @param {json} body
+     * @returns {json}
+     */
+        async getCompanyInformation(body) {
+            try {
+                
+                const { key_word } = body; 
+
+                const companies = await this.companyRepository.getCompanyKeyWord(key_word);
+    
+                if (!companies) {
+                    const errorMessage = `Nenhuma empresa ou serviço encontrado.`;
+                    return { message: errorMessage, status: 404 };
+                }
+    
+                return { message: companies, status: 200 };
+            } catch (error) {
+                return { message: error.message, status: 500 };
+            }
+        }
+
 }
 
 export default CompanyController;

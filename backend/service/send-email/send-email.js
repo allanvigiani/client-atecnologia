@@ -97,6 +97,7 @@ async function consumeQueue(queue) {
             channel.ack(message);
             return msg;
             // TODO mudar isso depois, aqui antes de validar e enviar o email eu apago do rabbitMQ, está ERRADO
+            // .ack e .nack
         }
     });
 }

@@ -69,6 +69,24 @@ class CompanyRepository {
         }
     }
 
+    async getCompanyKeyWord(keyWord) {
+        try {
+            const conn = await database.generateConnection();
+            const result = await conn.query(`SELECT company.name FROM company
+            LEFT JOIN services ON services.company_id = company.id
+                WHERE company.key_word ILIKE "%$1%" 
+                    OR company.name ILIKE "%$1%"
+                    OR services.name ILIKE "%$1%"
+                    AND company.deleted_at IS NULL
+                    AND services.deleted_at IS NULL;`, [`${keyWord}`]);
+
+        return result.rows;
+        
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
     async verifyRevogedToken(token) {
         try {
             const conn = await database.generateConnection();
