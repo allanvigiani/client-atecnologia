@@ -5,7 +5,7 @@ dotenv.config();
 
 mongoose.connect(process.env.MONGO_URL);
 
-const ScheduleConfirmation = new mongoose.Schema({
+const SendEmail = new mongoose.Schema({
     service_code: {
         type: String,
         required: true
@@ -32,4 +32,4 @@ const ScheduleConfirmation = new mongoose.Schema({
     }
 });
 
-export default mongoose.model("ScheduleConfirmation", ScheduleConfirmation);
+export default mongoose.model("SendEmail", SendEmail);

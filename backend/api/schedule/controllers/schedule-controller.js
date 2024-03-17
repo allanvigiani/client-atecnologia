@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 /**
  * Classe responsável pelo agendamento dos serviços
  * @date 05/03/2024 - 22:49:47
@@ -9,8 +7,9 @@ import axios from 'axios';
  */
 class ScheduleController {
 
-    constructor(scheduleRepository) {
+    constructor(scheduleRepository, queueRepository) {
         this.scheduleRepository = scheduleRepository;
+        this.queueRepository = queueRepository
     }
 
     /**
@@ -22,6 +21,7 @@ class ScheduleController {
      * @returns {unknown}
      */
     async createSchedule(body) {
+        // TODO esse método será um service (create-schedule)
         try {
             const { service_id, service_hour_id, schedule_date, client_name, client_contact, client_email, company_id } = body;
 
@@ -47,7 +47,10 @@ class ScheduleController {
                 schedule_date: schedule_date,
             }
 
-            const result = await this.scheduleRepository.createSchedule(schedule);
+            // Escuta a fila do rabbitMQ user/schedule_information
+            const data = await this.queueRepository.consumeQueue('user/schedule_information');
+
+            const result = await this.scheduleRepository.createSchedule(data);
             if (!result) {
                 const errorMessage = `Erro ao agendar o serviço. Tente novamente mais tarde`;
                 return { message: errorMessage, status: 500 };
@@ -101,7 +104,7 @@ class ScheduleController {
                 professional_name: service.professional_name
             }
 
-            const { data } = await axios.post(urlEmail, fields, config);
+            // const { data } = await axios.post(urlEmail, fields, config);
 
             return { message: `${data.message}`, status: 201 };
         } catch (error) {

@@ -2,7 +2,7 @@
 FROM node:16
 
 # Crie e defina o diretório de trabalho
-WORKDIR /app/backend/api/schedule-confirmation
+WORKDIR /app/backend/service/send-email
 
 # Copie os arquivos de dependência e o código fonte
 COPY package*.json ./
@@ -10,7 +10,7 @@ RUN npm install
 COPY . .
 
 # Exponha a porta do servidor
-EXPOSE 3004
+EXPOSE 3008
 
 # Comando para iniciar o servidor
 CMD ["npm", "start"]

@@ -2,7 +2,7 @@
 FROM node:16
 
 # Crie e defina o diretório de trabalho
-WORKDIR /app/backend/api/schedule
+WORKDIR /app/backend/api/client-schedule
 
 # Copie os arquivos de dependência e o código fonte
 COPY package*.json ./

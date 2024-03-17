@@ -32,11 +32,11 @@ services:
     networks:
       - mynetwork
 
-  schedule-confirmation:
+  send-email:
     build:
-      context: ./backend/api/schedule-confirmation
+      context: ./backend/service/send-email
     ports:
-      - "3004:3004"
+      - "3008:3008"
     networks:
       - mynetwork
 

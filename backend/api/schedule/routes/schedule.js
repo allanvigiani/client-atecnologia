@@ -5,7 +5,10 @@ import ScheduleController from '../controllers/schedule-controller.js';
 import ScheduleRepository from '../repositories/schedule-repository.js';
 const scheduleRepository = new ScheduleRepository();
 
-const scheduleController = new ScheduleController(scheduleRepository);
+import QueueRepository from '../repositories/queue-repository.js';
+const queueRepository = new QueueRepository();
+
+const scheduleController = new ScheduleController(scheduleRepository, queueRepository);
 
 const router = express.Router();
 
