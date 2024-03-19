@@ -1,7 +1,7 @@
-const connectRabbitMq = require('./queue-connection');
+import connectRabbitMq from './queue-connection.js';
 
 class QueueRepository {
- 
+
     async consumeQueue(queue) {
         const channel = await connectRabbitMq();
         console.log(" [*] Aguardando por mensagens em %s.", queue);

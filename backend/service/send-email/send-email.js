@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import nodemailer from 'nodemailer';
 import * as fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
-import SMTP_CONFIG from '../config/smtp.js';
+import SMTP_CONFIG from './config/smtp.js';
 
 dotenv.config();
 
@@ -67,7 +67,7 @@ async function sendEMail() {
                 service_id: service_id
             }
 
-            createEmailLog(logs);
+             createEmailLog(logs);
         }
 
     } catch (error) {

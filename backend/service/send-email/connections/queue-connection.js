@@ -1,4 +1,4 @@
-var amqp = require('amqplib');
+import amqp from 'amqplib';
 
 async function connectRabbitMQ() {
     try {
@@ -11,4 +11,4 @@ async function connectRabbitMQ() {
     }
 }
 
-export default connectRabbitMQ();
+export default connectRabbitMQ;
