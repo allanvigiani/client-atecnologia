@@ -12,7 +12,7 @@ async function createSchedule() {
         const channel = await connectRabbitMq();
 
         const data = consumeQueue('user/schedule_information');
-        
+
         const { company_id, user_id, service_id, service_hour_id, service_day_id, created_at } = data;
 
         const result = await scheduleRepository.createSchedule(data);
@@ -21,22 +21,23 @@ async function createSchedule() {
             return { message: errorMessage, status: 500 };
         }
 
-        // Puxar essas informações
-        
-        // company_id -> buscar company_name, company_email, company_address
-        // user_id -> buscar user_name, user_email
-        // service_id -> buscar service_name, service_hour_id, service_day_id, professional_name
+        const company = await scheduleRepository.getCompany(company_id);
+        const user = await scheduleRepository.getUser(user_id);
+        const service = await scheduleRepository.getService(service_id);
+        const hour = await scheduleRepository.getHourName(service_hour_id);
+        const day = await scheduleRepository.getDayName(service_day_id);
 
         const message = {
-            company_name,
-            company_email,
-            company_address,
-            client_name,
-            client_email,
-            service_id,
-            service_name,
-            service_hour,
-            professional_name
+            company_name: company.name,
+            company_email: company.email,
+            company_address: company.address,
+            client_name: user.name,
+            client_email: user.email,
+            service_id: service_id,
+            service_name: service.name,
+            professional_name: service.professional_name,
+            service_hour: hour.start_time,
+            service_day: day.description,
         };
 
         await channel.sendToQueue('client/send_email', Buffer.from(message));
