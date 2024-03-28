@@ -67,6 +67,18 @@ INSERT INTO service_days (id, description) VALUES
 (1, 'Segunda'), (2, 'Terça'), (3, 'Quarta'), (4, 'Quinta'),
 (5, 'Sexta'), (6, 'Sábado'), (7, 'Domingo');
 
+-- CreateTable: service_type
+CREATE TABLE IF NOT EXISTS "service_type" (
+    "id" SERIAL NOT NULL,
+    "type" TEXT NOT NULL,
+    CONSTRAINT "service_type_pkey" PRIMARY KEY ("id")
+);
+
+-- INSERTs for service_type
+INSERT INTO service_type (id, description) VALUES 
+(1, 'Automotivos'), (2, 'Beleza e Bem-estar'), (3, 'Construção'), (4, 'Educação'),
+(5, 'Gastronomia'), (6, 'Imobiliários'), (7, 'Lazer'), (8, 'Pet Care'), (9, 'Saúde'), (10, 'Outro');
+
 -- CreateTable: schedule
 CREATE TABLE IF NOT EXISTS "schedule" (
     "id" SERIAL NOT NULL,

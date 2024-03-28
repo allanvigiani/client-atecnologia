@@ -26,9 +26,17 @@ services:
 
   schedule:
     build:
-      context: ./backend/api/schedule
+      context: ./backend/api/service
     ports:
       - "3003:3003"
+    networks:
+      - mynetwork
+
+  create-schedule:
+    build:
+      context: ./backend/service/create-schedule
+    ports:
+      - "3009:3009"
     networks:
       - mynetwork
 
