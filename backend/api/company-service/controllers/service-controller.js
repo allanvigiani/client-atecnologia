@@ -8,8 +8,11 @@
  */
 class ServiceController {
 
-    constructor(serviceRepository) {
+    constructor(serviceRepository, hourRepository, dayRepository, typeRepository) {
         this.serviceRepository = serviceRepository;
+        this.hourRepository = hourRepository;
+        this.dayRepository = dayRepository;
+        this.typeRepository = typeRepository;
     }
 
     /**
@@ -124,67 +127,19 @@ class ServiceController {
     }
 
     /**
-     * Método responsável por criar o vínculo do serviço com a hora
-     * @date 05/03/2024 - 23:01:34
-     *
-     * @async
-     * @param {json} body
-     * @returns {json}
-     */
-    async createServiceHours(body) {
-        try {
-            const { start_time, end_time, service_id } = body;
-
-            if (!start_time || !end_time) {
-                const errorMessage = `Campos não recebidos.`;
-                return { message: errorMessage, status: 400 };
-            }
-
-            if (!service_id) {
-                const errorMessage = `ID do serviço não encontrado ou não foi passado.`;
-                return { message: errorMessage, status: 400 };
-            }
-
-            const verifyExistingService = await this.serviceRepository.getServiceInHour(start_time, end_time, service_id);
-
-            if (!verifyExistingService) {
-                const errorMessage = `Já existe hora para esse serviço.`;
-                return { message: errorMessage, status: 500 };
-            }
-
-            const serviceHour = {
-                start_time: start_time,
-                end_time: end_time,
-                service_id: service_id
-            }
-
-            const result = await this.serviceRepository.createServiceHour(serviceHour);
-            if (!result) {
-                const errorMessage = `Erro ao cadastrar horário serviço. Tente novamente mais tarde.`;
-                return { message: errorMessage, status: 500 };
-            }
-
-            return { message: `Horário do serviço cadastrado com sucesso!`, status: 201 };
-        } catch (error) {
-            return { message: error.message, status: 500 };
-        }
-    }
-
-    /**
-     * Método que busca as horas
+     * Lista todas as horas disponíveis
      * @date 05/03/2024 - 23:02:09
      *
      * @async
-     * @param {integer} serviceId
      * @param {integer} companyId
      * @returns {json}
      */
-    async getServiceHours(serviceId, companyId) {
+    async getHours(companyId) {
         try {
 
-            const result = await this.serviceRepository.getServiceHourById(serviceId, companyId);
+            const result = await this.hourRepository.getHours();
             if (!result) {
-                const errorMessage = `Erro ao buscar os horários do serviço. Tente novamente mais tarde`;
+                const errorMessage = `Erro ao buscar os horários. Tente novamente mais tarde`;
                 return { message: errorMessage, status: 500 };
             }
 
@@ -195,28 +150,46 @@ class ServiceController {
     }
 
     /**
-     * Deleta o vínculo de um serviço com hora
-     * @date 05/03/2024 - 23:09:07
+     * Lista todos os dias
+     * @date 05/03/2024 - 23:02:09
      *
      * @async
-     * @param {integer} serviceHourId
+     * @param {integer} companyId
      * @returns {json}
      */
-    async deleteServiceHour(serviceHourId) {
+    async getDays(companyId) {
         try {
 
-            if (!serviceHourId) {
-                const errorMessage = `ID do serviço.`;
-                return { message: errorMessage, status: 400 };
-            }
-
-            const result = await this.serviceRepository.deleteServiceHour(serviceHourId);
+            const result = await this.dayRepository.getDays();
             if (!result) {
-                const errorMessage = `Erro ao deletar serviço. Tente novamente mais tarde`;
+                const errorMessage = `Erro ao buscar os dias. Tente novamente mais tarde`;
                 return { message: errorMessage, status: 500 };
             }
 
-            return { message: `Serviço deletado com sucesso!`, status: 201 };
+            return { message: { result }, status: 201 };
+        } catch (error) {
+            return { message: error.message, status: 500 };
+        }
+    }
+
+    /**
+     * Lista todos os dias
+     * @date 05/03/2024 - 23:02:09
+     *
+     * @async
+     * @param {integer} companyId
+     * @returns {json}
+     */
+    async getTypes(companyId) {
+        try {
+
+            const result = await this.typeRepository.getTypes();
+            if (!result) {
+                const errorMessage = `Erro ao buscar os tipos de serviço. Tente novamente mais tarde`;
+                return { message: errorMessage, status: 500 };
+            }
+
+            return { message: { result }, status: 201 };
         } catch (error) {
             return { message: error.message, status: 500 };
         }

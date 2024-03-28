@@ -36,9 +36,12 @@ CREATE TABLE IF NOT EXISTS "services" (
     "name" TEXT NOT NULL,
     "professional_name" TEXT,
     "price" DOUBLE PRECISION,
+    "service_type_id" INTEGER NOT NULL,
+    "other_service_type" VARCHAR(120),
     "deleted_at" TIMESTAMP(3),
     CONSTRAINT "services_pkey" PRIMARY KEY ("id"),
     CONSTRAINT "services_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "company" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "services_type_id_fkey" FOREIGN KEY ("service_type_id") REFERENCES "service_type" ("id")
 );
 
 -- CreateTable: service_hours

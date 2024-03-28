@@ -1,7 +1,7 @@
 {
-  "name": "service",
+  "name": "company-service",
   "version": "1.0.0",
-  "main": "service.js",
+  "main": "company-service.js",
   "type": "module",
   "scripts": {
     "start": "nodemon"
