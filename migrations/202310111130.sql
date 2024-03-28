@@ -7,7 +7,6 @@ CREATE TABLE IF NOT EXISTS "company" (
     "name" TEXT,
     "password" TEXT NOT NULL,
     "address" VARCHAR(250),
-    "key_words" TEXT,
     "login attempts" INTEGER DEFAULT 0,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),

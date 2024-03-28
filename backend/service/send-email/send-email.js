@@ -74,7 +74,7 @@ async function sendEMail() {
         console.log('Erro ao enviar email -> ', error.message);
         throw new Error(error);
     } finally {
-        setTimeout(sendEMail, 60000);
+        setTimeout(sendEMail, 20000);
     }
 }
 
