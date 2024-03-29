@@ -31,9 +31,4 @@ router.get('/all-companies/:companyId?', async (req, res) => {
     res.status(result.status).json({ message: result.message });
 });
 
-router.get('/search', async (req, res) => {
-    const result = await companyController.searchCompaniesOrServices(req.body);
-    res.status(result.status).json({ message: result.message });
-});
-
 export default router;

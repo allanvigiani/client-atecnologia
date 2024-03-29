@@ -45,19 +45,6 @@ class CompanyRepository {
         }
     }
 
-    async getCompanyByUrl(companyUrl) {
-        try {
-            const conn = await database.generateConnection();
-            const result = await conn.query(`
-            SELECT id, name, email, url_name, address FROM company WHERE url_name = $1;
-        `, [`${companyUrl}`]);
-
-        return result.rows[0];
-        } catch (error) {
-            throw new Error(error);
-        }
-    }
-
     async getAllCompanies() {
         try {
             const conn = await database.generateConnection();
@@ -69,19 +56,18 @@ class CompanyRepository {
         }
     }
 
-    async getCompanyKeyWord(keyWord) {
+    
+    async updateCompanyInformation(body, companyId) {
         try {
-            const conn = await database.generateConnection();
-            const result = await conn.query(`SELECT company.name FROM company
-            LEFT JOIN services ON services.company_id = company.id
-                WHERE company.key_word ILIKE "%$1%" 
-                    OR company.name ILIKE "%$1%"
-                    OR services.name ILIKE "%$1%"
-                    AND company.deleted_at IS NULL
-                    AND services.deleted_at IS NULL;`, [`${keyWord}`]);
 
-        return result.rows;
-        
+            const { name, address } = body
+
+            const conn = await database.generateConnection();
+            const result = await conn.query(`
+            UPDATE company SET name = $1, address = $2, updated_at = NOW() WHERE id = $3 RETURNING id;
+        `, [`${name}`, `${address}`, companyId]);
+
+        return result.rows.length > 0 ? true : false;
         } catch (error) {
             throw new Error(error);
         }
