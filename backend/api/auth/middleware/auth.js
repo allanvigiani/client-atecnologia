@@ -41,7 +41,7 @@ const authenticateToken = async (req, res, next) => {
     req.user = decodedToken;
 
   } catch (error) {
-    return { message: error, status: 500 };
+    return { message: error.message, status: 500 };
   }
 
   return next();
