@@ -4,7 +4,6 @@ import dotenv from 'dotenv';
 import swaggerUi from 'swagger-ui-express';
 
 import service from './routes/service.js';
-import schedule from './routes/schedule.js';
 
 import { readFile } from 'fs/promises';
 const swaggerJsonDocs = JSON.parse(
@@ -22,7 +21,6 @@ app.use(express.json());
 app.use('/schedule-api-docs', swaggerUi.serve, swaggerUi.setup(swaggerJsonDocs));
 
 app.use('/service', service);
-app.use('/schedule', schedule);
 
 app.listen(process.env.PORT, () => {
     console.log(`Servidor está rodando na porta ${process.env.PORT}`);

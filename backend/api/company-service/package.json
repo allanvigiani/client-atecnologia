@@ -1,7 +1,7 @@
 {
-  "name": "schedule",
+  "name": "company-service",
   "version": "1.0.0",
-  "main": "schedule.js",
+  "main": "company-service.js",
   "type": "module",
   "scripts": {
     "start": "nodemon"

@@ -5,7 +5,16 @@ import ServiceController from '../controllers/service-controller.js';
 import ServiceRepository from '../repositories/service-repository.js';
 const serviceRepository = new ServiceRepository();
 
-const serviceController = new ServiceController(serviceRepository);
+import HourRepository from '../repositories/hour-repository.js';
+const hourRepository = new HourRepository();
+
+import DayRepository from '../repositories/day-repository.js';
+const dayRepository = new DayRepository();
+
+import TypeRepository from '../repositories/type-repository.js';
+const typeRepository = new TypeRepository();
+
+const serviceController = new ServiceController(serviceRepository, hourRepository, dayRepository, typeRepository);
 
 const router = express.Router();
 
@@ -34,18 +43,18 @@ router.get('/company-services/:companyId?', async (req, res) => {
     res.status(result.status).json({ message: result.message });
 });
 
-router.post('/service-hours', authenticateToken, async (req, res) => {
-    const result = await serviceController.createServiceHours(req.body);
+router.get('/service/hours', authenticateToken, async (req, res) => {
+    const result = await serviceController.getHours(req.user.payload.id);
     res.status(result.status).json({ message: result.message });
 });
 
-router.get('/service-hours/:serviceId', authenticateToken, async (req, res) => {
-    const result = await serviceController.getServiceHours(req.params.serviceId, req.user.payload.id);
+router.get('/service/days', authenticateToken, async (req, res) => {
+    const result = await serviceController.getDays(req.user.payload.id);
     res.status(result.status).json({ message: result.message });
 });
 
-router.delete('/service-hours/:serviceHourId', authenticateToken, async (req, res) => {
-    const result = await serviceController.deleteServiceHour(req.params.serviceHourId);
+router.get('/service/types', authenticateToken, async (req, res) => {
+    const result = await serviceController.getTypes(req.user.payload.id);
     res.status(result.status).json({ message: result.message });
 });
 

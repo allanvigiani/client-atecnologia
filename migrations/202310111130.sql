@@ -36,9 +36,14 @@ CREATE TABLE IF NOT EXISTS "services" (
     "name" TEXT NOT NULL,
     "professional_name" TEXT,
     "price" DOUBLE PRECISION,
+    "service_type_id" INTEGER NOT NULL,
+    "other_service_type" VARCHAR(120),
+    "service_hours_id" TEXT,
+    "service_days_id" TEXT,
     "deleted_at" TIMESTAMP(3),
     CONSTRAINT "services_pkey" PRIMARY KEY ("id"),
     CONSTRAINT "services_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "company" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "services_type_id_fkey" FOREIGN KEY ("service_type_id") REFERENCES "service_type" ("id")
 );
 
 -- CreateTable: service_hours
@@ -66,6 +71,18 @@ CREATE TABLE IF NOT EXISTS "service_days" (
 INSERT INTO service_days (id, description) VALUES 
 (1, 'Segunda'), (2, 'Terça'), (3, 'Quarta'), (4, 'Quinta'),
 (5, 'Sexta'), (6, 'Sábado'), (7, 'Domingo');
+
+-- CreateTable: service_type
+CREATE TABLE IF NOT EXISTS "service_type" (
+    "id" SERIAL NOT NULL,
+    "type" TEXT NOT NULL,
+    CONSTRAINT "service_type_pkey" PRIMARY KEY ("id")
+);
+
+-- INSERTs for service_type
+INSERT INTO service_type (id, description) VALUES 
+(1, 'Automotivos'), (2, 'Beleza e Bem-estar'), (3, 'Construção'), (4, 'Educação'),
+(5, 'Gastronomia'), (6, 'Imobiliários'), (7, 'Lazer'), (8, 'Pet Care'), (9, 'Saúde'), (10, 'Outro');
 
 -- CreateTable: schedule
 CREATE TABLE IF NOT EXISTS "schedule" (
