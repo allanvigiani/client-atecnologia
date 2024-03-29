@@ -26,9 +26,9 @@ class ServiceController {
      */
     async createService(body, companyId) {
         try {
-            const { name, professional_name, price, times } = body;
+            const { name, professional_name, price, service_type_id, other_service_type, service_hours_id, service_days_id } = body;
 
-            if (!name || !price) {
+            if (!name || !price || !service_type_id || !service_hours_id || !service_days_id) {
                 const errorMessage = `Campos não recebidos.`;
                 return { message: errorMessage, status: 400 };
             }
@@ -45,6 +45,10 @@ class ServiceController {
                 professional_name: professional_name,
                 price: parseFloat(price),
                 company_id: companyId,
+                service_type_id: service_type_id,
+                other_service_type: other_service_type == '' ? null : other_service_type,
+                service_hours_id: JSON.stringify(service_hours_id),
+                service_days_id: JSON.stringify(service_days_id)
             }
 
             const result = await this.serviceRepository.createService(service);
@@ -52,18 +56,6 @@ class ServiceController {
                 const errorMessage = `Erro ao cadastrar serviço. Tente novamente mais tarde`;
                 return { message: errorMessage, status: 500 };
             }
-
-            const promises = times.map(async (e) => {
-                const hours = {
-                    start_time: e.start_time,
-                    end_time: e.end_time,
-                    service_id: result.id
-                };
-
-                return this.createServiceHours(hours);
-            });
-
-            await Promise.all(promises);
 
             return { id: { result }, message: `Serviço cadastrado com sucesso!`, status: 201 };
         } catch (error) {
@@ -86,12 +78,6 @@ class ServiceController {
             if (!serviceId || !companyId) {
                 const errorMessage = `ID do serviço ou da empresa não passado.`;
                 return { message: errorMessage, status: 400 };
-            }
-
-            const result = await this.serviceRepository.deleteServiceHour(serviceId);
-            if (!result) {
-                const errorMessage = `Erro ao deletar serviço. Tente novamente mais tarde`;
-                return { message: errorMessage, status: 500 };
             }
 
             await this.serviceRepository.deleteService(serviceId, companyId);
