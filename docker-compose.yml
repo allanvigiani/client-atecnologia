@@ -24,7 +24,7 @@ services:
     networks:
       - mynetwork
 
-  schedule:
+  company-service:
     build:
       context: ./backend/api/company-service
     ports:
@@ -32,19 +32,35 @@ services:
     networks:
       - mynetwork
 
-  create-schedule:
+  schedule:
     build:
-      context: ./backend/service/create-schedule
+      context: ./backend/api/schedule
     ports:
-      - "3009:3009"
+      - "3004:3004"
     networks:
       - mynetwork
 
-  send-email:
+  user:
+    build:
+      context: ./backend/api/user
+    ports:
+      - "3005:3005"
+    networks:
+      - mynetwork
+
+  service-create-schedule:
+    build:
+      context: ./backend/service/create-schedule
+    ports:
+      - "3006:3006"
+    networks:
+      - mynetwork
+
+  service-send-email:
     build:
       context: ./backend/service/send-email
     ports:
-      - "3008:3008"
+      - "3007:3007"
     networks:
       - mynetwork
 
