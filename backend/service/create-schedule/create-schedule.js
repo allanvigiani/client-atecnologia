@@ -1,6 +1,13 @@
 import connectRabbitMq from './connections/queue-connection.js';
 import dotenv from 'dotenv';
 import ScheduleRepository from './repositories/schedule-repository.js';
+import express from 'express';
+
+const app = express();
+
+app.listen(process.env.PORT, () => {
+    console.log(`Servidor está rodando na porta ${process.env.PORT}`);
+});
 
 dotenv.config();
 
@@ -47,7 +54,7 @@ async function createSchedule() {
     } catch (error) {
         return { message: error.message, status: 500 };
     } finally {
-
+        setTimeout(createSchedule, 2000);
     }
 }
 

@@ -5,6 +5,13 @@ import nodemailer from 'nodemailer';
 import * as fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 import SMTP_CONFIG from './config/smtp.js';
+import express from 'express';
+
+const app = express();
+
+app.listen(process.env.PORT, () => {
+    console.log(`Servidor está rodando na porta ${process.env.PORT}`);
+});
 
 dotenv.config();
 
