@@ -19,61 +19,69 @@ services:
       - RABBITMQ_DEFAULT_USER=user
       - RABBITMQ_DEFAULT_PASS=password
 
-  # auth:
-  #   build:
-  #     context: ./backend/api/auth
-  #   ports:
-  #     - "3001:3001"
-  #   networks:
-  #     - mynetwork
+  auth:
+    build:
+      context: ./backend/api/auth
+    ports:
+      - "3001:3001"
+    networks:
+      - mynetwork
 
-  # company:
-  #   build:
-  #     context: ./backend/api/company
-  #   ports:
-  #     - "3002:3002"
-  #   networks:
-  #     - mynetwork
+  company:
+    build:
+      context: ./backend/api/company
+    ports:
+      - "3002:3002"
+    networks:
+      - mynetwork
 
-  # company-service:
-  #   build:
-  #     context: ./backend/api/company-service
-  #   ports:
-  #     - "3003:3003"
-  #   networks:
-  #     - mynetwork
+  company-service:
+    build:
+      context: ./backend/api/company-service
+    ports:
+      - "3003:3003"
+    networks:
+      - mynetwork
 
-  # schedule:
-  #   build:
-  #     context: ./backend/api/schedule
-  #   ports:
-  #     - "3004:3004"
-  #   networks:
-  #     - mynetwork
+  schedule:
+    build:
+      context: ./backend/api/schedule
+    ports:
+      - "3004:3004"
+    networks:
+      - mynetwork
 
-  # user:
-  #   build:
-  #     context: ./backend/api/user
-  #   ports:
-  #     - "3005:3005"
-  #   networks:
-  #     - mynetwork
+  user:
+    build:
+      context: ./backend/api/user
+    ports:
+      - "3005:3005"
+    networks:
+      - mynetwork
 
-  # service-create-schedule:
-  #   build:
-  #     context: ./backend/service/create-schedule
-  #   ports:
-  #     - "3006:3006"
-  #   networks:
-  #     - mynetwork
+  user-auth:
+    build:
+      context: ./backend/api/user-auth
+    ports:
+      - "3008:3008"
+    networks:
+      - mynetwork
 
-  # service-send-email:
-  #   build:
-  #     context: ./backend/service/send-email
-  #   ports:
-  #     - "3007:3007"
-  #   networks:
-  #     - mynetwork
+  service-create-schedule:
+    build:
+      context: ./backend/service/create-schedule
+    ports:
+      - "3006:3006"
+    networks:
+      - mynetwork
+
+  service-send-email:
+    build:
+      context: ./backend/service/send-email
+    ports:
+      - "3007:3007"
+    networks:
+      - mynetwork
 
 networks:
   mynetwork:
