@@ -14,6 +14,18 @@ class TypeRepository {
         }
     }
 
+    async getTypesById(id) {
+        try {
+
+            const conn = await database.generateConnection();
+            const result = await conn.query(`SELECT id, type FROM service_type WHERE id = $1`, [`${id}`]);
+
+            return result.rows;
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
 }
 
 export default TypeRepository;

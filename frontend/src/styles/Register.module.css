@@ -225,3 +225,32 @@
     color: #ff0000;
     /* Cor do texto */
 }
+
+@media only screen and (max-width: 950px) {
+    .wrap__login {
+        width: 85%;
+    }
+}
+
+@media only screen and (max-width: 600px){
+    .main__login{
+        flex-direction: column;
+    }
+    .left__login > h1 {
+        display: none;
+    }
+
+    .left__login {
+        min-height: 20vh;
+    }
+
+    .left__image {
+        width: 6  0vw;
+    }
+
+    .right__login {
+        width: 100%;
+        height: auto;
+        min-height: 75vh;
+    }
+}

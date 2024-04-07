@@ -49,14 +49,12 @@ class CompanyController {
 
             const hash = await bcrypt.hash(password, this.saltRandsPassword);
 
-            const url_name = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
 
             const company = {
                 name: name,
                 email: email,
                 password: hash,
                 address: address,
-                url_name: url_name,
                 created_at: new Date(),
             }
 

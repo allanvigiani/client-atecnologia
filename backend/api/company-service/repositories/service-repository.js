@@ -76,12 +76,12 @@ class ServiceRepository {
             throw new Error(error);
         }
     }
-    
+
     async getAllServices(companyId) {
         try {
             const conn = await database.generateConnection();
             const result = await conn.query(`
-            SELECT * FROM services INNER JOIN service_hours ON services.id = service_hours.service_id WHERE company_id = $1 AND deleted_at IS NULL ORDER BY services.name, service_hours.start_time, service_hours.end_time ;
+            SELECT * FROM services WHERE company_id = $1 AND deleted_at IS NULL ORDER BY services.name ASC;
         `, [companyId]);
 
             return result.rows;
@@ -96,6 +96,23 @@ class ServiceRepository {
             const result = await conn.query(`
             UPDATE services SET deleted_at = NOW() WHERE id = $1 AND company_id = $2;
         `, [id, companyId]);
+
+            return result.rows;
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
+    async updateService(data) {
+        try {
+            const { id , name, professional_name, price, company_id, service_hours_id, service_days_id } = data;
+
+            const conn = await database.generateConnection();
+            const result = await conn.query(`
+            UPDATE services 
+            SET name = $3, professional_name = $4, price = $5, service_hours_id = ARRAY[$6], service_days_id = ARRAY[$7] 
+            WHERE id = $1 AND company_id = $2;
+          `, [id, company_id, name, professional_name, price, service_hours_id, service_days_id]);
 
             return result.rows;
         } catch (error) {

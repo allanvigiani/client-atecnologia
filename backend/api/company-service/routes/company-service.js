@@ -28,6 +28,11 @@ router.delete('/:serviceId', authenticateToken, async (req, res) => {
     res.status(result.status).json({ message: result.message });
 });
 
+router.put('/', authenticateToken, async (req, res) => {
+    const result = await serviceController.updateService(req.body, req.user.payload.id);
+    res.status(result.status).json({ message: result.message });
+});
+
 router.get('/:serviceId?', authenticateToken, async (req, res) => {
     const result = await serviceController.getServices(req.params.serviceId, req.user.payload.id);
     res.status(result.status).json({ message: result.message });
@@ -57,5 +62,21 @@ router.get('/service/types', authenticateToken, async (req, res) => {
     const result = await serviceController.getTypes(req.user.payload.id);
     res.status(result.status).json({ message: result.message });
 });
+
+router.get('/service/hours/:serviceId', authenticateToken, async (req, res) => {
+    const result = await serviceController.getHoursByCompany(req.params.serviceId, req.user.payload.id);
+    res.status(result.status).json({ message: result.message });
+});
+
+router.get('/service/days/:serviceId?', authenticateToken, async (req, res) => {
+    const result = await serviceController.getDaysByCompany(req.params.serviceId, req.user.payload.id);
+    res.status(result.status).json({ message: result.message });
+});
+
+router.get('/service/types/:typesId?', authenticateToken, async (req, res) => {
+    const result = await serviceController.getTypesById(req.params.typesId, req.user.payload.id);
+    res.status(result.status).json({ message: result.message });
+});
+
 
 export default router;

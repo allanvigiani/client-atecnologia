@@ -3,28 +3,33 @@ import styles from "@/styles/Schedule.module.css";
 import Layout from "../../components/Layout";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray, set } from "react-hook-form";
 import { deleteCookie, hasCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/router";
+import Select from 'react-select';
 import { RiDeleteBin2Line } from "react-icons/ri";
 
 export default function Schedule() {
   const router = useRouter();
-  const [serviceData, setServiceData] = useState([]);
-  const { register, handleSubmit, control, reset } = useForm();
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "times",
-  });
-  const [values, setValues] = useState({
-    name: "",
-    professional_name: "",
-    price: "",
-  });
-
+  const [companyId, setCompanyId] = useState('');
+  const [services, setServices] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [showDescriptionField, setShowDescriptionField] = useState(false);
+  const [serviceValue, setServiceValue] = useState('');
+  const [serviceDescription, setServiceDescription] = useState('');
+  const [professionalName, setProfessionalName] = useState('');
+  const [serviceName, setServiceName] = useState('');
+  const [price, setPrice] = useState('');
+  const [serviceId, setServiceId] = useState('');
+  const [serviceDay, setServiceDay] = useState([]);
+  const [serviceDayValue, setServiceDayValue] = useState([]);
+  const [serviceHour, setServiceHour] = useState([]);
+  const [serviceHourValue, setServiceHourValue] = useState([]);
+  const [serviceOptions, setServiceOptions] = useState([]);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [servicetypeId, setServicetypeId] = useState('');
+  const [serviceLabel, setServiceLabel] = useState('');
   useEffect(() => {
-    remove({ start_time: "", end_time: "" });
-    append({ start_time: "", end_time: "" });
     verifyUser();
   }, []);
 
@@ -32,7 +37,7 @@ export default function Schedule() {
     if (!hasCookie("user_auth_information")) {
       router.push("/login");
     } else {
-      fetchData();
+      await fetchData();
     }
   };
 
@@ -41,7 +46,7 @@ export default function Schedule() {
 
     try {
       const { data: serviceData } = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/service/`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -49,10 +54,178 @@ export default function Schedule() {
         }
       );
 
-      setServiceData(serviceData.message.result);
+      const { data: serviceDataHours } = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/service/hours/`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const { data: serviceDataDays } = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/service/days/`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const { data: serviceDatatypes } = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/service/types/`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setServiceOptions(serviceDatatypes.message.result);
+      setServiceDay(serviceDataDays.message.result);
+      setServiceHour(serviceDataHours.message.result);
+      setServices(serviceData.message.result);
     } catch (error) {
       console.error("Erro na solicitação GET:", error);
     }
+  };
+
+  const clearForm = async () => {
+    setServiceName('');
+    setProfessionalName('');
+    setPrice('');
+    setServiceValue('');
+    setServiceDescription('');
+    setServiceDayValue([]);
+    setServiceHourValue([]);
+    setShowModal(false);
+    setIsUpdating(false);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // SUBMIT FORM
+    try {
+
+      if (!hasCookie("user_auth_information")) {
+        router.push("/login");
+      }
+
+      const formData = {
+        name: serviceName,
+        professional_name: professionalName,
+        price: price,
+        service_type_id: serviceValue,
+        other_service_type: serviceDescription,
+        service_hours_id: serviceHourValue,
+        service_days_id: serviceDayValue
+      };
+
+      if (isUpdating) {
+        onUpdate(serviceId);
+        return;
+      }
+
+      const token = getCookie("user_auth_information");
+
+      const { data } = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const response = data.message;
+      toast.success(response);
+      clearForm();
+      handleCloseModal();
+    } catch (err) {
+      generateError(err.response?.data?.message);
+    }
+  };
+
+  const handleEditModal = async (service) => {
+    if (!hasCookie("user_auth_information")) {
+      router.push("/login");
+    }
+
+    try {
+      const token = getCookie("user_auth_information");
+      console.log(service);
+
+      const { data: servicetype } = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/service/types/${service.service_type_id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const { data: serviceHours } = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/service/hours/${service.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log(serviceHours.message.result);
+      
+      const { data: serviceDays } = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/service/days/${service.service_days_id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const { data: companyData } = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY}/company/`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log('service', service.service_days_id);
+
+      setCompanyId(companyData.message.id);
+      setServiceId(service.id)
+      setServiceName(service.name)
+      setServiceDescription(service.other_service_type)
+      setProfessionalName(service.professional_name)
+      setPrice(service.price)
+      setServiceOptions(servicetype.message.result);
+
+      setServicetypeId(servicetype.message.result[0].id);
+      setServiceLabel(servicetype.message.result[0].type);
+
+      // setShowDescriptionField(service.)      
+      setIsUpdating(true);
+      setShowModal(true);
+    } catch (err) {
+      generateError(err.response?.data?.message);
+    }
+  };
+
+  const handleShowModal = async (e) => {
+    e.preventDefault();
+    await verifyUser();
+    setIsUpdating(false);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = async () => {
+    await verifyUser();
+    setShowModal(false);
   };
 
   const formatarCampo = (e) => {
@@ -74,41 +247,6 @@ export default function Schedule() {
       position: "bottom-right",
     });
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    if (!hasCookie("user_auth_information")) {
-      router.push("/login");
-    }
-
-    try {
-      const token = getCookie("user_auth_information");
-
-      const { data } = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/service/`,
-        JSON.stringify(values),
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      const response = data.message;
-      toast.success(response);
-
-      await verifyUser();
-      reset({
-        name: "",
-        professional_name: "",
-        price: "",
-        times: [{ start_time: "", end_time: "" }],
-      });
-    } catch (err) {
-      generateError(err.response?.data?.message);
-    }
-  };
-
   const onDelete = async (itemId) => {
     if (!hasCookie("user_auth_information")) {
       router.push("/login");
@@ -118,7 +256,7 @@ export default function Schedule() {
       const token = getCookie("user_auth_information");
 
       const { data } = await axios.delete(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/service/${itemId}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/${itemId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -128,8 +266,41 @@ export default function Schedule() {
 
       const response = data.message;
       toast.success(response);
+      clearForm();
+    } catch (err) {
+      generateError(err.response?.data?.message);
+    }
+  };
 
-      await verifyUser();
+  const onUpdate = async (itemId) => {
+    try {
+      const token = getCookie("user_auth_information");
+      const formData = {
+        id: itemId,
+        company_id: companyId,
+        name: serviceName,
+        professional_name: professionalName,
+        price: price,
+        service_type_id: serviceValue,
+        other_service_type: serviceDescription,
+        service_hours_id: serviceHourValue,
+        service_days_id: serviceDayValue
+      };
+
+      const { data } = await axios.put(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const response = await data.message;
+      toast.success(response);
+      clearForm()
+      handleCloseModal();
     } catch (err) {
       generateError(err.response?.data?.message);
     }
@@ -138,39 +309,94 @@ export default function Schedule() {
   return (
     <Layout>
       <>
-        <div className={`${styles.main}`}>
-          <div className={`${styles.container}`}>
-            <div className={`${styles.title}`}>CADASTRAR SERVIÇO</div>
-            <form onSubmit={(e) => handleSubmit(onSubmit(e))}>
-              <div className={`${styles.service__details}`}>
+        <div className={styles.container}>
+          <div className={styles.form}>
+            <button onClick={handleShowModal} className={styles['form-button']}>Novo Serviço</button>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th className={styles['table-header']}>Serviços</th>
+                  <th className={styles['table-header']}>Profissional</th>
+                  <th className={styles['table-header']}>Editar</th>
+                  <th className={styles['table-header']}>Deletar</th>
+                </tr>
+              </thead>
+              <tbody>
+                {services.map((service, index) => (
+                  <tr key={index} className={styles['table-row']}>
+                    <td className={styles['table-data']}>{service.name}</td>
+                    <td className={styles['table-data']}>{service.professional_name}</td>
+                    <td className={styles['table-data']}>
+                      <button className={styles['table-button']}
+                        onClick={() => {
+                          handleEditModal(service);
+                        }}>
+                        Editar
+                      </button>
+                    </td>
+                    <span className={`${styles['btn-popup']}`}>
+                      <RiDeleteBin2Line
+                        onClick={() => {
+                          onDelete(service.id);
+                        }}
+                      ></RiDeleteBin2Line>
+                    </span>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        {showModal && (
+          <div className={styles.modal}>
+            <div className={styles['container-modal']}>
+              <form onSubmit={handleSubmit} className={styles['form-modal']}>
+                <span className={styles.close} onClick={handleCloseModal}>&times;</span>
+                <h2 className={`${styles.details}`}>{isUpdating ? 'Atualizar Serviço' : 'Adicionar Serviço'}</h2>
                 <div className={`${styles.input__box}`}>
-                  <span className={`${styles.details}`}>Serviço:</span>
+                  <span className={`${styles.details}`}>Nome do Serviço:</span>
                   <input
                     type="text"
-                    name="name"
-                    {...register("name")}
+                    name="service_name"
+                    value={serviceName}
+                    onChange={(e) => setServiceName(e.target.value)}
                     required
-                    onChange={(e) => {
-                      setValues({
-                        ...values,
-                        name: e.target.value,
-                      });
-                    }}
                   />
                 </div>
+                <div className={`${styles.input__box}`}>
+                  <span className={`${styles.details}`}>Serviço:</span>
+                  <Select
+                    name="serviceValue"
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                    options={serviceOptions && Array.isArray(serviceOptions) ? serviceOptions.map(option => ({
+                      value: option.id,
+                      label: option.type
+                    })) : []}
+                    defaultValue={isUpdating ? { value: servicetypeId, label: serviceLabel } : null}
+                    onChange={(selectedOption) => setServiceValue(selectedOption.value)}
+                  />
+                </div>
+                {showDescriptionField && (
+                  <div className={`${styles.input__box}`}>
+                    <span className={`${styles.details}`}>Descreva:</span>
+                    <textarea
+                      name="service_description"
+                      value={serviceDescription}
+                      onChange={(e) => setServiceDescription(e.target.value)}
+                      rows={2}
+                      cols={40}
+                    />
+                  </div>
+                )}
                 <div className={`${styles.input__box}`}>
                   <span className={`${styles.details}`}>Funcionário:</span>
                   <input
                     type="text"
                     name="professional_name"
-                    {...register("professional_name")}
+                    value={professionalName}
+                    onChange={(e) => setProfessionalName(e.target.value)}
                     required
-                    onChange={(e) => {
-                      setValues({
-                        ...values,
-                        professional_name: e.target.value,
-                      });
-                    }}
                   />
                 </div>
                 <div className={`${styles.input__box}`}>
@@ -178,134 +404,58 @@ export default function Schedule() {
                   <input
                     type="text"
                     name="price"
-                    {...register("price")}
-                    required
+                    value={price}
                     onChange={(e) => {
                       formatarCampo(e);
-                      setValues({
-                        ...values,
-                        price: e.target.value,
-                      });
+                      setPrice(e.target.value);
                     }}
+                    required
                     placeholder="Ex: 500"
                   />
                 </div>
-                <div className={`${styles.input__box}`}></div>
-                {fields.map((field, index) => (
-                  <div className={`${styles.dinamic__field}`} key={field.id}>
-                    <div className={`${styles.input__time}`}>
-                      <span>Hora Inicio:</span>
-                      <input
-                        type="time"
-                        name={`times[${index}].start_time`}
-                        {...register(`times.${index}.start_time`)}
-                        required
-                        onChange={(e) => {
-                          setValues((prevValues) => ({
-                            ...prevValues,
-                            times: [
-                              ...(prevValues.times || []),
-                              { start_time: e.target.value, end_time: "" },
-                            ],
-                          }));
-                        }}
-                        placeholder="08:00"
-                      />
-                      <span>Hora Fim:</span>
-                      <input
-                        type="time"
-                        name={`times.${index}.end_time`}
-                        {...register(`times.${index}.end_time`)}
-                        required
-                        onChange={(e) => {
-                          setValues((prevValues) => {
-                            const newTimes = [...(prevValues.times || [])];
-                            newTimes[index] = {
-                              ...newTimes[index],
-                              end_time: e.target.value,
-                            };
-                            return { ...prevValues, times: newTimes };
-                          });
-                        }}
-                        placeholder="17:00"
-                      />
-                      {index === fields.length - 1 ? (
-                        <button
-                          type="button"
-                          className={`${styles.btn__image}`}
-                          onClick={() =>
-                            append({ start_time: "", end_time: "" })
-                          }
-                        >
-                          <img
-                            src={`/images/adicionar.png`}
-                            alt="Adicionar"
-                            className={`${styles.small__image}`}
-                          />
-                        </button>
-                      ) : (
-                        <button
-                          type="button"
-                          className={`${styles.btn__image}`}
-                          onClick={() => remove(index)}
-                        >
-                          <img
-                            src={`/images/circulo-cruzado.png`}
-                            alt="Remover"
-                            className={`${styles.small__image}`}
-                          />
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className={`${styles.container__form__btn}`}>
-                <button type="submit" className={`${styles.right__form__btn}`}>
-                  Cadastrar serviço
+                <div className={`${styles.input__box}`}>
+                  <span className={`${styles.details}`}>Dia dos serviços:</span>
+                  <Select
+                    isMulti
+                    name="week_service"
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                    defaultValue={isUpdating ? { value: 1, label: 'Segunda' } : serviceDay ? serviceDay.map(option => ({
+                      value: option.id,
+                      label: option.description
+                    })) : []}
+                    options={serviceDay && Array.isArray(serviceDay) ? serviceDay.map(option => ({
+                      value: option.id,
+                      label: option.description
+                    })) : []}
+                    onChange={(serviceDay) => setServiceDayValue(serviceDay.map(option => option.value))} />
+                </div>
+                <div className={`${styles.input__box}`}>
+                  <span className={`${styles.details}`}>Hora dos serviços:</span>
+                  <Select
+                    isMulti
+                    name="hour_service"
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                    defaultValue={isUpdating ? serviceDayValue.map(id => ({ value: id , label: id})) : serviceHour.length > 0 ? serviceHour.map(option => ({
+                      value: option.id,
+                      label: option.start_time
+                    })) : []}
+                    options={serviceHour && Array.isArray(serviceHour) ? serviceHour.map(option => ({
+                      value: option.id,
+                      label: option.start_time
+                    })) : []}
+                    onChange={(serviceHour) => setServiceHourValue(serviceHour.map(option => option.value))}
+                  />
+                </div>
+                <button type="submit" className={styles['form-button-modal']}>
+                  {isUpdating ? 'Atualizar Serviço' : 'Adicionar Serviço'}
                 </button>
-              </div>
-            </form>
-            <ToastContainer />
-          </div>
-          <div className={`${styles.home__grid}`}>
-            <div className={`${styles.div__grid}`}>
-              {serviceData.length > 0 && (
-                <table>
-                  <thead className={`${styles.thead__grid}]`}>
-                    <tr className={`${styles.tr__grid}`}>
-                      <th>Serviço</th>
-                      <th>Funcionário</th>
-                      <th>Hora Início</th>
-                      <th>Hora Fim</th>
-                      <th>Ações</th>
-                    </tr>
-                  </thead>
-                  <tbody className={`${styles.tbody__grid}`}>
-                    {serviceData.map((item) => (
-                      <tr key={item.id}>
-                        <td>{item.name}</td>
-                        <td>{item.professional_name}</td>
-                        <td>{item.start_time.slice(0, 5)}</td>
-                        <td>{item.end_time.slice(0, 5)}</td>
-                        <td>
-                          <span className={`${styles.btn__popup}`}>
-                            <RiDeleteBin2Line
-                              onClick={() => {
-                                onDelete(item.id);
-                              }}
-                            ></RiDeleteBin2Line>
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
+              </form>
+              <ToastContainer />
             </div>
           </div>
-        </div>
+        )}
       </>
     </Layout>
   );
