@@ -2,7 +2,7 @@ import amqp from 'amqplib';
 
 async function connectRabbitMQ() {
     try {
-        const connection = await amqp.connect('amqp://user:password@localhost');
+        const connection = await amqp.connect('amqp://guest:guest@localhost');
         const channel = await connection.createChannel();
         return channel;
     } catch (error) {

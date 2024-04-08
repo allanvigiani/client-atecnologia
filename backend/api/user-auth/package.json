@@ -1,7 +1,7 @@
 {
   "name": "user-auth",
   "version": "1.0.0",
-  "main": "auth.js",
+  "main": "user-auth.js",
   "type": "module",
   "scripts": {
     "start": "nodemon",

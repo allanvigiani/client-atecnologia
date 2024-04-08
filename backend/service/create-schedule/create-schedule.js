@@ -1,38 +1,42 @@
-import connectRabbitMq from './connections/queue-connection.js';
 import dotenv from 'dotenv';
+dotenv.config(); // Carrega variáveis de ambiente
+
+import connectRabbitMq from './connections/queue-connection.js';
 import ScheduleRepository from './repositories/schedule-repository.js';
-
-const scheduleRepository = new ScheduleRepository();
-
 import express from 'express';
 
 const app = express();
+const scheduleRepository = new ScheduleRepository();
+
+// Estabelece a conexão com o RabbitMQ
+let channel;
+async function setupRabbitMQ() {
+    channel = await connectRabbitMq();
+    consumeQueue('user/schedule_information', createSchedule);
+}
+setupRabbitMQ();
 
 app.listen(process.env.PORT, () => {
     console.log(`Servidor está rodando na porta ${process.env.PORT}`);
 });
 
-dotenv.config();
-
-async function createSchedule() {
-
+async function createSchedule(msg) {
     try {
-
-        const channel = await connectRabbitMq();
-
-        const data = consumeQueue('user/schedule_information');
-
+                
+        const data = JSON.parse(msg.content.toString());
+        console.log(data)
         const { company_id, user_id, service_id, service_hour_id, service_day_id } = data;
-
         if (!company_id || !user_id || !service_id || !service_hour_id || !service_day_id) {
-            return { message: `Faltando parâmetros do agendamento do serviço!`};
+            throw new Error('Faltando parâmetros do agendamento do serviço');
         }
 
         const result = await scheduleRepository.createSchedule(data);
         if (!result) {
-            const errorMessage = `Erro ao agendar o serviço. Tente novamente mais tarde!`;
-            return { message: errorMessage};
+            throw new Error('Erro ao agendar o serviço. Tente novamente mais tarde');
         }
+
+        // Simulando a construção da mensagem para a próxima fila...
+        console.log("Serviço agendado com sucesso!");
 
         const company = await scheduleRepository.getCompany(company_id);
         const user = await scheduleRepository.getUser(user_id);
@@ -56,27 +60,25 @@ async function createSchedule() {
         await channel.sendToQueue('client/send_email', Buffer.from(message));
         console.log(" [x] Enviado '%s'", message);
 
-        return { message: `Serviço agendado com sucesso!`};
     } catch (error) {
-        return { message: error.message, status: 500 };
-    } finally {
-        setTimeout(createSchedule, 2000);
+        console.error("Erro:", error.message);
+        throw error; // Lança o erro para ser capturado na função consumeQueue
     }
 }
 
-async function consumeQueue(queue) {
-    const channel = await connectRabbitMq();
-    console.log(" [*] Aguardando por mensagens em %s.", queue);
-    channel.consume(queue, message => {
-        if (message !== null) {
-            console.log(" [x] Recebido '%s'", message.content.toString());
-            const msg = message.content;
+async function consumeQueue(queue, processMessage) {
+    console.log(`Aguardando por mensagens em ${queue}.`);
+    channel.consume(queue, async (message) => {
+        try {
+            if (message === null) {
+                console.log("Mensagem recebida nula, pulando...");
+                return;
+            }
+            await processMessage(message);
             channel.ack(message);
-            return msg;
-            // TODO mudar isso depois, aqui antes de validar e enviar o email eu apago do rabbitMQ, está ERRADO
-            // .ack e .nack
+        } catch (error) {
+            console.error("Erro ao processar mensagem:", error.message);
+            channel.nack(message, false, false); // Rejeita a mensagem sem reenfileirar
         }
     });
 }
-
-createSchedule();

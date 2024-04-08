@@ -1,6 +1,8 @@
+import dotenv from 'dotenv';
+dotenv.config(); // Carrega as variáveis de ambiente
+
 import connectRabbitMq from './connections/queue-connection.js';
 import ScheduleConfirmation from './database/schemas/SendEmail.js';
-import dotenv from 'dotenv';
 import nodemailer from 'nodemailer';
 import * as fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
@@ -12,8 +14,6 @@ const app = express();
 app.listen(process.env.PORT, () => {
     console.log(`Servidor está rodando na porta ${process.env.PORT}`);
 });
-
-dotenv.config();
 
 const SMTP_TRANSPORTER = nodemailer.createTransport({
     host: SMTP_CONFIG.host,
@@ -28,10 +28,19 @@ const SMTP_TRANSPORTER = nodemailer.createTransport({
     }
 });
 
-async function sendEMail() {
-    try {
-        const data = consumeQueue('client/send_email');
+let channel; // Canal do RabbitMQ
 
+// Estabelece a conexão com o RabbitMQ e configura o consumidor
+async function setupRabbitMQAndConsume() {
+    channel = await connectRabbitMq();
+    consumeQueue('client/send_email', processEmailMessage);
+}
+
+async function processEmailMessage(msg) {
+    try {
+        const data = JSON.parse(msg.content.toString());
+
+        // Destructure sua mensagem aqui
         const {
             company_name,
             company_email,
@@ -47,66 +56,55 @@ async function sendEMail() {
         const service_code = uuidv4();
 
         let templateHtml = fs.readFileSync('./confirmation-template.html').toString();
+        // Substituições no template
+        templateHtml = templateHtml.replace(/{{client_name}}/g, client_name)
+                                   .replace(/{{service_name}}/g, service_name)
+                                   .replace(/{{service_hour}}/g, service_hour)
+                                   .replace(/{{professional_name}}/g, professional_name)
+                                   .replace(/{{company_address}}/g, company_address)
+                                   .replace(/{{company_name}}/g, company_name)
+                                   .replace(/{{company_email}}/g, company_email)
+                                   .replace(/{{service_code}}/g, service_code);
 
-        templateHtml = templateHtml.replace('{{client_name}}', client_name);
-        templateHtml = templateHtml.replace('{{service_name}}', service_name);
-        templateHtml = templateHtml.replace('{{service_hour}}', service_hour);
-        templateHtml = templateHtml.replace('{{professional_name}}', professional_name);
-        templateHtml = templateHtml.replace('{{company_address}}', company_address);
-        templateHtml = templateHtml.replace('{{company_name}}', company_name);
-        templateHtml = templateHtml.replace('{{company_email}}', company_email);
-        templateHtml = templateHtml.replace('{{service_code}}', service_code);
-
-        const sendEmail = await SMTP_TRANSPORTER.sendMail({
+        await SMTP_TRANSPORTER.sendMail({
             subject: "Confirmação de agendamento!",
             from: `${company_email}`,
             to: client_email,
             html: templateHtml
         });
 
-        if (sendEmail) {
+        // Registrar no banco de dados após o envio do email
+        await createEmailLog({
+            service_code,
+            email_status: "Enviado",
+            client_name,
+            client_email,
+            service_id
+        });
 
-            const logs = {
-                service_code: service_code,
-                email_status: "Enviado",
-                client_name: client_name,
-                client_email: client_email,
-                service_id: service_id
-            }
-
-             createEmailLog(logs);
-        }
-
+        console.log("Email enviado com sucesso!");
     } catch (error) {
-        console.log('Erro ao enviar email -> ', error.message);
-        throw new Error(error);
-    } finally {
-        setTimeout(sendEMail, 20000);
+        console.error('Erro ao enviar email:', error.message);
     }
 }
 
 async function createEmailLog(logs) {
     try {
-        const log = ScheduleConfirmation.create(logs);
-        return log;
+        await ScheduleConfirmation.create(logs);
     } catch (error) {
-        throw new Error(error);
+        console.error('Erro ao criar log de email:', error.message);
     }
 }
 
-async function consumeQueue(queue) {
-    const channel = await connectRabbitMq();
-    console.log(" [*] Aguardando por mensagens em %s.", queue);
+async function consumeQueue(queue, processMessageFunc) {
+    console.log(`Aguardando por mensagens em ${queue}.`);
     channel.consume(queue, message => {
         if (message !== null) {
-            console.log(" [x] Recebido '%s'", message.content.toString());
-            const msg = message.content;
+            console.log("Recebido:", message.content.toString());
+            processMessageFunc(message);
             channel.ack(message);
-            return msg;
-            // TODO mudar isso depois, aqui antes de validar e enviar o email eu apago do rabbitMQ, está ERRADO
-            // .ack e .nack
         }
     });
 }
 
-sendEMail();
+setupRabbitMQAndConsume();
