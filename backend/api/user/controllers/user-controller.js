@@ -53,8 +53,8 @@ class UserController {
                 name: name,
                 email: email,
                 password: hash,
-                address: address,
-                contact_phone: contact_phone,
+                address: address ? address : null,
+                contact_phone: contact_phone ? contact_phone : null,
                 created_at: new Date(),
             }
 
