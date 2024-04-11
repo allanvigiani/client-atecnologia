@@ -42,6 +42,7 @@ class UserAuthController {
             }
 
             const passwordIsValid = await bcrypt.compare(password, user.password);
+
             if (!passwordIsValid) {
                 const errorMessage = `Email ou senha incorretos.`;
                 return { message: errorMessage, status: 400 };
@@ -74,6 +75,7 @@ class UserAuthController {
                 }
 
             }
+
             const id = user.id;
             const name = user.name;
             const payload = { id, name, email };
