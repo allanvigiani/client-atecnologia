@@ -10,7 +10,7 @@ class UserRepository {
             const conn = await database.generateConnection();
             
             const result = await conn.query(`
-                INSERT INTO user
+                INSERT INTO users
                     (name, email, password, address, contact_phone, created_at)
                     VALUES ($1, $2, $3, $4, $5, $6) RETURNING id;
             `, [`${name}`, `${email}`, `${password}`, address, contact_phone,  created_at]);
@@ -29,7 +29,7 @@ class UserRepository {
         try {
             const conn = await database.generateConnection();
             
-            const result = await conn.query(`SELECT * FROM public.user WHERE email = $1;`, [`${email}`]);
+            const result = await conn.query(`SELECT * FROM users WHERE email = $1;`, [`${email}`]);
 
             return result.rows.length == 0 ? true : false;
         } catch (error) {
@@ -43,7 +43,7 @@ class UserRepository {
             const conn = await database.generateConnection();
 
             const result = await conn.query(`
-            SELECT id, name, email, contact_phone, address FROM user WHERE id = $1;
+            SELECT id, name, email, contact_phone, address FROM users WHERE id = $1;
             `, [`${userId}`]);
 
             return result.rows[0];

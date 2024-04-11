@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS "company_sessions" (
     CONSTRAINT "company_sessions_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "company" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS "user" (
+CREATE TABLE IF NOT EXISTS "users" (
     "id" SERIAL NOT NULL,
     "email" TEXT NOT NULL,
     "name" TEXT,
@@ -44,8 +44,8 @@ CREATE TABLE IF NOT EXISTS "user" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX IF NOT EXISTS "user_id_key" ON "user"("id");
-CREATE UNIQUE INDEX IF NOT EXISTS "user_email_key" ON "user"("email");
+CREATE UNIQUE INDEX IF NOT EXISTS "user_id_key" ON "users"("id");
+CREATE UNIQUE INDEX IF NOT EXISTS "user_email_key" ON "users"("email");
 
 CREATE TABLE IF NOT EXISTS "user_sessions" (
     "id" SERIAL NOT NULL,
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS "user_sessions" (
     CONSTRAINT "user_sessions_pkey" PRIMARY KEY ("id")
 );
 
-ALTER TABLE "user_sessions" ADD CONSTRAINT "user_sessions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "user_sessions" ADD CONSTRAINT "user_sessions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- CreateTable: service_hours
 CREATE TABLE IF NOT EXISTS "service_hours" (
