@@ -8,11 +8,11 @@ class Database {
     async configureConnection() {
         if(!global.databaseConnection) {
             global.databaseConnection = new Pool({
-                user: process.env.DATABASE_USER,
-                host: process.env.DATABASE_HOST,
-                database: process.env.DATABASE_NAME,
-                password: process.env.DATABASE_PASSWORD,
-                port: process.env.DATABASE_PORT
+                user: process.env.POSTGRES_USER,
+                host: process.env.POSTGRES_HOST,
+                database: process.env.POSTGRES_NAME,
+                password: process.env.POSTGRES_PASSWORD,
+                port: process.env.POSTGRES_PORT
             });
         }
         return global.databaseConnection;
