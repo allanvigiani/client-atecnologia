@@ -10,7 +10,7 @@ class UserRepository {
             const conn = await database.generateConnection();
             
             const result = await conn.query(`
-                INSERT INTO public.user
+                INSERT INTO user
                     (name, email, password, address, contact_phone, created_at)
                     VALUES ($1, $2, $3, $4, $5, $6) RETURNING id;
             `, [`${name}`, `${email}`, `${password}`, address, contact_phone,  created_at]);
