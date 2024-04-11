@@ -12,7 +12,10 @@ class Database {
                 host: process.env.POSTGRES_HOST,
                 database: process.env.POSTGRES_NAME,
                 password: process.env.POSTGRES_PASSWORD,
-                port: process.env.POSTGRES_PORT
+                port: process.env.POSTGRES_PORT,
+                ssl: {
+                    rejectUnauthorized: process.env.POSTGRES_SSL
+                }
             });
         }
         return global.databaseConnection;
