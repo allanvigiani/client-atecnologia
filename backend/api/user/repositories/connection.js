@@ -7,14 +7,11 @@ dotenv.config();
 class Database {
     async configureConnection() {
         if(!global.databaseConnection) {
+            const connectionString = process.env.POSTGRES_URL;
             global.databaseConnection = new Pool({
-                user: process.env.POSTGRES_USER,
-                host: process.env.POSTGRES_HOST,
-                database: process.env.POSTGRES_NAME,
-                password: process.env.POSTGRES_PASSWORD,
-                port: process.env.POSTGRES_PORT,
+                connectionString,
                 ssl: {
-                    rejectUnauthorized: process.env.POSTGRES_SSL
+                    rejectUnauthorized: false // Atenção: Para produção, considere maneiras mais seguras de lidar com SSL.
                 }
             });
         }
