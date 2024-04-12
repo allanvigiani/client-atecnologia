@@ -8,7 +8,7 @@ class AuthRepository {
             const conn = await database.generateConnection();
             client = await conn.connect();
 
-            const result = await conn.query(`SELECT u.id, u.name, u.email, u.password FROM public.user u WHERE u.email = $1; `, [`${userEmail}`]);
+            const result = await conn.query(`SELECT u.id, u.name, u.email, u.password FROM users u WHERE u.email = $1; `, [`${userEmail}`]);
             client.release();
             return result.rows[0];
         } catch (error) {
