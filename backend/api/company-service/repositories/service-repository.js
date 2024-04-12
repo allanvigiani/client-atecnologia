@@ -102,14 +102,12 @@ class ServiceRepository {
         }
     }
 
-    async getAllServices(companyId) {
+    async getAllServices() {
         let client;
         try {
             const conn = await database.generateConnection();
             client = await conn.connect();
-            const result = await conn.query(`
-            SELECT * FROM services WHERE company_id = $1 AND deleted_at IS NULL ORDER BY services.name ASC;
-        `, [companyId]);
+            const result = await conn.query(`SELECT * FROM services WHERE deleted_at IS NULL ORDER BY services.name ASC;`);
             client.release();
             return result.rows;
         } catch (error) {

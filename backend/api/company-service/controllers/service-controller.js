@@ -140,7 +140,7 @@ class ServiceController {
             if (serviceId) {
                 result = await this.serviceRepository.getServiceById(serviceId, companyId);
             } else {
-                result = await this.serviceRepository.getAllServices(companyId);
+                result = await this.serviceRepository.getAllServices();
             }
 
             return { message: { result }, status: 200 };
