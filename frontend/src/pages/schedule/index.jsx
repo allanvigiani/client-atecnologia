@@ -118,8 +118,8 @@ export default function Schedule() {
         price: price,
         service_type_id: serviceValue,
         other_service_type: serviceDescription,
-        service_hours_id: serviceHourValue,
-        service_days_id: serviceDayValue
+        service_hours_id: serviceHourValue.length === 0 ? serviceHour : serviceHourValue,
+        service_days_id: serviceDayValue.length === 0 ? serviceDay : serviceDayValue
       };
 
       if (isUpdating) {
@@ -165,7 +165,7 @@ export default function Schedule() {
           },
         }
       );
-
+      
       const { data: serviceHours } = await axios.get(
         `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/service/hours/${service.id}`,
         {
@@ -175,10 +175,8 @@ export default function Schedule() {
         }
       );
 
-      console.log(serviceHours.message.result);
-      
       const { data: serviceDays } = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/service/days/${service.service_days_id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/service/days/${service.id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -195,8 +193,6 @@ export default function Schedule() {
         }
       );
 
-      console.log('service', service.service_days_id);
-
       setCompanyId(companyData.message.id);
       setServiceId(service.id)
       setServiceName(service.name)
@@ -204,7 +200,8 @@ export default function Schedule() {
       setProfessionalName(service.professional_name)
       setPrice(service.price)
       setServiceOptions(servicetype.message.result);
-
+      setServiceDay(serviceDays.message.result);
+      setServiceHour(serviceHours.message.result);
       setServicetypeId(servicetype.message.result[0].id);
       setServiceLabel(servicetype.message.result[0].type);
 
@@ -267,6 +264,7 @@ export default function Schedule() {
       const response = data.message;
       toast.success(response);
       clearForm();
+      verifyUser();
     } catch (err) {
       generateError(err.response?.data?.message);
     }
@@ -281,10 +279,10 @@ export default function Schedule() {
         name: serviceName,
         professional_name: professionalName,
         price: price,
-        service_type_id: serviceValue,
+        service_type_id: servicetypeId,
         other_service_type: serviceDescription,
-        service_hours_id: serviceHourValue,
-        service_days_id: serviceDayValue
+        service_hours_id: serviceHourValue.length === 0 ? serviceHour : serviceHourValue,
+        service_days_id: serviceDayValue.length === 0 ? serviceDay : serviceDayValue
       };
 
       const { data } = await axios.put(
@@ -420,7 +418,7 @@ export default function Schedule() {
                     name="week_service"
                     className="basic-multi-select"
                     classNamePrefix="select"
-                    defaultValue={isUpdating ? { value: 1, label: 'Segunda' } : serviceDay ? serviceDay.map(option => ({
+                    defaultValue={serviceDay ? serviceDay.map(option => ({
                       value: option.id,
                       label: option.description
                     })) : []}
@@ -437,7 +435,7 @@ export default function Schedule() {
                     name="hour_service"
                     className="basic-multi-select"
                     classNamePrefix="select"
-                    defaultValue={isUpdating ? serviceDayValue.map(id => ({ value: id , label: id})) : serviceHour.length > 0 ? serviceHour.map(option => ({
+                    defaultValue={serviceHour.length > 0 ? serviceHour.map(option => ({
                       value: option.id,
                       label: option.start_time
                     })) : []}

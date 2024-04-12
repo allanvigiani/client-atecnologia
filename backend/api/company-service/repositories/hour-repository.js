@@ -27,14 +27,8 @@ class HourRepository {
             client = await conn.connect();
             const result = await conn.query
                 (`
-                    SELECT sh.id, sh.start_time FROM 
-                    FROM company c 
-                    INNER JOIN services s ON s.company_id = c.id 
-                    INNER JOIN service_hours sh ON sh.id = s.service_hours_id 
-                    WHERE s.deleted_at IS NULL 
-                    AND s.id = $1
-                    AND c.id = $2`,
-                    [`${serviceId}, ${companyId}`]
+                SELECT sh.id, sh.start_time 
+                FROM service_hours sh`
                 );
             client.release();
             return result.rows;

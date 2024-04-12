@@ -33,15 +33,15 @@ export default function Company() {
             setCompanyName(companyData.message.name);
             setCompanyInformation(companyData.message.email);
 
-            const { data: serviceData } = await axios.get(
-              `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/service/scheduled-services/${companyData.message.id}`,
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              }
-            );
-            setServiceData(serviceData.message);
+            // const { data: serviceData } = await axios.get(
+            //   `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/service/scheduled-services/${companyData.message.id}`,
+            //   {
+            //     headers: {
+            //       Authorization: `Bearer ${token}`,
+            //     },
+            //   }
+            // );
+            // setServiceData(serviceData.message);
           } catch (error) {
             console.error("Erro na solicitação GET:", error);
           }
@@ -82,42 +82,32 @@ export default function Company() {
             </a>
           </div>
         </section>
-        {serviceData && serviceData.length > 0 ? (
-          <div className={styles.home__grid}>
-            <div className={styles.div__grid}>
-              <table>
-                <thead className={styles.thead__grid}>
-                  <tr className={styles.tr__grid}>
-                    <th>Nome Cliente</th>
-                    <th>Funcionário</th>
-                    <th>Hora Início</th>
-                    <th>Hora Fim</th>
-                  </tr>
-                </thead>
-                <tbody className={styles.tbody__grid}>
-                  {serviceData.map(
-                    ({
-                      id,
-                      client_name,
-                      professional_name,
-                      start_time,
-                      end_time,
-                    }) => (
-                      <tr key={id}>
-                        <td>{client_name}</td>
-                        <td>{professional_name}</td>
-                        <td>{start_time?.slice(0, 5)}</td>
-                        <td>{end_time?.slice(0, 5)}</td>
-                      </tr>
-                    )
-                  )}
-                </tbody>
-              </table>
+        <div className={styles['container-middle']}>
+          <div className={styles['container-middle-grid']}>
+            <div className={styles['container-titles']}>
+              <h1>agendamento feitos whatever</h1>
+              <hr />
             </div>
+            <div className={styles['container-middle-grid-schedules']}>
+              <div className={styles['day-month-year']}>15<br />10/2024
+              </div>
+              <span className={styles['schedule-text']}>SERVIÇO SEI LA OQUE to testando até aonde vai isso aqui sem quebraraqiui ainda continua o testaaaaaaaaaquebour agora foi</span>
+            </div>
+            <hr />
+            <div className={styles['container-middle-grid-schedules']}>
+              <div className={styles['day-month-year']}>15<br />10/2024
+              </div>
+              <span className={styles['schedule-text']}>SERVIÇO SEI LA OQUE to testando até aonde vai isso aqui sem quebraraqiui ainda continua o testaaaaaaaaaquebour agora foi</span>
+            </div>
+            <hr />
+            <div className={styles['container-middle-grid-schedules']}>
+              <div className={styles['day-month-year']}>15<br />10/2024
+              </div>
+              <span className={styles['schedule-text']}>SERVIÇO SEI LA OQUE to testando até aonde vai isso aqui sem quebraraqiui ainda continua o testaaaaaaaaaquebour agora foi</span>
+            </div>
+            <hr />
           </div>
-        ) : (
-          ""
-        )}
+        </div>
       </>
     </Layout>
   );

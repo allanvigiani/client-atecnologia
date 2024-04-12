@@ -1,0 +1,220 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.form {
+    width: 80vw;
+    height: 80vh;
+    margin-top: 20px;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 20px;
+    overflow: auto;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.form-input {
+    width: 300px;
+    padding: 8px;
+    margin-bottom: 10px;
+}
+
+.form-button {
+    background-color: #007bff;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 10vw;
+    align-self: center;
+}
+
+.form-button:hover {
+    background-color: #0056b3;
+}
+
+.table {
+    margin-top: 2vw;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.table-header {
+    background-color: #f2f2f2;
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+.table-data {
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+.table-button {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Estilos do modal esquerdo */
+.modal {
+    display: block;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Metade da largura da tela */
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    overflow: auto;
+}
+
+/* Estilos do conteúdo do modal esquerdo */
+.modalContent {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 10px;
+    border: 1px solid #888;
+    width: 90%;
+    /* Largura do conteúdo do modal */
+    max-width: 400px;
+    border-radius: 5px;
+    position: relative;
+}
+
+.close {
+    color: #aaa;
+    position: absolute;
+    top: 11vh;
+    right: 1vw;
+    font-size: 35px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.container-modal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.form-modal {
+    width: 80%;
+    height: 80vh;
+    margin-top: 2vw;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 2%;
+    display: flex;
+    flex-direction: column;
+    gap: 5%;
+    align-items: center;
+    overflow-y: auto;
+    /* Enable vertical overflow scrolling within the form-modal */
+}
+
+.form-label-modal {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.form-input-modal {
+    width: calc(100% - 20px);
+    padding: 8px;
+    margin-bottom: 10px;
+}
+
+.inputField {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.form-button-modal {
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 10vw;
+    align-self: center;
+}
+
+.form-button-modal:hover {
+    background-color: #45a049;
+}
+
+.modal-label {
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+}
+
+form .input__box {
+    width: calc(100% / 2 - 20px);
+}
+
+.input__box .details {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.input__box input {
+    height: 40px;
+    width: 100%;
+    outline: none;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding-left: 15px;
+    font-size: 16px;
+    border-bottom-width: 2px;
+    transition: all 0.3 ease;
+
+}
+
+.btn-popup {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-popup svg {
+    font-size: 1.5em;
+    cursor: pointer;
+    color: #333;
+    transition: color 0.3s ease;
+}
+
+.btn-popup svg:hover {
+    color: #10a608;
+}

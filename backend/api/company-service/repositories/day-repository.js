@@ -27,14 +27,8 @@ class DayRepository {
             client = await conn.connect();
             const result = await conn.query
                 (`
-                    SELECT sd.id, sd.description FROM 
-                    FROM company c 
-                    INNER JOIN services s ON s.company_id = c.id 
-                    INNER join service_days sd on sd.id = s.service_days_id
-                    WHERE s.deleted_at IS NULL 
-                    AND s.id = $1
-                    AND c.id = $2`,
-                    [`${serviceId}, ${companyId}`]
+                    SELECT sd.id, sd.description
+                    FROM service_days sd`
                 );
             client.release();
             return result.rows;
