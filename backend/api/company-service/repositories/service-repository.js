@@ -67,9 +67,7 @@ class ServiceRepository {
             client = await conn.connect();
             const result = await conn.query(`
             SELECT * FROM services 
-            INNER JOIN service_hours ON services.id = service_hours.service_id 
-            LEFT JOIN schedule ON schedule.service_hour_id = service_hours.id
-            WHERE services.company_id = $1 AND services.deleted_at IS NULL AND schedule.id IS NULL;
+            WHERE services.company_id = $1 AND services.deleted_at IS NULL;
         `, [companyId]);
             client.release();
             return result.rows;
@@ -87,10 +85,9 @@ class ServiceRepository {
             const conn = await database.generateConnection();
             client = await conn.connect();
             const result = await conn.query(`
-            SELECT * FROM services 
-            INNER JOIN service_hours ON services.id = service_hours.service_id 
-            INNER JOIN schedule ON schedule.service_hour_id = service_hours.id
-            WHERE services.company_id = $1 AND services.deleted_at IS NULL;
+            SELECT * FROM company 
+            INNER JOIN services s on s.company_id = company.id
+            WHERE s.company_id = $1 AND s.deleted_at IS NULL;
         `, [companyId]);
             client.release();
             return result.rows;
