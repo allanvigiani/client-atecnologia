@@ -104,7 +104,7 @@ class ServiceRepository {
         try {
             const conn = await database.generateConnection();
             client = await conn.connect();
-            const result = await conn.query(`SELECT services.* , company.name, company.address comp FROM services 
+            const result = await conn.query(`SELECT services.id, services.name, services.price, services.professional_name , company.name, company.address comp FROM services 
             INNER JOIN company ON services.company_id = company.id
             WHERE deleted_at IS NULL ORDER BY services.name ASC;`);
             client.release();
