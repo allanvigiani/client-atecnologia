@@ -23,9 +23,9 @@ class ScheduleController {
      */
     async sendScheduleToQueue(body, userId) {
         try {
-            const { company_id, service_id, service_hour_id, service_day_id } = body;
+            const { company_id, service_id, service_hour_id, service_day_id, date } = body;
 
-            if (!service_id || !service_hour_id || !service_day_id) {
+            if (!service_id || !service_hour_id || !service_day_id || !date) {
                 const errorMessage = `Campos não recebidos.`;
                 return { message: errorMessage, status: 400 };
             }
@@ -46,6 +46,7 @@ class ScheduleController {
                 service_id: service_id,
                 service_hour_id: service_hour_id,
                 service_day_id: service_day_id,
+                date: date,
                 created_at: new Date()
             }
 

@@ -121,6 +121,7 @@ CREATE TABLE IF NOT EXISTS "schedule" (
     "service_id" INTEGER NOT NULL,
     "service_hour_id" INTEGER NOT NULL,
     "service_day_id" INTEGER NOT NULL,
+    "date" DATE NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "deleted_at" TIMESTAMP(3),
     CONSTRAINT "schedule_pkey" PRIMARY KEY ("id"),

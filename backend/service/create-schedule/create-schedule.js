@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-dotenv.config(); // Carrega variáveis de ambiente
+dotenv.config();
 
 import connectRabbitMq from './connections/queue-connection.js';
 import ScheduleRepository from './repositories/schedule-repository.js';
@@ -24,9 +24,9 @@ async function createSchedule(msg) {
     try {
                 
         const data = JSON.parse(msg.content.toString());
-        console.log(data)
-        const { company_id, user_id, service_id, service_hour_id, service_day_id } = data;
-        if (!company_id || !user_id || !service_id || !service_hour_id || !service_day_id) {
+
+        const { company_id, user_id, service_id, service_hour_id, service_day_id, date } = data;
+        if (!company_id || !user_id || !service_id || !service_hour_id || !service_day_id || !date) {
             throw new Error('Faltando parâmetros do agendamento do serviço');
         }
 
@@ -34,9 +34,6 @@ async function createSchedule(msg) {
         if (!result) {
             throw new Error('Erro ao agendar o serviço. Tente novamente mais tarde');
         }
-
-        // Simulando a construção da mensagem para a próxima fila...
-        console.log("Serviço agendado com sucesso!");
 
         const company = await scheduleRepository.getCompany(company_id);
         const user = await scheduleRepository.getUser(user_id);
@@ -55,6 +52,7 @@ async function createSchedule(msg) {
             professional_name: service.professional_name,
             service_hour: hour.start_time,
             service_day: day.description,
+            date: date
         };
 
         await channel.sendToQueue('client/send_email', Buffer.from(message));
