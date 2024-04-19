@@ -125,6 +125,30 @@ class UserAuthController {
         }
     }
 
+    /**
+     * Método repsonsável por retornar o id do usuário
+     * @date 05/03/2024 - 22:25:04
+     *
+     * @async
+     * @param {json} userData
+     * @returns {json}
+     */
+        async user(userData) {
+            try {
+                console(userData.payload.id);
+
+                return {
+                    message: {
+                        id: userData.payload.id
+                    },
+                    status: 200
+                };
+
+            } catch (error) {
+                return { message: error.message, status: 500 };
+            }
+        }
+
 }
 
 export default UserAuthController;
