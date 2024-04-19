@@ -135,8 +135,6 @@ class UserAuthController {
      */
         async user(userData) {
             try {
-                console(userData.payload.id);
-
                 return {
                     message: {
                         id: userData.payload.id
