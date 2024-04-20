@@ -34,7 +34,7 @@ class HourRepository {
         try {
 
             const conn = await database.generateConnection();
-            const result = await conn.query(`SELECT id, description FROM service_hours WHERE id = $1`, [`${hour}`]);
+            const result = await conn.query(`SELECT id, start_time FROM service_hours WHERE id = $1`, [`${hour}`]);
             return result.rows[0];
 
         } catch (error) {

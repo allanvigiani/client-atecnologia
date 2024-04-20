@@ -198,8 +198,9 @@ class ServiceController {
             const hoursToResponse = {};
 
             for (const element of hoursToArray) {
-                const hour = await this.dayRepository.getHour(element);
-                hoursToResponse[hour.id] = hour.description;
+                const hour = await this.hourRepository.getHour(element);
+                console.log(hour)
+                hoursToResponse[hour.id] = hour.start_time;
             }
 
             return { message: hoursToResponse, status: 201 };
