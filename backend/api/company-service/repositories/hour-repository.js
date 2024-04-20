@@ -19,23 +19,25 @@ class HourRepository {
         }
     }
 
-    async getHoursByCompany(serviceId, companyId) {
-        let client;
+    async getHoursByService(serviceId, companyId) {
+        try {
+            const conn = await database.generateConnection();
+            const result = await conn.query(`SELECT service_hours_id FROM services WHERE id = $1 AND company_id = $2`, [serviceId, companyId]);
+            return result.rows[0];
+
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
+    async getHour(hour) {
         try {
 
             const conn = await database.generateConnection();
-            client = await conn.connect();
-            const result = await conn.query
-                (`
-                SELECT sh.id, sh.start_time 
-                FROM service_hours sh`
-                );
-            client.release();
-            return result.rows;
+            const result = await conn.query(`SELECT id, description FROM service_hours WHERE id = $1`, [`${hour}`]);
+            return result.rows[0];
+
         } catch (error) {
-            if (client) {
-                client.release();
-            }
             throw new Error(error);
         }
     }

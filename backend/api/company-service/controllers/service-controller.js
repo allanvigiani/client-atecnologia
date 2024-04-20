@@ -181,21 +181,28 @@ class ServiceController {
      * @param {integer} dayId
      * @returns {json}   
       */
-    async getHoursByCompany(serviceId, companyId) {
+    async getHoursByService(serviceId, companyId) {
         try {
 
-            if (!serviceId || !companyId) {
-                const errorMessage = `ID da empresa ou do serviço não informado.`;
-                return { message: errorMessage, status: 400 };
-            }
+            const hours = await this.hourRepository.getHoursByService(serviceId, companyId);
 
-            const result = await this.hourRepository.getHoursByCompany(serviceId, companyId);
-            if (!result) {
-                const errorMessage = `Erro ao buscar os horários. Tente novamente mais tarde`;
+            if (!hours) {
+                const errorMessage = `Erro ao buscar os as horas do serviço. Tente novamente mais tarde!`;
                 return { message: errorMessage, status: 500 };
             }
 
-            return { message: { result }, status: 201 };
+            const hoursToArray = JSON.parse(hours.service_hours_id);
+
+            hoursToArray.sort((a, b) => a - b);
+
+            const hoursToResponse = {};
+
+            for (const element of hoursToArray) {
+                const hour = await this.dayRepository.getHour(element);
+                hoursToResponse[hour.id] = hour.description;
+            }
+
+            return { message: hoursToResponse, status: 201 };
         } catch (error) {
             return { message: error.message, status: 500 };
         }
