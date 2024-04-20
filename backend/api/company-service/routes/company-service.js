@@ -68,8 +68,9 @@ router.get('/service/hours/:serviceId', authenticateToken, async (req, res) => {
     res.status(result.status).json({ message: result.message });
 });
 
-router.get('/service/days', authenticateToken, async (req, res) => {
-    const result = await serviceController.getDaysByService(req.body.service_id, req.body.company_id);
+router.get('/service/days/:service_id/:company_id', authenticateToken, async (req, res) => {
+    const { service_id, company_id } = req.params;
+    const result = await serviceController.getDaysByService(service_id, company_id);
     res.status(result.status).json({ message: result.message });
 });
 
