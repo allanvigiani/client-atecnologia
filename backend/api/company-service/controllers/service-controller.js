@@ -189,7 +189,7 @@ class ServiceController {
                 return { message: errorMessage, status: 400 };
             }
 
-            const result = await this.hourRepository.getHoursByCompany(serviceId,companyId);
+            const result = await this.hourRepository.getHoursByCompany(serviceId, companyId);
             if (!result) {
                 const errorMessage = `Erro ao buscar os horários. Tente novamente mais tarde`;
                 return { message: errorMessage, status: 500 };
@@ -234,16 +234,28 @@ class ServiceController {
      * @returns {json}
      * 
     */
-    async getDaysByCompany(dayId) {
+    async getDaysByService(serviceId, companyId) {
         try {
 
-            const result = await this.dayRepository.getDaysByCompany(dayId);
-            if (!result) {
-                const errorMessage = `Erro ao buscar os dias. Tente novamente mais tarde`;
+            const days = await this.dayRepository.getDaysByService(serviceId, companyId);
+
+            if (!days) {
+                const errorMessage = `Erro ao buscar os dias do serviço. Tente novamente mais tarde!`;
                 return { message: errorMessage, status: 500 };
             }
 
-            return { message: { result }, status: 201 };
+            const daysToArray = JSON.parse(days.service_days_id);
+
+            daysToArray.sort((a, b) => a - b);
+
+            const daysToResponse = {};
+
+            for (const element of daysToArray) {
+                const day = await this.dayRepository.getDay(element);
+                daysToResponse[day.id] = day.description;
+            }
+
+            return { message: daysToResponse, status: 201 };
         } catch (error) {
             return { message: error.message, status: 500 };
         }
