@@ -131,3 +131,19 @@ CREATE TABLE IF NOT EXISTS "schedule" (
     CONSTRAINT "schedule_service_day_id_fkey" FOREIGN KEY ("service_day_id") REFERENCES "service_days" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS "schedule_status" (
+    "id" SERIAL NOT NULL,
+    "schedule_id" INTEGER NOT NULL,
+    "status_id" TEXT NOT NULL
+    CONSTRAINT "schedule_status_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "schedule_status_schedule_id_fkey" FOREIGN KEY ("schedule_id") REFERENCES "schedule" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS "status" (
+    "id" SERIAL NOT NULL,
+    "description" TEXT NOT NULL,
+    CONSTRAINT "status_pkey" PRIMARY KEY ("id")
+);
+
+INSERT INTO status (id, description) VALUES 
+(1, 'Aguardando'), (2, 'Aceito'), (3, 'Cancelado Empresa'), (4, 'Cancelado Usuário');

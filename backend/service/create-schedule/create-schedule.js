@@ -3,10 +3,12 @@ dotenv.config();
 
 import connectRabbitMq from './connections/queue-connection.js';
 import ScheduleRepository from './repositories/schedule-repository.js';
+import StatusRepository from '../create-schedule-status/repositories/status-repository.js';
 import express from 'express';
 
 const app = express();
 const scheduleRepository = new ScheduleRepository();
+const scheduleStatusRepository = new StatusRepository();
 
 // Estabelece a conexão com o RabbitMQ
 let channel;
@@ -22,7 +24,7 @@ app.listen(process.env.PORT, () => {
 
 async function createSchedule(msg) {
     try {
-                
+
         const data = JSON.parse(msg.content.toString());
 
         const { company_id, user_id, service_id, service_hour_id, service_day_id, date } = data;
@@ -54,6 +56,15 @@ async function createSchedule(msg) {
             service_day: day.description,
             date: date
         };
+
+        const statusData = {
+            id: result,
+        };
+
+        const resultStatus = await scheduleStatusRepository.createScheduleStatus(statusData);
+        if (!resultStatus) {
+            throw new Error('Erro ao criar o status do agendamento. Tente novamente mais tarde');
+        }
 
         await channel.sendToQueue('client/send_email', Buffer.from(message));
         console.log(" [x] Enviado '%s'", message);

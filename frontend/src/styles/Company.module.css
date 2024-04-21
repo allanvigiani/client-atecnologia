@@ -236,6 +236,15 @@
     opacity: 0.5;
 }
 
+.container-middle-grid-schedules img {
+    width: 5%;
+    height: 5%;
+    margin-top: 1vw;
+    margin-left: -20px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
 .schedule-text {
     font-size: large;
     font-weight: bold;

@@ -5,6 +5,7 @@ import axios from "axios";
 import { FaFacebook, FaInstagram } from "react-icons/fa";
 import { hasCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/router";
+import { toast } from "react-toastify";
 
 export default function Company() {
   const router = useRouter();
@@ -34,14 +35,16 @@ export default function Company() {
             setCompanyInformation(companyData.message.email);
 
             // const { data: serviceData } = await axios.get(
-            //   `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/service/scheduled-services/${companyData.message.id}`,
+            //   `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/scheduled-services/${companyData.message.id}`,
             //   {
             //     headers: {
             //       Authorization: `Bearer ${token}`,
             //     },
             //   }
             // );
-            // setServiceData(serviceData.message);
+
+            // console.log(serviceData.message.result);
+            // setServiceData(serviceData.message.result);
           } catch (error) {
             console.error("Erro na solicitação GET:", error);
           }
@@ -52,6 +55,41 @@ export default function Company() {
     };
     verifyUser();
   }, []);
+
+  const handleAcesss = async (status) => {
+    if (status) {
+      const token = getCookie("user_auth_information");
+
+      if (!token) {
+        router.push("/login");
+      }
+
+      const confirmed = window.confirm("Tem certeza que deseja aceitar esse agendamento?");
+      if (confirmed) {
+        try {
+
+          const { data: statusUpdate } = await axios.put(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/scheduled-services/${status}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (statusUpdate.message.result) {
+            toast.success(statusUpdate.message.result);
+          }
+        } catch (error) {
+          toast.error("Erro ao confirmar serviço!");
+        }
+      } else {
+        console.log('nao vai aceitar')
+      }
+    } if (!status) {
+      console.log('cancelar')
+    }
+  }
 
   return (
     <Layout>
@@ -82,6 +120,21 @@ export default function Company() {
             </a>
           </div>
         </section>
+        <div className={styles['container-middle']}>
+          <div className={styles['container-middle-grid']}>
+            <div className={styles['container-titles']}>
+              <h1>agendamento feitos whatever</h1>
+              <hr />
+            </div>
+            <div className={styles['container-middle-grid-schedules']}>
+              <div className={styles['day-month-year']}>15<br />10/2024
+              </div>
+              <span className={styles['schedule-text']}>SERVIÇO SEI LA OQUE to testando até aonde vai isso aqui sem quebraraqiui ainda continua o testaaaaaaaaaquebour agora foi</span>
+              <img src="/images/adicionar.png" alt="Imagem do serviço" onClick={() => handleAcesss(true)} />
+              <img src="/images/circulo-cruzado.png" alt="Imagem do serviço" onClick={() => handleAcesss(false)} />
+            </div>
+          </div>
+        </div>
         <div className={styles['container-middle']}>
           <div className={styles['container-middle-grid']}>
             <div className={styles['container-titles']}>

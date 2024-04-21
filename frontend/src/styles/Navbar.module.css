@@ -24,6 +24,11 @@
     padding: 0%;
 }
 
+.logo:hover{
+    transform: scale(1.1);
+    transition: 0.5s;
+}
+
 .navigation>a {
     position: relative;
     font-size: 1.1em;
