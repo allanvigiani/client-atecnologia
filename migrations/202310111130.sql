@@ -134,8 +134,8 @@ CREATE TABLE IF NOT EXISTS "schedule" (
 CREATE TABLE IF NOT EXISTS "schedule_status" (
     "id" SERIAL NOT NULL,
     "schedule_id" INTEGER NOT NULL,
-    "status_id" TEXT NOT NULL
-    CONSTRAINT "schedule_status_pkey" PRIMARY KEY ("id")
+    "status_id" TEXT NOT NULL,
+    CONSTRAINT "schedule_status_pkey" PRIMARY KEY ("id"),
     CONSTRAINT "schedule_status_schedule_id_fkey" FOREIGN KEY ("schedule_id") REFERENCES "schedule" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 

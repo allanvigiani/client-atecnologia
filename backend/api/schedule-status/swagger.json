@@ -1,0 +1,83 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "schedule status",
+        "description": "schedule status microservice documentation",
+        "version": "1.0.0",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+        "email": "vigianiallan@gmail.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        }
+    },
+    "host": "localhost:3004/",
+    "basePath": "/",
+    "paths": {
+        "/": {
+            "post": {
+                "tags": [
+                    "Schedule"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "description": "Cadastro de serviço",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RequestSchedule"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Serviço cadastrado com sucesso!"
+                    },
+                    "400": {
+                        "description": "Campos não recebidos"
+                    },
+                    "404": {
+                        "description": "Não existe um schedule para esse serviço."
+                    },
+                    "500": {
+                        "description": "Internal Server Error."
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "description": "Autenticação com JWT",
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        },
+        "schemas": {
+            "RequestSchedule": {
+                "type": "object",
+                "properties": {
+                    "service": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "service",
+                    "status"
+                ]
+            }
+        }
+    }
+}

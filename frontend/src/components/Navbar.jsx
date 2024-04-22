@@ -10,12 +10,23 @@ export default function Navbar() {
   const [companyName, setCompanyName] = useState("");
   const [isSubMenuVisible, setSubMenuVisible] = useState(false); // Novo estado para controlar a visibilidade do submenu
 
+  const storeCompanyData = (data) => {
+    localStorage.setItem("companyData", JSON.stringify(data));
+  };
+
+  const getCompanyData = () => {
+    const data = localStorage.getItem("companyData");
+    if (data) {
+      return JSON.parse(data);
+    }
+    return null;
+  };
+
   const verifyUser = async () => {
     if (!hasCookie("user_auth_information")) {
       router.push("/login");
-    } else {
-      await fetchData();
     }
+    if (getCompanyData()) await fetchData();
   };
 
   const fetchData = async () => {
@@ -32,6 +43,7 @@ export default function Navbar() {
       );
 
       setCompanyName(companyData.message.name);
+      storeCompanyData(companyData);
     } catch (error) {
       console.error("Erro na solicitação GET:", error);
     }
@@ -70,6 +82,7 @@ export default function Navbar() {
       );
       if (data.message.success) {
         deleteCookie("user_auth_information");
+        localStorage.removeItem("companyData");
         router.push("/");
       }
     } catch (error) {
@@ -78,7 +91,13 @@ export default function Navbar() {
   };
 
   useEffect(() => {
-    verifyUser();
+    const companyDataFromStorage = getCompanyData();
+
+    if (companyDataFromStorage) {
+      setCompanyName(companyDataFromStorage.message.name);
+    } else {
+      verifyUser();
+    }
 
     const handleScroll = () => {
       if (window.scrollY > 0) {
@@ -103,7 +122,7 @@ export default function Navbar() {
       <header
         className={`${styles.header} ${isNavbarVisible ? "" : styles.hidden}`}
       >
-        <img className={`${styles.logo}`} src="/images/logo_navbar-removebg-preview.png"/>
+        <img className={`${styles.logo}`} src="/images/logo_navbar-removebg-preview.png" />
         <nav className={`${styles.navigation}`}>
           <a href="/">Inicio</a>
           <a onClick={handleCadastroClick}>Cadastrar Serviços</a>

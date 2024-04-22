@@ -2,14 +2,14 @@
     "version": 2,
     "builds": [
         {
-            "src": "create-schedule-status.js",
+            "src": "schedule-status.js",
             "use": "@vercel/node"
         }
     ],
     "routes": [
         {
             "src": "/(.*)",
-            "dest": "create-schedule-status.js"
+            "dest": "schedule-status.js"
         }
     ]
 }

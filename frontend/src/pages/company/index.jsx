@@ -21,30 +21,32 @@ export default function Company() {
         const fetchData = async () => {
           const token = getCookie("user_auth_information");
 
+          const getCompanyData = () => {
+            const data = localStorage.getItem("companyData");
+            if (data) {
+              return JSON.parse(data);
+            }
+            return null;
+          };
+
           try {
-            const { data: companyData } = await axios.get(
-              `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY}/company/`,
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              }
-            );
 
-            setCompanyName(companyData.message.name);
-            setCompanyInformation(companyData.message.email);
+            if (getCompanyData()) {
+              const companyData = getCompanyData();
+              setCompanyName(companyData.message.name);
+              setCompanyInformation(companyData.message.email);
 
-            // const { data: serviceData } = await axios.get(
-            //   `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/scheduled-services/${companyData.message.id}`,
-            //   {
-            //     headers: {
-            //       Authorization: `Bearer ${token}`,
-            //     },
-            //   }
-            // );
+              const { data: serviceData } = await axios.get(
+                `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/scheduled-services/${companyData.message.id}`,
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
+              );
+              setServiceData(serviceData.message.result);
+            }
 
-            // console.log(serviceData.message.result);
-            // setServiceData(serviceData.message.result);
           } catch (error) {
             console.error("Erro na solicitação GET:", error);
           }

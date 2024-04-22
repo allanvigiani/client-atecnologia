@@ -3,7 +3,7 @@ dotenv.config();
 
 import connectRabbitMq from './connections/queue-connection.js';
 import ScheduleRepository from './repositories/schedule-repository.js';
-import StatusRepository from '../create-schedule-status/repositories/status-repository.js';
+import StatusRepository from '../../api/schedule-status/repositories/schedule-status-repository.js';
 import express from 'express';
 
 const app = express();
