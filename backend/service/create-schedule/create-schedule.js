@@ -3,12 +3,12 @@ dotenv.config();
 
 import connectRabbitMq from './connections/queue-connection.js';
 import ScheduleRepository from './repositories/schedule-repository.js';
-import StatusRepository from '../../api/schedule-status/repositories/schedule-status-repository.js';
+import ScheduleStatusRepository from './repositories/schedule-status-repository.js';
 import express from 'express';
 
 const app = express();
 const scheduleRepository = new ScheduleRepository();
-const scheduleStatusRepository = new StatusRepository();
+const scheduleStatusRepository = new ScheduleStatusRepository();
 
 // Estabelece a conexão com o RabbitMQ
 let channel;
