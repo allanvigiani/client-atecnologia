@@ -29,6 +29,15 @@ export default function Schedule() {
   const [isUpdating, setIsUpdating] = useState(false);
   const [servicetypeId, setServicetypeId] = useState('');
   const [serviceLabel, setServiceLabel] = useState('');
+
+  const getCompanyData = () => {
+    const data = localStorage.getItem("companyData");
+    if (data) {
+      return JSON.parse(data);
+    }
+    return null;
+  };
+
   useEffect(() => {
     verifyUser();
   }, []);
@@ -45,6 +54,9 @@ export default function Schedule() {
     const token = getCookie("user_auth_information");
 
     try {
+
+      const companyDataFromStorage = getCompanyData();
+
       const { data: serviceData } = await axios.get(
         `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/`,
         {
@@ -54,37 +66,37 @@ export default function Schedule() {
         }
       );
 
-      const { data: serviceDataHours } = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/service/hours/`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      // const { data: serviceDataHours } = await axios.get(
+      //   `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/hours/`,
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${token}`,
+      //     },
+      //   }
+      // );
 
-      const { data: serviceDataDays } = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/service/days/`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      // const { data: serviceDataDays } = await axios.get(
+      //   `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/days/`,
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${token}`,
+      //     },
+      //   }
+      // );
 
-      const { data: serviceDatatypes } = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/service/types/`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      // const { data: serviceDatatypes } = await axios.get(
+      //   `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/types/`,
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${token}`,
+      //     },
+      //   }
+      // );
 
-      setServiceOptions(serviceDatatypes.message.result);
-      setServiceDay(serviceDataDays.message.result);
-      setServiceHour(serviceDataHours.message.result);
-      setServices(serviceData.message.result);
+      // setServiceOptions(serviceDatatypes.message.result);
+      // setServiceDay(serviceDataDays.message.result);
+      // setServiceHour(serviceDataHours.message.result);
+      // setServices(serviceData.message.result);
     } catch (error) {
       console.error("Erro na solicitação GET:", error);
     }

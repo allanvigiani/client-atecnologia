@@ -33,18 +33,18 @@ export default function Company() {
 
             if (getCompanyData()) {
               const companyData = getCompanyData();
-              setCompanyName(companyData.message.name);
-              setCompanyInformation(companyData.message.email);
+              setCompanyName(companyData.name);
+              setCompanyInformation(companyData.email);
 
               const { data: serviceData } = await axios.get(
-                `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/scheduled-services/${companyData.message.id}`,
+                `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/scheduled-services/${companyData.id}`,
                 {
                   headers: {
                     Authorization: `Bearer ${token}`,
                   },
                 }
               );
-              setServiceData(serviceData.message.result);
+              setServiceData(serviceData.result);
             }
 
           } catch (error) {

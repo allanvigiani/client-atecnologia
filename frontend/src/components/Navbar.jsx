@@ -26,7 +26,7 @@ export default function Navbar() {
     if (!hasCookie("user_auth_information")) {
       router.push("/login");
     }
-    if (getCompanyData()) await fetchData();
+    await fetchData();
   };
 
   const fetchData = async () => {
@@ -42,8 +42,8 @@ export default function Navbar() {
         }
       );
 
-      setCompanyName(companyData.message.name);
-      storeCompanyData(companyData);
+      setCompanyName(companyData.name);
+      storeCompanyData(companyData.message);
     } catch (error) {
       console.error("Erro na solicitação GET:", error);
     }
@@ -94,7 +94,7 @@ export default function Navbar() {
     const companyDataFromStorage = getCompanyData();
 
     if (companyDataFromStorage) {
-      setCompanyName(companyDataFromStorage.message.name);
+      setCompanyName(companyDataFromStorage.name);
     } else {
       verifyUser();
     }

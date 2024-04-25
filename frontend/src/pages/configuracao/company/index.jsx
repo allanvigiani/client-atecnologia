@@ -16,6 +16,19 @@ export default function ConfiguracaoCompany() {
     const [companyEmail, setCompanyEmail] = useState('');
     const [companyAddress, setCompanyAddress] = useState('');
 
+    const storeCompanyData = (data) => {
+        localStorage.setItem("companyData", JSON.stringify(data));
+    };
+
+
+    const getCompanyData = () => {
+        const data = localStorage.getItem("companyData");
+        if (data) {
+            return JSON.parse(data);
+        }
+        return null;
+    };
+
     useEffect(() => {
         verifyUser();
     }, []);
@@ -31,21 +44,33 @@ export default function ConfiguracaoCompany() {
     const fetchData = async () => {
         const token = getCookie("user_auth_information");
 
-        try {
-            console.log(token);
-            const { data: companyData } = await axios.get(
-                `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY}/company/`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+        if (!token) {
+            router.push("/login");
+        }
 
-            setCompanyId(companyData.message.id);
-            setCompanyName(companyData.message.name);
-            setCompanyEmail(companyData.message.email);
-            setCompanyAddress(companyData.message.address);
+        try {
+
+            const companyData = getCompanyData();
+            if (!companyData) {
+                const { data: companyData } = await axios.get(
+                    `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY}/company/`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+
+                setCompanyId(companyData.id);
+                setCompanyName(companyData.name);
+                setCompanyEmail(companyData.email);
+                setCompanyAddress(companyData.address);
+                return;
+            }
+            setCompanyId(companyData.id);
+            setCompanyName(companyData.name);
+            setCompanyEmail(companyData.email);
+            setCompanyAddress(companyData.address);
         } catch (error) {
             console.error("Erro na solicitação GET:", error);
         }
@@ -84,7 +109,16 @@ export default function ConfiguracaoCompany() {
                 position: "bottom-right",
             });
 
-            verifyUser();
+            const { data: companyData } = await axios.get(
+                `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY}/company/`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            storeCompanyData(companyData);
         } catch (err) {
             generateError(err.response?.data?.message);
         }
