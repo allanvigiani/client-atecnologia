@@ -157,7 +157,7 @@ class ServiceController {
      * @param {integer} companyId
      * @returns {json}
      */
-    async getHours(companyId) {
+    async getHours() {
         try {
 
             const result = await this.hourRepository.getHours();
@@ -217,7 +217,7 @@ class ServiceController {
      * @param {integer} companyId
      * @returns {json}
      */
-    async getDays(companyId) {
+    async getDays() {
         try {
 
             const result = await this.dayRepository.getDays();
