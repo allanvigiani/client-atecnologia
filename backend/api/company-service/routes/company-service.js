@@ -48,17 +48,17 @@ router.get('/company-services/:companyId?', async (req, res) => {
     res.status(result.status).json({ message: result.message });
 });
 
-router.get('/hours', authenticateToken, async (req, res) => {
+router.get('/all-hours', authenticateToken, async (req, res) => {
     const result = await serviceController.getHours(req.user.payload.id);
     res.status(result.status).json({ message: result.message });
 });
 
-router.get('/days', authenticateToken, async (req, res) => {
+router.get('/all-days', authenticateToken, async (req, res) => {
     const result = await serviceController.getDays(req.user.payload.id);
     res.status(result.status).json({ message: result.message });
 });
 
-router.get('/types', authenticateToken, async (req, res) => {
+router.get('/all-types', authenticateToken, async (req, res) => {
     const result = await serviceController.getTypes(req.user.payload.id);
     res.status(result.status).json({ message: result.message });
 });
