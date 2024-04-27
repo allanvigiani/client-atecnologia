@@ -93,6 +93,21 @@ export default function Login() {
             toast.success(response);
 
             setCookie("user_auth_information", data.message.token);
+
+            const token = getCookie("user_auth_information");
+            const { data: companyData } = await axios.get(
+              `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY}/company/`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+      
+            if (companyData) {
+              setCookie("companyData", companyData.message);
+            }
+
             router.push("/");
           }
         } catch (err) {

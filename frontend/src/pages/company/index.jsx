@@ -12,6 +12,7 @@ export default function Company() {
   const [companyName, setCompanyName] = useState("");
   const [companyInformation, setCompanyInformation] = useState("");
   const [serviceData, setServiceData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const verifyUser = async () => {
@@ -20,35 +21,46 @@ export default function Company() {
       } else {
         const fetchData = async () => {
           const token = getCookie("user_auth_information");
+          const CompanyData = getCookie("companyData");
+          if (!CompanyData) {
+            const token = getCookie("user_auth_information");
 
-          const getCompanyData = () => {
-            const data = localStorage.getItem("companyData");
-            if (data) {
-              return JSON.parse(data);
-            }
-            return null;
-          };
-
-          try {
-
-            if (getCompanyData()) {
-              const companyData = getCompanyData();
-              setCompanyName(companyData.name);
-              setCompanyInformation(companyData.email);
-
-              const { data: serviceData } = await axios.get(
-                `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/scheduled-services/${companyData.id}`,
+            try {
+              const { data: companyData } = await axios.get(
+                `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY}/company/`,
                 {
                   headers: {
                     Authorization: `Bearer ${token}`,
                   },
                 }
               );
+
+              setCompanyName(companyData.name);
+            } catch (error) {
+              console.error("Erro na solicitação GET:", error);
+            }
+          }
+          const companyData = JSON.parse(CompanyData);
+          setCompanyName(companyData.name);
+          setCompanyInformation(companyData.address);
+
+          try {
+            const { data: serviceData } = await axios.get(
+              `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/scheduled-services/${companyData.id}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+            if (serviceData) {
               setServiceData(serviceData.result);
             }
 
           } catch (error) {
             console.error("Erro na solicitação GET:", error);
+          } finally {
+            setLoading(false);
           }
         };
 

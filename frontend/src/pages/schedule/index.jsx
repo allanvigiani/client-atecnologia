@@ -40,7 +40,13 @@ export default function Schedule() {
 
   useEffect(() => {
     verifyUser();
-  }, []);
+
+    if (showModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [showModal]);
 
   const verifyUser = async () => {
     if (!hasCookie("user_auth_information")) {
@@ -58,7 +64,7 @@ export default function Schedule() {
       const companyDataFromStorage = getCompanyData();
 
       const { data: serviceData } = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY_SERVICE}/`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -66,37 +72,37 @@ export default function Schedule() {
         }
       );
 
-      // const { data: serviceDataHours } = await axios.get(
-      //   `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/hours/`,
-      //   {
-      //     headers: {
-      //       Authorization: `Bearer ${token}`,
-      //     },
-      //   }
-      // );
+      const { data: serviceDataHours } = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY_SERVICE}/hours/all-hours`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-      // const { data: serviceDataDays } = await axios.get(
-      //   `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/days/`,
-      //   {
-      //     headers: {
-      //       Authorization: `Bearer ${token}`,
-      //     },
-      //   }
-      // );
+      const { data: serviceDataDays } = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY_SERVICE}/days/all-days`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-      // const { data: serviceDatatypes } = await axios.get(
-      //   `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/types/`,
-      //   {
-      //     headers: {
-      //       Authorization: `Bearer ${token}`,
-      //     },
-      //   }
-      // );
+      const { data: serviceDatatypes } = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY_SERVICE}/types/all-types`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-      // setServiceOptions(serviceDatatypes.message.result);
-      // setServiceDay(serviceDataDays.message.result);
-      // setServiceHour(serviceDataHours.message.result);
-      // setServices(serviceData.message.result);
+      setServiceOptions(serviceDatatypes.message.result);
+      setServiceDay(serviceDataDays.message.result);
+      setServiceHour(serviceDataHours.message.result);
+      setServices(serviceData.message.result);
     } catch (error) {
       console.error("Erro na solicitação GET:", error);
     }
@@ -117,7 +123,6 @@ export default function Schedule() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // SUBMIT FORM
     try {
 
       if (!hasCookie("user_auth_information")) {
@@ -167,7 +172,6 @@ export default function Schedule() {
 
     try {
       const token = getCookie("user_auth_information");
-      console.log(service);
 
       const { data: servicetype } = await axios.get(
         `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/service/types/${service.service_type_id}`,
@@ -177,7 +181,7 @@ export default function Schedule() {
           },
         }
       );
-      
+
       const { data: serviceHours } = await axios.get(
         `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/service/hours/${service.id}`,
         {

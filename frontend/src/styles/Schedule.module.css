@@ -77,9 +77,7 @@
     z-index: 1;
     left: 0;
     top: 0;
-    width: 95%;
-    /* Metade da largura da tela */
-    height: 100%;
+    width: 100%;
     background-color: rgba(0, 0, 0, 0.4);
     overflow: auto;
 }
@@ -91,7 +89,6 @@
     padding: 10px;
     border: 1px solid #888;
     width: 90%;
-    /* Largura do conteúdo do modal */
     max-width: 400px;
     border-radius: 5px;
     position: relative;
@@ -100,15 +97,15 @@
 .close {
     color: #aaa;
     position: absolute;
-    top: 11vh;
-    right: 1vw;
+    top: 1vw;
+    right: 5vw;
     font-size: 35px;
     font-weight: bold;
 }
 
 .close:hover,
 .close:focus {
-    color: black;
+    color: white;
     text-decoration: none;
     cursor: pointer;
 }
@@ -119,11 +116,12 @@
     align-items: center;
     justify-content: center;
     height: 100vh;
+    width: 100vw;
 }
 
 .form-modal {
     width: 80%;
-    height: 80vh;
+    height: 75vh;
     margin-top: 2vw;
     background-color: #ffffff;
     border: 1px solid #ccc;
@@ -131,11 +129,8 @@
     padding: 2%;
     display: flex;
     flex-direction: column;
-    gap: 5%;
-    margin-left: 10%;
     align-items: center;
     overflow-y: auto;
-    /* Enable vertical overflow scrolling within the form-modal */
 }
 
 .form-label-modal {

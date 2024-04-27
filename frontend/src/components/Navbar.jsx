@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from "react";
 import styles from "@/styles/Navbar.module.css";
 import { useRouter } from "next/router";
-import { getCookie, hasCookie, deleteCookie } from "cookies-next";
+import { getCookie, setCookie, hasCookie, deleteCookie } from "cookies-next";
 import axios from "axios";
 
 export default function Navbar() {
   const [isNavbarVisible, setNavbarVisible] = useState(true);
   const router = useRouter();
   const [companyName, setCompanyName] = useState("");
-  const [isSubMenuVisible, setSubMenuVisible] = useState(false); // Novo estado para controlar a visibilidade do submenu
-
-  const storeCompanyData = (data) => {
-    localStorage.setItem("companyData", JSON.stringify(data));
-  };
+  const [isSubMenuVisible, setSubMenuVisible] = useState(false);
 
   const getCompanyData = () => {
     const data = localStorage.getItem("companyData");
@@ -30,23 +26,30 @@ export default function Navbar() {
   };
 
   const fetchData = async () => {
-    const token = getCookie("user_auth_information");
+    const CompanyData = getCookie("companyData");
 
-    try {
-      const { data: companyData } = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY}/company/`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+    if (!CompanyData) {
+      const token = getCookie("user_auth_information");
 
-      setCompanyName(companyData.name);
-      storeCompanyData(companyData.message);
-    } catch (error) {
-      console.error("Erro na solicitação GET:", error);
+      try {
+        const { data: companyData } = await axios.get(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY}/company/`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        setCompanyName(companyData.name);
+        setCookie("companyData", companyData.message);
+
+      } catch (error) {
+        console.error("Erro na solicitação GET:", error);
+      }
     }
+    const companyData = JSON.parse(CompanyData);
+    setCompanyName(companyData.name);
   };
 
   const handleConfiguracaoClick = async (e) => {
@@ -82,7 +85,7 @@ export default function Navbar() {
       );
       if (data.message.success) {
         deleteCookie("user_auth_information");
-        localStorage.removeItem("companyData");
+        deleteCookie("companyData");
         router.push("/");
       }
     } catch (error) {

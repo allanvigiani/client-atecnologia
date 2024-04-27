@@ -4,7 +4,7 @@ import Layout from "../../../components/Layout";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 
-import { deleteCookie, hasCookie, getCookie } from "cookies-next";
+import { deleteCookie, setCookie ,hasCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import { set } from "react-hook-form";
 
@@ -15,19 +15,6 @@ export default function ConfiguracaoCompany() {
     const [companyName, setCompanyName] = useState('');
     const [companyEmail, setCompanyEmail] = useState('');
     const [companyAddress, setCompanyAddress] = useState('');
-
-    const storeCompanyData = (data) => {
-        localStorage.setItem("companyData", JSON.stringify(data));
-    };
-
-
-    const getCompanyData = () => {
-        const data = localStorage.getItem("companyData");
-        if (data) {
-            return JSON.parse(data);
-        }
-        return null;
-    };
 
     useEffect(() => {
         verifyUser();
@@ -50,23 +37,27 @@ export default function ConfiguracaoCompany() {
 
         try {
 
-            const companyData = getCompanyData();
-            if (!companyData) {
-                const { data: companyData } = await axios.get(
-                    `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY}/company/`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                );
+            const CompanyData = getCookie("companyData");
+            if (!CompanyData) {
+                const token = getCookie("user_auth_information");
 
-                setCompanyId(companyData.id);
-                setCompanyName(companyData.name);
-                setCompanyEmail(companyData.email);
-                setCompanyAddress(companyData.address);
-                return;
+                try {
+                    const { data: companyData } = await axios.get(
+                        `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY}/company/`,
+                        {
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                            },
+                        }
+                    );
+
+                    setCompanyName(companyData.name);
+                } catch (error) {
+                    console.error("Erro na solicitação GET:", error);
+                }
             }
+
+            const companyData = JSON.parse(CompanyData);
             setCompanyId(companyData.id);
             setCompanyName(companyData.name);
             setCompanyEmail(companyData.email);
@@ -118,7 +109,7 @@ export default function ConfiguracaoCompany() {
                 }
             );
 
-            storeCompanyData(companyData);
+            setCookie("companyData", companyData.message);
         } catch (err) {
             generateError(err.response?.data?.message);
         }
