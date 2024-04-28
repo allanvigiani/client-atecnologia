@@ -23,4 +23,10 @@ router.get('/all-days', authenticateToken, async (req, res) => {
     res.status(result.status).json({ message: result.message });
 });
 
+router.get('/:service_id/:company_id', authenticateToken, async (req, res) => {
+    const { service_id, company_id } = req.params;
+    const result = await serviceController.getDaysByService(service_id, company_id);
+    res.status(result.status).json({ message: result.message });
+});
+
 export default router;

@@ -48,22 +48,4 @@ router.get('/company-services/:companyId?', async (req, res) => {
     res.status(result.status).json({ message: result.message });
 });
 
-router.get('/service/hours/:service_id/:company_id', authenticateToken, async (req, res) => {
-    const { service_id, company_id } = req.params;
-    const result = await serviceController.getHoursByService(service_id, company_id);
-    res.status(result.status).json({ message: result.message });
-});
-
-router.get('/service/days/:service_id/:company_id', authenticateToken, async (req, res) => {
-    const { service_id, company_id } = req.params;
-    const result = await serviceController.getDaysByService(service_id, company_id);
-    res.status(result.status).json({ message: result.message });
-});
-
-router.get('/service/types/:typesId?', authenticateToken, async (req, res) => {
-    const result = await serviceController.getTypesById(req.params.typesId, req.user.payload.id);
-    res.status(result.status).json({ message: result.message });
-});
-
-
 export default router;

@@ -23,4 +23,9 @@ router.get('/all-types', authenticateToken, async (req, res) => {
     res.status(result.status).json({ message: result.message });
 });
 
+router.get('/:typesId?', authenticateToken, async (req, res) => {
+    const result = await serviceController.getTypesById(req.params.typesId, req.user.payload.id);
+    res.status(result.status).json({ message: result.message });
+});
+
 export default router;
