@@ -369,6 +369,29 @@ class ServiceController {
         }
     }
 
+    /**
+     * Busca de acordo com o parâmetro recebido
+     * @date 05/03/2024 - 23:11:05
+     *
+     * @async
+     * @param {string} text
+     * @returns {json}
+     */
+    async getResultBySearch(text) {
+        try {
+
+            const results = await this.serviceRepository.getResultsBySearch(text);
+            if (!results) {
+                const errorMessage = `Erro ao buscar dados da pesquisa. Tente novamente mais tarde!`;
+                return { message: errorMessage, status: 500 };
+            }
+
+            return { message: results, status: 201 };
+        } catch (error) {
+            return { message: error.message, status: 500 };
+        }
+    }
+
 }
 
 export default ServiceController;
