@@ -66,7 +66,8 @@ async function createSchedule(msg) {
             throw new Error('Erro ao criar o status do agendamento. Tente novamente mais tarde');
         }
 
-        await channel.sendToQueue('client/send_email', Buffer.from(message));
+        const bufferMessage = Buffer.from(typeof message === 'object' ? JSON.stringify(message) : message);
+        await channel.sendToQueue('client/send_email', bufferMessage);
         console.log(" [x] Enviado '%s'", message);
 
     } catch (error) {

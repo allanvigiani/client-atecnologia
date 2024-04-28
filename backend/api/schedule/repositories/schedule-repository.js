@@ -78,6 +78,27 @@ class ScheduleRepository {
         }
     }
 
+    async verifyRevogedToken(token) {
+        let client;
+        try {
+            const conn = await database.generateConnection();
+            client = await conn.connect();
+            const result = await conn.query(`
+            SELECT us.id, us.start_login, us.end_login, us.token FROM company_sessions us 
+                WHERE us.end_login IS NOT NULL AND us.token = $1;
+        `, [token]);
+
+            client.release();
+
+            return result.rows;
+        } catch (error) {
+            if (client) {
+                client.release();
+            }
+            throw new Error(error);
+        }
+    }
+
 }
 
 export default ScheduleRepository;

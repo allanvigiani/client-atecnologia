@@ -11,4 +11,4 @@ async function connectRabbitMQ() {
     }
 }
 
-export default connectRabbitMQ();
+export default connectRabbitMQ;

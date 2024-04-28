@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv';
 
-import AuthRepository from "../repositories/service-repository.js";
+import AuthRepository from "../repositories/schedule-repository.js";
 const authRepository = new AuthRepository();
 
 dotenv.config();
