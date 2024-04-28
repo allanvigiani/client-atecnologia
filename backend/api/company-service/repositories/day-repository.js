@@ -41,6 +41,19 @@ class DayRepository {
             throw new Error(error);
         }
     }
+
+    async scheduledDays(serviceId) {
+        try {
+
+            const conn = await database.generateConnection();
+            const result = await conn.query(`SELECT service_day_id FROM services
+            INNER JOIN schedule ON services.id = schedule.service_id WHERE services.id = $1`, [serviceId]);
+            return result.rows;
+
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
     
 }
 

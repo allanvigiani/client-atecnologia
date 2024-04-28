@@ -245,6 +245,12 @@ class ServiceController {
     async getDaysByService(serviceId, companyId) {
         try {
 
+            const scheduledDays = await this.dayRepository.scheduledDays(serviceId);
+
+            for (let i = 0; i < scheduledDays.length; i++) {
+                scheduledDays[i] = scheduledDays[i].service_day_id;
+            }
+
             const days = await this.dayRepository.getDaysByService(serviceId, companyId);
 
             if (!days) {
@@ -256,9 +262,11 @@ class ServiceController {
 
             daysToArray.sort((a, b) => a - b);
 
+            const filteredDays = daysToArray.filter(elemento => !scheduledDays.includes(elemento));
+
             const daysToResponse = {};
 
-            for (const element of daysToArray) {
+            for (const element of filteredDays) {
                 const day = await this.dayRepository.getDay(element);
                 daysToResponse[day.id] = day.description;
             }
