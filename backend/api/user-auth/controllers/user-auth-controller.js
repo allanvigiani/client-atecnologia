@@ -135,9 +135,13 @@ class UserAuthController {
      */
         async user(userData) {
             try {
+
+                const user = await this.userAuthRepository.getUserById(userData.payload.id);
+
                 return {
                     message: {
-                        id: userData.payload.id
+                        id: userData.payload.id,
+                        name: user.name
                     },
                     status: 200
                 };
