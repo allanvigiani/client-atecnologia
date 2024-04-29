@@ -181,8 +181,14 @@ class ServiceController {
      * @param {integer} dayId
      * @returns {json}   
       */
-    async getHoursByService(serviceId, companyId) {
+    async getHoursByService(serviceId, companyId, serviceDayId, date) {
         try {
+
+            const scheduledHours = await this.hourRepository.scheduledHours(serviceId, serviceDayId, date);
+
+            for (let i = 0; i < scheduledHours.length; i++) {
+                scheduledHours[i] = scheduledHours[i].service_hour_id;
+            }
 
             const hours = await this.hourRepository.getHoursByService(serviceId, companyId);
 
@@ -195,9 +201,11 @@ class ServiceController {
 
             hoursToArray.sort((a, b) => a - b);
 
+            const filteredDays = hoursToArray.filter(elemento => !scheduledHours.includes(elemento));
+
             const hoursToResponse = {};
 
-            for (const element of hoursToArray) {
+            for (const element of filteredDays) {
                 const hour = await this.hourRepository.getHour(element);
                 console.log(hour)
                 hoursToResponse[hour.id] = hour.start_time;
@@ -244,12 +252,6 @@ class ServiceController {
     */
     async getDaysByService(serviceId, companyId) {
         try {
-
-            const scheduledDays = await this.dayRepository.scheduledDays(serviceId);
-
-            for (let i = 0; i < scheduledDays.length; i++) {
-                scheduledDays[i] = scheduledDays[i].service_day_id;
-            }
 
             const days = await this.dayRepository.getDaysByService(serviceId, companyId);
 

@@ -23,9 +23,9 @@ router.get('/all-hours', authenticateToken, async (req, res) => {
     res.status(result.status).json({ message: result.message });
 });
 
-router.get('/:service_id/:company_id', authenticateToken, async (req, res) => {
-    const { service_id, company_id } = req.params;
-    const result = await serviceController.getHoursByService(service_id, company_id);
+router.get('/:service_id/:company_id/:service_day_id/:date', authenticateToken, async (req, res) => {
+    const { service_id, company_id, service_day_id, date } = req.params;
+    const result = await serviceController.getHoursByService(service_id, company_id, service_day_id, date);
     res.status(result.status).json({ message: result.message });
 });
 

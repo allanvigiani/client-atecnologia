@@ -42,6 +42,22 @@ class HourRepository {
         }
     }
 
+    async scheduledHours(serviceId, serviceDayId, date) {
+        try {
+
+            const conn = await database.generateConnection();
+            const result = await conn.query(`SELECT service_hour_id FROM services
+                INNER JOIN schedule ON services.id = schedule.service_id
+                WHERE schedule.service_id = $1
+                AND schedule.service_day_id = $2 
+                AND date = $3`, [serviceId, serviceDayId, date]);
+            return result.rows;
+
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
 }
 
 export default HourRepository;
