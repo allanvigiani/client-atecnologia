@@ -28,7 +28,7 @@ async function createSchedule(msg) {
         const data = JSON.parse(msg.content.toString());
 
         const { company_id, user_id, service_id, service_hour_id, service_day_id, date } = data;
-        if (!company_id || !user_id || !service_id || !service_hour_id || !service_day_id || !date) {
+        if (service_id == null || service_hour_id == null || service_day_id == null || date == null || company_id == null || user_id == null) {
             throw new Error('Faltando parâmetros do agendamento do serviço');
         }
 
