@@ -264,11 +264,9 @@ class ServiceController {
 
             daysToArray.sort((a, b) => a - b);
 
-            const filteredDays = daysToArray.filter(elemento => !scheduledDays.includes(elemento));
-
             const daysToResponse = {};
 
-            for (const element of filteredDays) {
+            for (const element of daysToArray) {
                 const day = await this.dayRepository.getDay(element);
                 daysToResponse[day.id] = day.description;
             }
