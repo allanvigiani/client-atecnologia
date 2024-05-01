@@ -30,14 +30,6 @@ export default function Schedule() {
   const [servicetypeId, setServicetypeId] = useState('');
   const [serviceLabel, setServiceLabel] = useState('');
 
-  const getCompanyData = () => {
-    const data = localStorage.getItem("companyData");
-    if (data) {
-      return JSON.parse(data);
-    }
-    return null;
-  };
-
   useEffect(() => {
     verifyUser();
 
@@ -60,8 +52,6 @@ export default function Schedule() {
     const token = getCookie("user_auth_information");
 
     try {
-
-      const companyDataFromStorage = getCompanyData();
 
       const { data: serviceData } = await axios.get(
         `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY_SERVICE}/`,
@@ -129,6 +119,20 @@ export default function Schedule() {
         router.push("/login");
       }
 
+      if (serviceHourValue.length === 0) {
+        serviceHour.map((hour) => {
+          serviceHourValue.push(hour.id);
+        }
+        )
+      }
+
+      if (serviceDayValue.length === 0) {
+        serviceDay.map((day) => {
+          serviceDayValue.push(day.id);
+        }
+        )
+      }
+
       const formData = {
         name: serviceName,
         professional_name: professionalName,
@@ -147,7 +151,7 @@ export default function Schedule() {
       const token = getCookie("user_auth_information");
 
       const { data } = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY_SERVICE}/`,
         formData,
         {
           headers: {
@@ -169,12 +173,14 @@ export default function Schedule() {
     if (!hasCookie("user_auth_information")) {
       router.push("/login");
     }
+    const id = parseInt(service.id);
+    const companyId = parseInt(service.company_id);
 
     try {
       const token = getCookie("user_auth_information");
 
       const { data: servicetype } = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/service/types/${service.service_type_id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY_SERVICE}/types/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -183,7 +189,7 @@ export default function Schedule() {
       );
 
       const { data: serviceHours } = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/service/hours/${service.id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY_SERVICE}/hours/${id}/${companyId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -192,7 +198,7 @@ export default function Schedule() {
       );
 
       const { data: serviceDays } = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/service/days/${service.id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY_SERVICE}/days/${id}/${companyId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -200,28 +206,47 @@ export default function Schedule() {
         }
       );
 
-      const { data: companyData } = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY}/company/`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const CompanyData = getCookie("companyData");
+      if (!CompanyData) {
+        const token = getCookie("user_auth_information");
 
-      setCompanyId(companyData.message.id);
+        const { data: companyData } = await axios.get(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY}/company/`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        setCompanyName(companyData.name);
+      }
+      const daysOnService = serviceDays.message;
+      const serviceDayEntries = Object.entries(daysOnService).map(([id, description]) => ({
+        id: parseInt(id),
+        description: description
+      }));
+
+      const hoursOnService = serviceHours.message;
+      const serviceHoursEntries = Object.entries(hoursOnService).map(([id, startTime]) => ({
+        id: parseInt(id),
+        start_time: startTime
+      }));
+
+      const companyData = JSON.parse(CompanyData);
+
+      setCompanyId(companyData.id);
       setServiceId(service.id)
       setServiceName(service.name)
       setServiceDescription(service.other_service_type)
       setProfessionalName(service.professional_name)
       setPrice(service.price)
       setServiceOptions(servicetype.message.result);
-      setServiceDay(serviceDays.message.result);
-      setServiceHour(serviceHours.message.result);
       setServicetypeId(servicetype.message.result[0].id);
       setServiceLabel(servicetype.message.result[0].type);
+      setServiceDay(serviceDayEntries);
+      setServiceHour(serviceHoursEntries);
 
-      // setShowDescriptionField(service.)      
       setIsUpdating(true);
       setShowModal(true);
     } catch (err) {
@@ -269,7 +294,7 @@ export default function Schedule() {
       const token = getCookie("user_auth_information");
 
       const { data } = await axios.delete(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/${itemId}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY_SERVICE}/${itemId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -302,7 +327,7 @@ export default function Schedule() {
       };
 
       const { data } = await axios.put(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY_SERVICE}/`,
         formData,
         {
           headers: {

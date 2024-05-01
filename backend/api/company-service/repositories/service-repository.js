@@ -143,10 +143,10 @@ class ServiceRepository {
             const conn = await database.generateConnection();
             client = await conn.connect();
             const result = await conn.query(`
-            UPDATE services 
-            SET name = $3, professional_name = $4, price = $5, service_hours_id = ARRAY[$6], service_days_id = ARRAY[$7] 
-            WHERE id = $1 AND company_id = $2;
-          `, [id, company_id, name, professional_name, price, service_hours_id, service_days_id]);
+                UPDATE services 
+                SET name = $3, professional_name = $4, price = $5, service_hours_id = $6, service_days_id = $7 
+                WHERE id = $1 AND company_id = $2;
+            `, [id, company_id, name, professional_name, price, service_hours_id, service_days_id]);
             client.release();
             return result.rows;
         } catch (error) {

@@ -133,7 +133,7 @@ export default function Navbar() {
             src="/images/profile.png"
             alt="user"
             className={styles["user-pic"]}
-            onClick={toggleSubMenu} // Adiciona o evento onClick para alternar a visibilidade do submenu
+            onClick={toggleSubMenu}
           />
           <div className={`${styles["sub-menu-wrap"]} ${isSubMenuVisible ? "" : styles.hiddenUser}`}>
             <div className={styles["sub-menu"]}>

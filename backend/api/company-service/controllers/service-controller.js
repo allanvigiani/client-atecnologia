@@ -199,7 +199,6 @@ class ServiceController {
 
             for (const element of hoursToArray) {
                 const hour = await this.hourRepository.getHour(element);
-                console.log(hour)
                 hoursToResponse[hour.id] = hour.start_time;
             }
 
