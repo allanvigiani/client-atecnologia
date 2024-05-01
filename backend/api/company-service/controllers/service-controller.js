@@ -181,8 +181,14 @@ class ServiceController {
      * @param {integer} dayId
      * @returns {json}   
       */
-    async getHoursByService(serviceId, companyId) {
+    async getHoursByService(serviceId, companyId, serviceDayId, date) {
         try {
+
+            const scheduledHours = await this.hourRepository.scheduledHours(serviceId, serviceDayId, date);
+
+            for (let i = 0; i < scheduledHours.length; i++) {
+                scheduledHours[i] = scheduledHours[i].service_hour_id;
+            }
 
             const hours = await this.hourRepository.getHoursByService(serviceId, companyId);
 
@@ -195,9 +201,11 @@ class ServiceController {
 
             hoursToArray.sort((a, b) => a - b);
 
+            const filteredDays = hoursToArray.filter(elemento => !scheduledHours.includes(elemento));
+
             const hoursToResponse = {};
 
-            for (const element of hoursToArray) {
+            for (const element of filteredDays) {
                 const hour = await this.hourRepository.getHour(element);
                 hoursToResponse[hour.id] = hour.start_time;
             }
@@ -363,6 +371,29 @@ class ServiceController {
             }
 
             return { message: services, status: 201 };
+        } catch (error) {
+            return { message: error.message, status: 500 };
+        }
+    }
+
+    /**
+     * Busca de acordo com o parâmetro recebido
+     * @date 05/03/2024 - 23:11:05
+     *
+     * @async
+     * @param {string} text
+     * @returns {json}
+     */
+    async getResultBySearch(text) {
+        try {
+
+            const results = await this.serviceRepository.getResultsBySearch(text);
+            if (!results) {
+                const errorMessage = `Erro ao buscar dados da pesquisa. Tente novamente mais tarde!`;
+                return { message: errorMessage, status: 500 };
+            }
+
+            return { message: results, status: 201 };
         } catch (error) {
             return { message: error.message, status: 500 };
         }

@@ -48,4 +48,9 @@ router.get('/company-services/:companyId?', async (req, res) => {
     res.status(result.status).json({ message: result.message });
 });
 
+router.get('/search/:text', async (req, res) => {
+    const result = await serviceController.getResultBySearch(req.params.text);
+    res.status(result.status).json({ message: result.message });
+});
+
 export default router;

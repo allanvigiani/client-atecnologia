@@ -25,7 +25,7 @@ class ScheduleController {
         try {
             const { company_id, service_id, service_hour_id, service_day_id, date } = body;
 
-            if (!service_id || !service_hour_id || !service_day_id || !date) {
+            if (service_id == null || service_hour_id == null || service_day_id == null || date == null || company_id == null) {
                 const errorMessage = `Campos não recebidos.`;
                 return { message: errorMessage, status: 400 };
             }
