@@ -12,10 +12,11 @@ const scheduleRepository = new ScheduleRepository();
 const scheduleStatusRepository = new ScheduleStatusRepository();
 const queueRepository = new QueueRepository();
 
-let channel;
 async function setupRabbitMQ() {
-    channel = await connectRabbitMq();
-    consumeQueue('user/schedule_information', createSchedule);
+    setInterval(async () => {
+        console.log(` [*] Lendo mensagens na fila user/schedule_information.`);
+        await consumeQueue('user/schedule_information', createSchedule);
+    }, 5000);
 }
 setupRabbitMQ();
 
@@ -58,7 +59,7 @@ async function createSchedule(message) {
         };
 
         const statusData = {
-            id: result,
+            id: result.id,
         };
 
         const resultStatus = await scheduleStatusRepository.createScheduleStatus(statusData);
@@ -68,7 +69,7 @@ async function createSchedule(message) {
 
         const bufferMessage = Buffer.from(typeof messageToSend === 'object' ? JSON.stringify(messageToSend) : messageToSend);
         await queueRepository.sendToQueue('client/send_email', bufferMessage);
-        console.log(" [x] Enviado '%s'", JSON.stringify(messageToSend));
+        console.log(" [x] Enviado para a fila client/send_email -> '%s'", JSON.stringify(messageToSend));
 
     } catch (error) {
         console.error("Erro:", error.message);
@@ -76,19 +77,24 @@ async function createSchedule(message) {
     }
 }
 
-async function consumeQueue(queue, processMessage) {
-    console.log(`Aguardando por mensagens em ${queue}.`);
-    queueRepository.consumeQueue(queue, async (message) => {
-        try {
-            if (message === null) {
-                console.log("Mensagem recebida nula, pulando...");
-                return;
+async function consumeQueue(queue) {
+
+    const channel = await connectRabbitMq();
+    try {
+        await channel.consume(queue, message => {
+            if (message !== null) {
+                console.log(" [x] Recebido '%s'", message.content.toString());
+                channel.ack(message);
+                createSchedule(message.content.toString());
             }
-            await processMessage(message.content.toString());
-            channel.ack(message);
-        } catch (error) {
-            console.error("Erro ao processar mensagem:", error.message);
-            channel.nack(message, false, false); // Rejeita a mensagem sem reenfileirar
+        }, { noAck: false });
+    } catch (error) {
+        console.error("Erro ao consumir mensagem:", error);
+        if (message) {
+            channel.nack(message, false, false);
         }
-    }, { noAck: false });
+        throw error;
+    } finally {
+        // await channel.close();
+    }
 }

@@ -50,9 +50,6 @@ class ScheduleController {
                 created_at: new Date()
             }
 
-            // Teste para ver o problema de consume da AWS
-            const receivedTesteMessage = await this.queueRepository.consumeFromQueue("teste");
-
             const queue = "user/schedule_information";
             await this.queueRepository.sendToQueue(queue, message);
 
