@@ -16,7 +16,7 @@ async function setupRabbitMQ() {
     setInterval(async () => {
         console.log(` [*] Lendo mensagens na fila user/schedule_information.`);
         await consumeQueue('user/schedule_information', createSchedule);
-    }, 5000);
+    }, 10000);
 }
 setupRabbitMQ();
 
@@ -62,12 +62,12 @@ async function createSchedule(message) {
             id: result.id,
         };
 
-        const resultStatus = await scheduleStatusRepository.createScheduleStatus(statusData);
-        if (!resultStatus) {
-            throw new Error('Erro ao criar o status do agendamento. Tente novamente mais tarde');
-        }
+        // const resultStatus = await scheduleStatusRepository.createScheduleStatus(statusData);
+        // if (!resultStatus) {
+        //     throw new Error('Erro ao criar o status do agendamento. Tente novamente mais tarde');
+        // }
 
-        const bufferMessage = Buffer.from(typeof messageToSend === 'object' ? JSON.stringify(messageToSend) : messageToSend);
+        const bufferMessage = JSON.stringify(messageToSend);
         await queueRepository.sendToQueue('client/send_email', bufferMessage);
         console.log(" [x] Enviado para a fila client/send_email -> '%s'", JSON.stringify(messageToSend));
 
