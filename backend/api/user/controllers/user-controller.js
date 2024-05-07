@@ -78,9 +78,29 @@ class UserController {
      * @param {json} body
      * @returns {unknown}
      */
-    async changeUserInformation(body) {
+    async changeUserInformation(body, companyId) {
         try {
-            return { message: `Dados alterados com sucesso!`, status: 201 };
+
+            const { name, contact_phone, address } = body;
+
+            if (!name && !contact_phone && !address) {
+                const errorMessage = `Nenhum dado recebido para atualização.`;
+                return { message: errorMessage, status: 400 };
+            }
+
+            if (!companyId) {
+                const errorMessage = `Não foi recebido o ID da empresa.`;
+                return { message: errorMessage, status: 400 };
+            }
+
+            const updated = this.userRepository.updateUserInformation(body, companyId);
+
+            if (!updated) {
+                const errorMessage = `Não foi possível atualizar os dados da empresa!`;
+                return { message: errorMessage, status: 400 };
+            }
+
+            return { message: `Dados atualizados com sucesso!`, status: 201 };
         } catch (error) {
             return { message: error.message, status: 500 };
         }
