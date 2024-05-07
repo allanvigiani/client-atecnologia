@@ -11,5 +11,11 @@
             "src": "/(.*)",
             "dest": "create-schedule.js"
         }
-    ]
+    ],
+    "functions": {
+        "create-schedule.js": {
+            "memory": 1024,
+            "maxDuration": 900
+        }
+    }
 }

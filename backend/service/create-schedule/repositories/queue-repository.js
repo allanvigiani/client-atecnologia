@@ -14,20 +14,26 @@ class QueueRepository {
         }
     }
 
-    async consumeQueue(queue, callback) {
+    async consumeFromQueue(queue) {
         const channel = await connectRabbitMq();
         try {
-            await channel.assertQueue(queue, { durable: true });
-            console.log(" [*] Aguardando mensagens em '%s'. Para sair pressione CTRL+C", queue);
-            channel.consume(queue, message => {
+            await channel.consume(queue, message => {
                 if (message !== null) {
                     console.log(" [x] Recebido '%s'", message.content.toString());
-                    callback(message.content.toString());
                     channel.ack(message);
                 }
+                console.log(message.content.toString());
+                return message.content.toString();
+
             }, { noAck: false });
         } catch (error) {
-            console.error("Erro ao consumir mensagens:", error);
+            console.error("Erro ao consumir mensagem:", error);
+            if (message) {
+                channel.nack(message, false, false);
+            }
+            throw error;
+        } finally {
+            await channel.close();
         }
     }
 

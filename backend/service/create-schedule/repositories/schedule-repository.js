@@ -50,7 +50,7 @@ class ScheduleRepository {
             const conn = await database.generateConnection();
             client = await conn.connect();
             const result = await conn.query(`
-                SELECT name, email FROM user WHERE id = $1;
+                SELECT name, email FROM users WHERE id = $1;
             `, [userId]);
             client.release();
             return result.rows[0];
@@ -69,7 +69,7 @@ class ScheduleRepository {
             const conn = await database.generateConnection();
             client = await conn.connect();
             const result = await conn.query(`
-                SELECT service.name, service.professional_name FROM services WHERE serivce.id = $1;
+                SELECT services.name, services.professional_name FROM services WHERE services.id = $1;
             `, [serviceId]);
             client.release();
             return result.rows[0];
