@@ -399,6 +399,30 @@ class ServiceController {
         }
     }
 
+    /**
+     * Método responsável por buscar um serviço pelo tipo
+     * @date 14/03/2024 - 22:59:57
+     *
+     * @async
+     * @param {integer} serviceType
+     * @returns {json}
+     */
+    async getServicesByType(serviceType) {
+        try {
+            let result;
+
+            if (serviceType != 0) {
+                result = await this.serviceRepository.getAllServicesByType(serviceType);
+            } else {
+                result = await this.serviceRepository.getAllServices();
+            }
+
+            return { message: { result }, status: 200 };
+        } catch (error) {
+            return { message: error.message, status: 500 };
+        }
+    }
+
 }
 
 export default ServiceController;

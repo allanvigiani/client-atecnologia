@@ -117,6 +117,29 @@ class ServiceRepository {
         }
     }
 
+    async getAllServicesByType(id_type) {
+        let client;
+        try {
+
+            const conn = await database.generateConnection();
+            client = await conn.connect();
+            const result = await conn.query(`
+                SELECT services.id as id_service, services.name 
+                FROM services 
+                INNER JOIN company ON services.company_id = company.id
+                INNER JOIN service_type ON services.service_type_id = service_type.id
+                WHERE service_type.id = $1 AND services.deleted_at IS NULL;
+            `, [id_type]);
+            client.release();
+            return result.rows;
+        } catch (error) {
+            if (client) {
+                client.release();
+            }
+            throw new Error(error);
+        }
+    }
+
     async deleteService(id, companyId) {
         let client;
         try {
