@@ -141,7 +141,10 @@ class UserAuthController {
                 return {
                     message: {
                         id: userData.payload.id,
-                        name: user.name
+                        name: user.name,
+                        address: user.address,
+                        email: user.email,
+                        contact_phone: user.contact_phone
                     },
                     status: 200
                 };
