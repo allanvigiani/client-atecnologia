@@ -21,7 +21,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use('/schedule-api-docs', swaggerUi.serve, swaggerUi.setup(swaggerJsonDocs));
+app.use('/company-service-api-docs', swaggerUi.serve, swaggerUi.setup(swaggerJsonDocs));
 
 app.use('/', service);
 app.use('/days', days);

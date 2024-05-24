@@ -1,22 +1,22 @@
 {
     "openapi": "3.1.0",
     "info": {
-        "title": "Schedule",
-        "description": "Schedule microservice documentation",
+        "title": "Company Services",
+        "description": "Company services management microservice documentation",
         "version": "1.0.0",
         "termsOfService": "http://swagger.io/terms/",
         "contact": {
-        "email": "vigianiallan@gmail.com"
+            "email": "agendai.suporte@gmail.com"
         },
         "license": {
             "name": "Apache 2.0",
             "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
         }
     },
-    "host": "localhost:3003/",
-    "basePath": "/",
+    "host": "localhost:3001/",
+    "basePath": "/services",
     "paths": {
-        "/service": {
+        "/services": {
             "post": {
                 "tags": [
                     "Service"
@@ -26,33 +26,115 @@
                         "bearerAuth": []
                     }
                 ],
-                "description": "Cadastro de serviço",
+                "description": "Create a new service",
                 "requestBody": {
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/RequestService"
+                                "$ref": "#/components/schemas/RequestCreateService"
                             }
                         }
                     }
                 },
                 "responses": {
                     "201": {
-                        "description": "Serviço cadastrado com sucesso!"
+                        "description": "Service created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ResponseService"
+                                }
+                            }
+                        }
                     },
                     "400": {
-                        "description": "Campos não recebidos"
-                    },
-                    "404": {
-                        "description": "Já existe um serviço cadastrada com esse nome."
+                        "description": "Invalid input"
                     },
                     "500": {
-                        "description": "Internal Server Error."
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Service"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "description": "Update an existing service",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RequestUpdateService"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Service updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ResponseService"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
                     }
                 }
             }
         },
-        "/service/{serviceId}": {
+        "/services/{serviceId}": {
+            "delete": {
+                "tags": [
+                    "Service"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "description": "Delete a service by ID",
+                "parameters": [
+                    {
+                        "name": "serviceId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "ID of the service to be deleted"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Service deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ResponseMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Service not found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
             "get": {
                 "tags": [
                     "Service"
@@ -62,33 +144,183 @@
                         "bearerAuth": []
                     }
                 ],
+                "description": "Get a service by ID",
                 "parameters": [
                     {
-                      "name": "serviceId",
-                      "in": "path",
-                      "description": "ID do serviço",
-                      "required": true,
-                      "type": "integer",
-                      "format": "int64"
+                        "name": "serviceId",
+                        "in": "path",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "ID of the service to retrieve"
                     }
                 ],
-                "description": "Serviços",
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Service retrieved successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/ResponseService"
-                                    }
+                                    "$ref": "#/components/schemas/ResponseService"
                                 }
                             }
                         }
                     },
+                    "404": {
+                        "description": "Service not found"
+                    },
                     "500": {
-                        "description": "Internal Server Error."
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/services/scheduled-services/{companyId}": {
+            "get": {
+                "tags": [
+                    "Service"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "description": "Get scheduled services by company ID",
+                "parameters": [
+                    {
+                        "name": "companyId",
+                        "in": "path",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "ID of the company to retrieve scheduled services for"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Scheduled services retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ResponseServiceList"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Company not found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/services/company-services/{companyId}": {
+            "get": {
+                "tags": [
+                    "Service"
+                ],
+                "description": "Get services by company ID",
+                "parameters": [
+                    {
+                        "name": "companyId",
+                        "in": "path",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "ID of the company to retrieve services for"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Services retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ResponseServiceList"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Company not found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/services/search/{text}": {
+            "get": {
+                "tags": [
+                    "Service"
+                ],
+                "description": "Search services by text",
+                "parameters": [
+                    {
+                        "name": "text",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Text to search for services"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Search results retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ResponseServiceList"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No services found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/services/services-types/{typeService}": {
+            "get": {
+                "tags": [
+                    "Service"
+                ],
+                "description": "Get services by type",
+                "parameters": [
+                    {
+                        "name": "typeService",
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Type of the service to retrieve"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Services by type retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ResponseServiceList"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No services found for this type"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
                     }
                 }
             }
@@ -97,31 +329,74 @@
     "components": {
         "securitySchemes": {
             "bearerAuth": {
-                "description": "Autenticação com JWT",
                 "type": "http",
                 "scheme": "bearer",
                 "bearerFormat": "JWT"
             }
         },
         "schemas": {
-            "RequestService": {
+            "RequestCreateService": {
                 "type": "object",
                 "properties": {
                     "name": {
                         "type": "string",
-                        "description": "Nome para cadastro de serviço",
-                        "example": "Serviço teste 1"
+                        "description": "Name of the service",
+                        "example": "Haircut"
                     },
-                    "professional_name": {
+                    "description": {
                         "type": "string",
-                        "description": "Nome para cadastro do professional que irá fazer o serviço",
-                        "example": "John Albert"
+                        "description": "Description of the service",
+                        "example": "A standard haircut"
                     },
                     "price": {
                         "type": "number",
-                        "formart": "float",
-                        "description": "Preço do serviço",
-                        "example": 299.90
+                        "description": "Price of the service",
+                        "example": 25.0
+                    },
+                    "duration": {
+                        "type": "integer",
+                        "description": "Duration of the service in minutes",
+                        "example": 30
+                    },
+                    "type": {
+                        "type": "string",
+                        "description": "Type of the service",
+                        "example": "Barber"
+                    }
+                }
+            },
+            "RequestUpdateService": {
+                "type": "object",
+                "properties": {
+                    "serviceId": {
+                        "type": "integer",
+                        "description": "ID of the service to be updated",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Name of the service",
+                        "example": "Haircut"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Description of the service",
+                        "example": "A standard haircut"
+                    },
+                    "price": {
+                        "type": "number",
+                        "description": "Price of the service",
+                        "example": 25.0
+                    },
+                    "duration": {
+                        "type": "integer",
+                        "description": "Duration of the service in minutes",
+                        "example": 30
+                    },
+                    "type": {
+                        "type": "string",
+                        "description": "Type of the service",
+                        "example": "Barber"
                     }
                 }
             },
@@ -130,32 +405,56 @@
                 "properties": {
                     "id": {
                         "type": "integer",
-                        "description": "ID do serviço",
+                        "description": "ID of the service",
                         "example": 1
-                    },                    
+                    },
                     "name": {
                         "type": "string",
-                        "description": "Nome da empresa cadastrada",
-                        "example": "Company LTDA."
+                        "description": "Name of the service",
+                        "example": "Haircut"
                     },
-                    "professional_name": {
+                    "description": {
                         "type": "string",
-                        "description": "Nome para cadastro do professional que irá fazer o serviço",
-                        "example": "John Albert"
+                        "description": "Description of the service",
+                        "example": "A standard haircut"
                     },
                     "price": {
                         "type": "number",
-                        "formart": "float",
-                        "description": "Preço do serviço",
-                        "example": 299.90
+                        "description": "Price of the service",
+                        "example": 25.0
                     },
-                    "copany_id": {
+                    "duration": {
                         "type": "integer",
-                        "description": "ID da empresa que possui o serviço",
-                        "example": 3
+                        "description": "Duration of the service in minutes",
+                        "example": 30
+                    },
+                    "type": {
+                        "type": "string",
+                        "description": "Type of the service",
+                        "example": "Barber"
+                    },
+                    "createdBy": {
+                        "type": "integer",
+                        "description": "ID of the user who created the service",
+                        "example": 1
                     }
                 }
-                
+            },
+            "ResponseServiceList": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/ResponseService"
+                }
+            },
+            "ResponseMessage": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "description": "Response message",
+                        "example": "Operation successful"
+                    }
+                }
             }
         }
     }
