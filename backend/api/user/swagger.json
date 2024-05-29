@@ -2,50 +2,89 @@
     "openapi": "3.1.0",
     "info": {
         "title": "User",
-        "description": "User microservice documentation",
+        "description": "User management microservice documentation",
         "version": "1.0.0",
         "termsOfService": "http://swagger.io/terms/",
         "contact": {
-        "email": "vigianiallan@gmail.com"
+            "email": "agendai.suporte@gmail.com"
         },
         "license": {
             "name": "Apache 2.0",
             "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
         }
     },
-    "host": "localhost:3002/",
-    "basePath": "/user",
+    "host": "localhost:3001/",
+    "basePath": "/users",
     "paths": {
-        "/user": {
+        "/users": {
             "post": {
                 "tags": [
                     "User"
                 ],
-                "description": "Cadastro do usuário",
+                "description": "Create a new user",
                 "requestBody": {
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/RequestUser"
+                                "$ref": "#/components/schemas/RequestCreateUser"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ResponseMessage"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "User"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "description": "Update user information",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RequestUpdateUser"
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "description": "Usuário cadastrado com sucesso!"
+                        "description": "User information updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ResponseMessage"
+                                }
+                            }
+                        }
                     },
                     "400": {
-                        "description": "Email não é válido ou Campos não recebidos"
-                    },
-                    "404": {
-                        "description": "Erro ao cadastrar usuário."
-                    },
-                    "422": {
-                        "drescription": "Já existe um usuário cadastrada com esse email"
+                        "description": "Invalid input"
                     },
                     "500": {
-                        "description": "Internal Server Error."
+                        "description": "Internal Server Error"
                     }
                 }
             },
@@ -58,29 +97,23 @@
                         "bearerAuth": []
                     }
                 ],
-                "description": "Informações do usuário",
+                "description": "Get user information",
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "User information retrieved successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/ResponseUser"
-                                    }
+                                    "$ref": "#/components/schemas/ResponseUser"
                                 }
                             }
                         }
                     },
-                    "401": {
-                        "description": "Token fornecido é inválido ou Token não fornecido."
-                    },
                     "404": {
-                        "description": "Empresa não encontrada na nossa base de dados."
+                        "description": "User not found"
                     },
                     "500": {
-                        "description": "Internal Server Error."
+                        "description": "Internal Server Error"
                     }
                 }
             }
@@ -89,58 +122,76 @@
     "components": {
         "securitySchemes": {
             "bearerAuth": {
-                "description": "Autenticação com JWT",
                 "type": "http",
                 "scheme": "bearer",
                 "bearerFormat": "JWT"
             }
         },
         "schemas": {
-            "RequestUser": {
+            "RequestCreateUser": {
                 "type": "object",
                 "properties": {
                     "name": {
                         "type": "string",
-                        "description": "Nome para cadastro",
-                        "example": "User X."
+                        "description": "Name of the user",
+                        "example": "John Doe"
                     },
                     "email": {
                         "type": "string",
-                        "description": "Email para cadastro",
-                        "example": "user@gmail.com"
+                        "description": "Email of the user",
+                        "example": "john.doe@example.com"
                     },
                     "password": {
                         "type": "string",
-                        "description": "Senha para cadastro",
-                        "example": "123456"
-                    },
-                    "address": {
+                        "description": "Password for the user",
+                        "example": "password123"
+                    }
+                }
+            },
+            "RequestUpdateUser": {
+                "type": "object",
+                "properties": {
+                    "name": {
                         "type": "string",
-                        "description": "Endereço do usuário",
-                        "example": "Rua X - cidade y - UF"
+                        "description": "Name of the user",
+                        "example": "John Doe"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "Email of the user",
+                        "example": "john.doe@example.com"
                     }
                 }
             },
             "ResponseUser": {
                 "type": "object",
                 "properties": {
+                    "id": {
+                        "type": "integer",
+                        "description": "ID of the user",
+                        "example": 1
+                    },
                     "name": {
                         "type": "string",
-                        "description": "Nome do usuário cadastrado",
-                        "example": "User X."
+                        "description": "Name of the user",
+                        "example": "John Doe"
                     },
                     "email": {
                         "type": "string",
-                        "description": "Email do usuário cadastrado",
-                        "example": "user@gmail.com"
-                    },
-                    "address": {
-                        "type": "string",
-                        "description": "Endereço do usuário cadastrada",
-                        "example": "Rua X - cidade y - UF"
+                        "description": "Email of the user",
+                        "example": "john.doe@example.com"
                     }
                 }
-                
+            },
+            "ResponseMessage": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "description": "Response message",
+                        "example": "Operation successful"
+                    }
+                }
             }
         }
     }

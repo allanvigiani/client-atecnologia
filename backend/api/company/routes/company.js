@@ -31,4 +31,9 @@ router.get('/all-companies/:companyId?', async (req, res) => {
     res.status(result.status).json({ message: result.message });
 });
 
+router.delete('/companyId', async (req, res) => {
+    const result = await companyController.deleteCompany(req.params.companyId);
+    res.status(result.status).json({ message: result.message });
+});
+
 export default router;
