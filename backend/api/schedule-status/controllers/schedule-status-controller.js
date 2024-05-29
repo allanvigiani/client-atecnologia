@@ -133,6 +133,32 @@ class ScheduleStatusController{
         }
     }
 
+    /*
+    * Busca todos os agendamentos do usuário
+    * @date 05/03/2024 - 23:09:42
+    * 
+    * @async
+    * @param {integer} companyId
+    * @returns {json}
+    */
+    async getAppointmentsByUser(userId) {
+        try {
+            if (!userId) {
+                const errorMessage = `ID do usuário não informado.`;
+                return { message: errorMessage, status: 400 };
+            }
+            const schedules = await this.scheduleStatusRepository.getSchedulesByUserId(userId);
+
+            if (!schedules) {
+                const errorMessage = `Erro ao buscar os agendamentos.`;
+                return { message: errorMessage, status: 500 };
+            }
+
+            return { message: schedules, status: 201 };
+        } catch (error) {
+            return { message: error.message, status: 500 };
+        }
+    }
 }
 
 export default ScheduleStatusController;

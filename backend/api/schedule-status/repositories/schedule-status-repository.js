@@ -61,6 +61,30 @@ class ScheduleRepository {
         }
     }
 
+    async getSchedulesByUserId(id) {
+        let client;
+        try {
+            const conn = await database.generateConnection();
+            client = await conn.connect();
+            const result = await conn.query(`
+            SELECT st.id AS id_status,
+                   st.description AS descr_status,
+                   s.*
+            FROM schedule s
+            INNER JOIN schedule_status ss ON s.id = ss.schedule_id
+            INNER JOIN status st ON CAST(ss.status_id AS INTEGER) = st.id
+            WHERE s.user_id = $1;
+            `, [id]);
+            client.release();
+            return result.rows;
+        } catch (error) {
+            if (client) {
+                client.release();
+            }
+            throw new Error(error);
+        }
+    }
+
     async getScheduleById(id) {
         let client;
         try {
