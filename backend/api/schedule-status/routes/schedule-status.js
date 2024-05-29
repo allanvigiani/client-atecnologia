@@ -24,8 +24,8 @@ router.put('/', authenticateToken, async (req, res) => {
     res.status(result.status).json({ message: result.message });
 });
 
-router.get('/appointments', authenticateToken, async (req, res) => {
-    const result = await scheduleStatusController.getAppointmentsByUser(req.user.payload.id);
+router.get('/appointments', async (req, res) => {
+    const result = await scheduleStatusController.getAppointmentsByUser(2);
     res.status(result.status).json({ message: result.message });
 });
 
