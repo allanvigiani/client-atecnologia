@@ -11,6 +11,7 @@ const router = express.Router();
 
 router.post('/', async (req, res) => {
     const result = await userController.createUser(req.body);
+    await userController.createUser(req.body);
     res.status(result.status).json({ message: result.message });
 });
 
