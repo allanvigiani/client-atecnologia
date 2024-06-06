@@ -3,11 +3,13 @@ import styles from "@/styles/Configuracao.module.css";
 import Layout from "../../../components/Layout";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
-
-import { deleteCookie, setCookie ,hasCookie, getCookie } from "cookies-next";
+import CssBaseline from '@mui/material/CssBaseline';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import TextField from '@mui/material/TextField';
+import { deleteCookie, setCookie, hasCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/router";
-import { set } from "react-hook-form";
-
+import { Button, Typography } from "@mui/material";
 
 export default function ConfiguracaoCompany() {
     const router = useRouter();
@@ -15,6 +17,7 @@ export default function ConfiguracaoCompany() {
     const [companyName, setCompanyName] = useState('');
     const [companyEmail, setCompanyEmail] = useState('');
     const [companyAddress, setCompanyAddress] = useState('');
+    const [companyCnpj, setCompanyCnpj] = useState('');
 
     useEffect(() => {
         verifyUser();
@@ -36,32 +39,30 @@ export default function ConfiguracaoCompany() {
         }
 
         try {
-
             const CompanyData = getCookie("companyData");
             if (!CompanyData) {
-                const token = getCookie("user_auth_information");
-
-                try {
-                    const { data: companyData } = await axios.get(
-                        `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY}/company/`,
-                        {
-                            headers: {
-                                Authorization: `Bearer ${token}`,
-                            },
-                        }
-                    );
-
-                    setCompanyName(companyData.name);
-                } catch (error) {
-                    console.error("Erro na solicitação GET:", error);
-                }
+                const { data: companyData } = await axios.get(
+                    `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY}/company/`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+                setCompanyName(companyData.name);
+                setCompanyEmail(companyData.email);
+                setCompanyCnpj(companyData.cnpj? companyData.cnpj : '123.123.123-12');
+                setCompanyAddress(companyData.address);
+                setCompanyId(companyData.id);
+                setCookie("companyData", JSON.stringify(companyData));
+            } else {
+                const companyData = JSON.parse(CompanyData);
+                setCompanyId(companyData.id);
+                setCompanyName(companyData.name);
+                setCompanyEmail(companyData.email);
+                setCompanyCnpj(companyData.cnpj? companyData.cnpj : '123.123.123-13');
+                setCompanyAddress(companyData.address);
             }
-
-            const companyData = JSON.parse(CompanyData);
-            setCompanyId(companyData.id);
-            setCompanyName(companyData.name);
-            setCompanyEmail(companyData.email);
-            setCompanyAddress(companyData.address);
         } catch (error) {
             console.error("Erro na solicitação GET:", error);
         }
@@ -71,7 +72,6 @@ export default function ConfiguracaoCompany() {
         e.preventDefault();
 
         try {
-
             if (!hasCookie("user_auth_information")) {
                 router.push("/login");
             }
@@ -95,8 +95,7 @@ export default function ConfiguracaoCompany() {
                 }
             );
 
-            const response = data.message;
-            toast.success(response, {
+            toast.success(data.message, {
                 position: "bottom-right",
             });
 
@@ -109,7 +108,7 @@ export default function ConfiguracaoCompany() {
                 }
             );
 
-            setCookie("companyData", companyData.message);
+            setCookie("companyData", JSON.stringify(companyData));
         } catch (err) {
             generateError(err.response?.data?.message);
         }
@@ -122,53 +121,68 @@ export default function ConfiguracaoCompany() {
 
     return (
         <Layout>
-            <>
-                <div className={styles.container}>
-                    <div className={styles.modal}>
-                        <div className={styles['container-modal']}>
-                            <form onSubmit={handleSubmit} className={styles['form-modal']}>
-                                <h2 className={`${styles.details}`}>{'Atualizar dados da Empresa'}</h2>
-                                <div className={`${styles.input__box}`}>
-                                    <span className={`${styles.details}`}>Nome do Serviço:</span>
-                                    <input
-                                        type="text"
-                                        name="companyName"
-                                        id="companyName"
-                                        value={companyName}
-                                        onChange={(e) => setCompanyName(e.target.value)}
-                                    />
-                                </div>
-                                <div className={`${styles.input__box}`}>
-                                    <span className={`${styles.details}`}>Email da Empresa:</span>
-                                    <input
-                                        type="email"
-                                        name="companyEmail"
-                                        id="companyEmail"
-                                        value={companyEmail}
-                                        onChange={(e) => setCompanyEmail(e.target.value)}
-                                    />
-                                </div>
-                                <div className={`${styles.input__box}`}>
-                                    <span className={`${styles.details}`}>Endereço da Empresa:</span>
+            <React.Fragment>
+                <CssBaseline />
+                <Container maxWidth="sm" sx={{ display: 'flex', flexDirection: 'column', minHeight: '70vh', alignItems: 'center', mt: 4 }}>
+                    <Box
+                        component="form"
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            flexGrow: 1,
+                            '& .MuiTextField-root': { m: 2, width: '50ch' },
+                        }}
+                        noValidate
+                        autoComplete="off"
+                        onSubmit={handleSubmit}
+                    >
+                        <Typography variant="h4" className={`${styles.details}`} gutterBottom>
+                            Atualizar dados da Empresa
+                        </Typography>
 
-                                    <input
-                                        type="text"
-                                        name="companyAddress"
-                                        id="companyAddress"
-                                        value={companyAddress}
-                                        onChange={(e) => setCompanyAddress(e.target.value)}
-                                    />
-                                </div>
-                                <button type="submit" className={styles['form-button-modal']}>
-                                    {'Atualizar Dados'}
-                                </button>
-                                <ToastContainer />
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </>
-        </Layout >
+                        <TextField
+                            disabled
+                            label="Email da Empresa:"
+                            type="email"
+                            name="companyEmail"
+                            id="companyEmail"
+                            value={companyEmail}
+                            onChange={(e) => setCompanyEmail(e.target.value)}
+                        />
+
+                        <TextField
+                            disabled
+                            label="CNPJ:"
+                            type="cnpj"
+                            name="companyCnpj"
+                            id="companyCnpj"
+                            value={companyCnpj}
+                            onChange={(e) => setCompanyEmail(e.target.value)}
+                        />
+
+                        <TextField
+                            label="Nome da Empresa:"
+                            type="text"
+                            name="companyName"
+                            id="companyName"
+                            value={companyName}
+                            onChange={(e) => setCompanyName(e.target.value)}
+                        />
+
+                        <TextField
+                            label="Endereço da Empresa:"
+                            type="text"
+                            name="companyAddress"
+                            id="companyAddress"
+                            value={companyAddress}
+                            onChange={(e) => setCompanyAddress(e.target.value)}
+                        />
+                        <Button type="submit" className={styles['form-button-modal']} variant="contained">Atualizar Dados</Button>
+                    </Box>
+                </Container>
+            </React.Fragment>
+            <ToastContainer />
+        </Layout>
     );
 }
-

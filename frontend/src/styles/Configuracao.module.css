@@ -1,87 +1,11 @@
-.container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-}
-
-.form {
-    width: 80vw;
-    height: 80vh;
-    margin-top: 20px;
-    background-color: #ffffff;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 20px;
-    overflow: auto;
-}
-
-.form-label {
-    display: block;
-    margin-bottom: 10px;
-}
-
-.form-input {
-    width: 300px;
-    padding: 8px;
-    margin-bottom: 10px;
-}
-
-.form-button {
-    background-color: #007bff;
-    color: white;
-    padding: 14px 20px;
-    margin: 8px 0;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    width: 10vw;
-    align-self: center;
-}
-
-.form-button:hover {
-    background-color: #0056b3;
-}
-
-.table {
-    margin-top: 2vw;
-    border-collapse: collapse;
-    width: 100%;
-}
-
-.table-header {
-    background-color: #f2f2f2;
-    padding: 8px;
-    border: 1px solid #ddd;
-    text-align: center;
-}
-
-.table-data {
-    padding: 8px;
-    border: 1px solid #ddd;
-    text-align: center;
-}
-
-.table-button {
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
 /* Estilos do modal esquerdo */
 .modal {
-    display: block;
-    position: fixed;
     z-index: 1;
     left: 0;
     top: 0;
     width: 100%;
+    margin-bottom: 5vw;
     /* Metade da largura da tela */
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.4);
-    overflow: auto;
 }
 
 /* Estilos do conteúdo do modal esquerdo */
@@ -97,33 +21,16 @@
     position: relative;
 }
 
-.close {
-    color: #aaa;
-    position: absolute;
-    top: 11vh;
-    right: 1vw;
-    font-size: 35px;
-    font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
 
 .container-modal {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
 }
 
 .form-modal {
     width: 80%;
-    height: 80vh;
     margin-top: 2vw;
     background-color: #ffffff;
     border: 1px solid #ccc;
@@ -133,8 +40,9 @@
     flex-direction: column;
     gap: 5%;
     align-items: center;
+    height: 80vh;
+    max-height: 80vh;
     overflow-y: auto;
-    /* Enable vertical overflow scrolling within the form-modal */
 }
 
 .form-label-modal {
@@ -158,7 +66,7 @@
 }
 
 .form-button-modal {
-    background-color: #4CAF50;
+    background-color: #4f297a;
     color: white;
     padding: 14px 20px;
     margin: 8px 0;
@@ -170,7 +78,7 @@
 }
 
 .form-button-modal:hover {
-    background-color: #45a049;
+    background-color: #3b1c5e;
 }
 
 .modal-label {
@@ -183,10 +91,11 @@ form .input__box {
     width: calc(100% / 2 - 20px);
 }
 
-.input__box .details {
+.details {
     display: block;
     font-weight: 500;
     margin-bottom: 10px;
+    text-align: center;
 }
 
 .input__box input {

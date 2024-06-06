@@ -3,18 +3,24 @@ import styles from "@/styles/Schedule.module.css";
 import Layout from "../../components/Layout";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
-import { useForm, useFieldArray, set } from "react-hook-form";
 import { deleteCookie, hasCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import Select from 'react-select';
-import { RiDeleteBin2Line } from "react-icons/ri";
+import { DataGrid } from '@mui/x-data-grid';
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import { EditNote, Cancel } from "@mui/icons-material";
+import CircularProgress from '@mui/material/CircularProgress';
+import ptBR from "../../components/DataGrid";
+import { set } from "react-hook-form";
 
 export default function Schedule() {
   const router = useRouter();
   const [companyId, setCompanyId] = useState('');
   const [services, setServices] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [showDescriptionField, setShowDescriptionField] = useState(false);
   const [serviceValue, setServiceValue] = useState('');
   const [serviceDescription, setServiceDescription] = useState('');
   const [professionalName, setProfessionalName] = useState('');
@@ -29,6 +35,30 @@ export default function Schedule() {
   const [isUpdating, setIsUpdating] = useState(false);
   const [servicetypeId, setServicetypeId] = useState('');
   const [serviceLabel, setServiceLabel] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [formLoading, setFormLoading] = useState(false);
+
+  const columns = [
+    { field: 'name', headerName: 'Serviços', flex: 0.5, align: 'center', headerAlign: 'center' },
+    { field: 'professional_name', headerName: 'Profissional', flex: 1, align: 'center', headerAlign: 'center' },
+    {
+      field: 'actions',
+      headerName: 'Ações',
+      flex: 0,
+      align: 'right',
+      headerAlign: 'center',
+      renderCell: (params) => (
+        <Box display="flex" justifyContent="flex-end" width="100%">
+          <IconButton className={styles.iconButton} onClick={async () => await handleEditModal(params.row)}>
+            <EditNote />
+          </IconButton>
+          <IconButton className={`${styles.iconButton} ${styles.error}`} onClick={() => onDelete(params.row.id)}>
+            <Cancel />
+          </IconButton>
+        </Box>
+      ),
+    },
+  ];
 
   useEffect(() => {
     verifyUser();
@@ -50,9 +80,8 @@ export default function Schedule() {
 
   const fetchData = async () => {
     const token = getCookie("user_auth_information");
-
+    setLoading(true);
     try {
-
       const { data: serviceData } = await axios.get(
         `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY_SERVICE}/`,
         {
@@ -93,12 +122,14 @@ export default function Schedule() {
       setServiceDay(serviceDataDays.message.result);
       setServiceHour(serviceDataHours.message.result);
       setServices(serviceData.message.result);
+      setLoading(false);
     } catch (error) {
       console.error("Erro na solicitação GET:", error);
+      setLoading(false); // Ensure loading state is reset in case of error
     }
   };
 
-  const clearForm = async () => {
+  const clearForm = () => {
     setServiceName('');
     setProfessionalName('');
     setPrice('');
@@ -112,9 +143,9 @@ export default function Schedule() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setFormLoading(true);
 
     try {
-
       if (!hasCookie("user_auth_information")) {
         router.push("/login");
       }
@@ -122,15 +153,13 @@ export default function Schedule() {
       if (serviceHourValue.length === 0) {
         serviceHour.map((hour) => {
           serviceHourValue.push(hour.id);
-        }
-        )
+        });
       }
 
       if (serviceDayValue.length === 0) {
         serviceDay.map((day) => {
           serviceDayValue.push(day.id);
-        }
-        )
+        });
       }
 
       const formData = {
@@ -144,7 +173,7 @@ export default function Schedule() {
       };
 
       if (isUpdating) {
-        onUpdate(serviceId);
+        await onUpdate(serviceId);
         return;
       }
 
@@ -163,15 +192,19 @@ export default function Schedule() {
       const response = data.message;
       toast.success(response);
       clearForm();
+      setFormLoading(false);
       handleCloseModal();
     } catch (err) {
+      setFormLoading(false);
       generateError(err.response?.data?.message);
     }
   };
 
   const handleEditModal = async (service) => {
+    setLoading(true);
     if (!hasCookie("user_auth_information")) {
       router.push("/login");
+      setLoading(false);
     }
     const id = parseInt(service.id);
     const companyId = parseInt(service.company_id);
@@ -189,7 +222,7 @@ export default function Schedule() {
       );
 
       const { data: serviceHours } = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY_SERVICE}/hours/${id}/${companyId}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY_SERVICE}/hours/client/${id}/${companyId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -236,11 +269,11 @@ export default function Schedule() {
       const companyData = JSON.parse(CompanyData);
 
       setCompanyId(companyData.id);
-      setServiceId(service.id)
-      setServiceName(service.name)
-      setServiceDescription(service.other_service_type)
-      setProfessionalName(service.professional_name)
-      setPrice(service.price)
+      setServiceId(service.id);
+      setServiceName(service.name);
+      setServiceDescription(service.other_service_type);
+      setProfessionalName(service.professional_name);
+      setPrice(service.price);
       setServiceOptions(servicetype.message.result);
       setServicetypeId(servicetype.message.result[0].id);
       setServiceLabel(servicetype.message.result[0].type);
@@ -250,18 +283,24 @@ export default function Schedule() {
       setIsUpdating(true);
       setShowModal(true);
     } catch (err) {
+      setLoading(false);
       generateError(err.response?.data?.message);
     }
   };
 
   const handleShowModal = async (e) => {
     e.preventDefault();
-    await verifyUser();
+    setLoading(true);
     setIsUpdating(false);
+    await verifyUser();
     setShowModal(true);
   };
 
   const handleCloseModal = async () => {
+    setShowModal(false);
+  };
+
+  const handleCloseModalUpdate = async () => {
     await verifyUser();
     setShowModal(false);
   };
@@ -338,8 +377,8 @@ export default function Schedule() {
 
       const response = await data.message;
       toast.success(response);
-      clearForm()
-      handleCloseModal();
+      clearForm();
+      handleCloseModalUpdate();
     } catch (err) {
       generateError(err.response?.data?.message);
     }
@@ -349,152 +388,140 @@ export default function Schedule() {
     <Layout>
       <>
         <div className={styles.container}>
+          {loading && (
+            <div className={styles.loadingContainer}>
+              <CircularProgress />
+            </div>
+          )}
           <div className={styles.form}>
             <button onClick={handleShowModal} className={styles['form-button']}>Novo Serviço</button>
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th className={styles['table-header']}>Serviços</th>
-                  <th className={styles['table-header']}>Profissional</th>
-                  <th className={styles['table-header']}>Editar</th>
-                  <th className={styles['table-header']}>Deletar</th>
-                </tr>
-              </thead>
-              <tbody>
-                {services.map((service, index) => (
-                  <tr key={index} className={styles['table-row']}>
-                    <td className={styles['table-data']}>{service.name}</td>
-                    <td className={styles['table-data']}>{service.professional_name}</td>
-                    <td className={styles['table-data']}>
-                      <button className={styles['table-button']}
-                        onClick={() => {
-                          handleEditModal(service);
-                        }}>
-                        Editar
-                      </button>
-                    </td>
-                    <span className={`${styles['btn-popup']}`}>
-                      <RiDeleteBin2Line
-                        onClick={() => {
-                          onDelete(service.id);
-                        }}
-                      ></RiDeleteBin2Line>
-                    </span>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <Box sx={{ height: 'auto', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <DataGrid
+                rows={services}
+                columns={columns}
+                pageSize={5}
+                {...services}
+                initialState={{
+                  ...services.initialState,
+                  pagination: { paginationModel: { pageSize: 5 } },
+                }}
+                pageSizeOptions={[5, 10, 25]}
+                pagination
+                localeText={ptBR}
+                sx={{ width: '100%', height: 400, margin: '10px 0' }}
+                disableRowSelectionOnClick
+              />
+            </Box>
           </div>
         </div>
-        {showModal && (
-          <div className={styles.modal}>
-            <div className={styles['container-modal']}>
-              <form onSubmit={handleSubmit} className={styles['form-modal']}>
-                <span className={styles.close} onClick={handleCloseModal}>&times;</span>
-                <h2 className={`${styles.details}`}>{isUpdating ? 'Atualizar Serviço' : 'Adicionar Serviço'}</h2>
-                <div className={`${styles.input__box}`}>
-                  <span className={`${styles.details}`}>Nome do Serviço:</span>
-                  <input
-                    type="text"
-                    name="service_name"
-                    value={serviceName}
-                    onChange={(e) => setServiceName(e.target.value)}
-                    required
-                  />
+        <Modal
+          open={showModal}
+          onClose={handleCloseModal}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box className={styles.modalContent}>
+            <form onSubmit={handleSubmit} className={styles['form-modal']}>
+              {formLoading ? (
+                <div className={styles.loadingContainer}>
+                  <CircularProgress />
                 </div>
-                <div className={`${styles.input__box}`}>
-                  <span className={`${styles.details}`}>Serviço:</span>
-                  <Select
-                    name="serviceValue"
-                    className="basic-multi-select"
-                    classNamePrefix="select"
-                    options={serviceOptions && Array.isArray(serviceOptions) ? serviceOptions.map(option => ({
-                      value: option.id,
-                      label: option.type
-                    })) : []}
-                    defaultValue={isUpdating ? { value: servicetypeId, label: serviceLabel } : null}
-                    onChange={(selectedOption) => setServiceValue(selectedOption.value)}
-                  />
-                </div>
-                {showDescriptionField && (
+              ) : (
+                <>
+                  <h2 className={`${styles.details}`}>{isUpdating ? 'Atualizar Serviço' : 'Adicionar Serviço'}</h2>
                   <div className={`${styles.input__box}`}>
-                    <span className={`${styles.details}`}>Descreva:</span>
-                    <textarea
-                      name="service_description"
-                      value={serviceDescription}
-                      onChange={(e) => setServiceDescription(e.target.value)}
-                      rows={2}
-                      cols={40}
+                    <span className={`${styles.details}`}>Nome do Serviço:</span>
+                    <input
+                      type="text"
+                      name="service_name"
+                      value={serviceName}
+                      onChange={(e) => setServiceName(e.target.value)}
+                      required
                     />
                   </div>
-                )}
-                <div className={`${styles.input__box}`}>
-                  <span className={`${styles.details}`}>Funcionário:</span>
-                  <input
-                    type="text"
-                    name="professional_name"
-                    value={professionalName}
-                    onChange={(e) => setProfessionalName(e.target.value)}
-                    required
-                  />
-                </div>
-                <div className={`${styles.input__box}`}>
-                  <span className={`${styles.details}`}>Preço:</span>
-                  <input
-                    type="text"
-                    name="price"
-                    value={price}
-                    onChange={(e) => {
-                      formatarCampo(e);
-                      setPrice(e.target.value);
-                    }}
-                    required
-                    placeholder="Ex: 500"
-                  />
-                </div>
-                <div className={`${styles.input__box}`}>
-                  <span className={`${styles.details}`}>Dia dos serviços:</span>
-                  <Select
-                    isMulti
-                    name="week_service"
-                    className="basic-multi-select"
-                    classNamePrefix="select"
-                    defaultValue={serviceDay ? serviceDay.map(option => ({
-                      value: option.id,
-                      label: option.description
-                    })) : []}
-                    options={serviceDay && Array.isArray(serviceDay) ? serviceDay.map(option => ({
-                      value: option.id,
-                      label: option.description
-                    })) : []}
-                    onChange={(serviceDay) => setServiceDayValue(serviceDay.map(option => option.value))} />
-                </div>
-                <div className={`${styles.input__box}`}>
-                  <span className={`${styles.details}`}>Hora dos serviços:</span>
-                  <Select
-                    isMulti
-                    name="hour_service"
-                    className="basic-multi-select"
-                    classNamePrefix="select"
-                    defaultValue={serviceHour.length > 0 ? serviceHour.map(option => ({
-                      value: option.id,
-                      label: option.start_time
-                    })) : []}
-                    options={serviceHour && Array.isArray(serviceHour) ? serviceHour.map(option => ({
-                      value: option.id,
-                      label: option.start_time
-                    })) : []}
-                    onChange={(serviceHour) => setServiceHourValue(serviceHour.map(option => option.value))}
-                  />
-                </div>
-                <button type="submit" className={styles['form-button-modal']}>
-                  {isUpdating ? 'Atualizar Serviço' : 'Adicionar Serviço'}
-                </button>
-              </form>
-              <ToastContainer />
-            </div>
-          </div>
-        )}
+                  <div className={`${styles.input__box}`}>
+                    <span className={`${styles.details}`}>Serviço:</span>
+                    <Select
+                      name="serviceValue"
+                      className="basic-multi-select"
+                      classNamePrefix="select"
+                      options={serviceOptions && Array.isArray(serviceOptions) ? serviceOptions.map(option => ({
+                        value: option.id,
+                        label: option.type
+                      })) : []}
+                      defaultValue={isUpdating ? { value: servicetypeId, label: serviceLabel } : null}
+                      onChange={(selectedOption) => setServiceValue(selectedOption.value)}
+                    />
+                  </div>
+                  <div className={`${styles.input__box}`}>
+                    <span className={`${styles.details}`}>Funcionário:</span>
+                    <input
+                      type="text"
+                      name="professional_name"
+                      value={professionalName}
+                      onChange={(e) => setProfessionalName(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className={`${styles.input__box}`}>
+                    <span className={`${styles.details}`}>Preço:</span>
+                    <input
+                      type="text"
+                      name="price"
+                      value={price}
+                      onChange={(e) => {
+                        formatarCampo(e);
+                        setPrice(e.target.value);
+                      }}
+                      required
+                      placeholder="Ex: 500"
+                    />
+                  </div>
+                  <div className={`${styles.input__box}`}>
+                    <span className={`${styles.details}`}>Dia dos serviços:</span>
+                    <Select
+                      isMulti
+                      name="week_service"
+                      className="basic-multi-select"
+                      classNamePrefix="select"
+                      defaultValue={serviceDay ? serviceDay.map(option => ({
+                        value: option.id,
+                        label: option.description
+                      })) : []}
+                      options={serviceDay && Array.isArray(serviceDay) ? serviceDay.map(option => ({
+                        value: option.id,
+                        label: option.description
+                      })) : []}
+                      onChange={(serviceDay) => setServiceDayValue(serviceDay.map(option => option.value))} />
+                  </div>
+                  <div className={`${styles.input__box}`}>
+                    <span className={`${styles.details}`}>Hora dos serviços:</span>
+                    <Select
+                      isMulti
+                      name="hour_service"
+                      className="basic-multi-select"
+                      classNamePrefix="select"
+                      defaultValue={serviceHour.length > 0 ? serviceHour.map(option => ({
+                        value: option.id,
+                        label: option.start_time
+                      })) : []}
+                      options={serviceHour && Array.isArray(serviceHour) ? serviceHour.map(option => ({
+                        value: option.id,
+                        label: option.start_time
+                      })) : []}
+                      onChange={(serviceHour) => setServiceHourValue(serviceHour.map(option => option.value))}
+                    />
+                  </div>
+                  <button type="submit" className={styles['form-button-modal']}>
+                    {isUpdating ? 'Atualizar Serviço' : 'Adicionar Serviço'}
+                  </button>
+                </>
+              )}
+            </form>
+            <ToastContainer />
+          </Box>
+        </Modal>
+
       </>
     </Layout>
   );

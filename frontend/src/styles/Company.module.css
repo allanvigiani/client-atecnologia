@@ -3,7 +3,7 @@
 .home {
     position: relative;
     width: 100%;
-    min-height: 100vh;
+    min-height: 70vh;
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -12,7 +12,7 @@
 
 .home .container {
     z-index: 888;
-    color: #fff;
+    color: #4f297a;
     width: 70%;
     margin-top: 50px;
 }
@@ -40,7 +40,7 @@
 }
 
 .home .media__icons>a {
-    color: #fff;
+    color: #4f297a;
     font-size: 2.2em;
     transition: 0.3s ease;
 
@@ -85,7 +85,7 @@
 
 .home__grid .div__grid th {
     background-color: #333;
-    color: #fff;
+    color: #4f297a;
 }
 
 .home__grid .div__grid td:last-child {
@@ -128,7 +128,7 @@
 
 .container__grid {
     z-index: 888;
-    color: #fff;
+    color: #4f297a;
     width: 70%;
     margin-top: 50px;
 }
@@ -159,8 +159,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
     overflow-y: scroll;
+    margin-bottom: 5vw;
 }
 
 .container-titles {
@@ -169,7 +169,7 @@
     width: 100%;
     gap: 2vw;
     margin-top: 2vw;
-    color: #ffffff;
+    color: #4f297a;
 }
 
 .container-titles>hr {
@@ -203,7 +203,7 @@
     overflow-y: scroll;
 }
 
-.container-middle-grid > hr {
+.container-middle-grid>hr {
     display: flex;
     margin: auto;
     width: 95%;
@@ -222,7 +222,7 @@
     margin-bottom: 1vw;
     box-shadow: 0 0 20px rgba(0, 0, 0, .5);
     position: relative;
-    color: #ffffff;    
+    color: #4f297a;
 }
 
 .container-middle-grid-schedules .day-month-year::before {
@@ -232,7 +232,7 @@
     left: 10%;
     width: 80%;
     height: 1px;
-    background-color: #ffffff;
+    background-color: #4f297a;
     opacity: 0.5;
 }
 
@@ -255,8 +255,53 @@
     justify-content: center;
     text-align: left;
     position: relative;
-    color: #ffffff;
+    color: #4f297a;
 
+}
+
+/* Company.module.css */
+
+.tableContainer {
+    background-color: white;
+    text-align: center;
+
+    /* Fundo branco para o contêiner da tabela */
+}
+
+.tableHead {
+    background-color: #f5f5f5;
+    text-align: center;
+
+    /* Fundo levemente cinza para o cabeçalho da tabela */
+}
+
+.tableHeadCell {
+    color: black;
+    /* Cor do texto do cabeçalho */
+    font-weight: bold;
+    
+    /* Texto em negrito */
+}
+
+.tableBodyCell {
+    background-color: #f5f5f5;
+    color: black;
+    text-align: center;
+}
+
+.iconButton {
+    color: #5e21a3;
+    /* Cor dos ícones */
+}
+
+.iconButton.error {
+    color: #ff1100;
+}
+
+.tableBodyCell.actions {
+    width: 100px;
+    /* Ajuste a largura conforme necessário */
+    text-align: center;
 }
 
 @media screen and (max-width: 1330px) {

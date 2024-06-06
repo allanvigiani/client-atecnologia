@@ -1,6 +1,8 @@
+/* Navbar.module.css */
+
 .header {
     position: relative;
-    top: 5px;
+    top: 0;
     left: 0;
     width: 100vw;
     display: flex;
@@ -8,6 +10,9 @@
     align-items: center;
     z-index: 99;
     transition: transform 0.3s ease-in-out;
+    background-color: rgba(57, 16, 103, 0.95);
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .hidden {
@@ -22,59 +27,49 @@
     width: 5vw;
     margin-left: 10vh;
     padding: 0%;
+    transition: transform 0.3s ease-in-out;
 }
 
-.logo:hover{
+.logo:hover {
     transform: scale(1.1);
     transition: 0.5s;
 }
 
-.navigation>a {
+.navigation {
+    display: flex;
+    align-items: center;
+}
+
+.navigation > a {
     position: relative;
     font-size: 1.1em;
     color: #fff;
     text-decoration: none;
     font-weight: 500;
     margin-left: 40px;
+    transition: color 0.3s ease-in-out;
 }
 
-.navigation>a::after {
+.navigation > a:hover {
+    color: #d4d4d4;
+}
+
+.navigation > a::after {
     content: '';
     position: absolute;
     left: 0;
     bottom: -6px;
     width: 100%;
-    height: 3px;
+    height: 2px;
     background: #fff;
     border-radius: 5px;
     transform: scaleX(0);
-    transition: transform .5s;
+    transition: transform 0.5s;
 }
 
-.navigation>a:hover::after {
+.navigation > a:hover::after {
     transform-origin: left;
     transform: scaleX(1);
-}
-
-.navigation>.btn__Login {
-    width: 130px;
-    height: 50px;
-    background: transparent;
-    border: 2px solid #fff;
-    outline: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 1.1em;
-    color: #fff;
-    font-weight: 500;
-    margin-left: 40px;
-    margin-right: 40px;
-    transition: .5s;
-}
-
-.navigation>.btn__Login:hover {
-    background: #fff;
-    color: #162938;
 }
 
 .user-pic {
@@ -85,6 +80,7 @@
     margin-left: 5vh;
     background: #e5e5e5;
     padding: 5px;
+    transition: transform 0.3s ease-in-out;
 }
 
 .user-pic:hover {
@@ -92,19 +88,11 @@
     transition: 0.5s;
     background: #ffffff;
 }
-
-.img-dropdown {
-    width: 2.5vw;
-    border-radius: 50%;
-    cursor: pointer;
-    margin-left: 5vh;
-    background: #e5e5e5;
-}
-
 .img-dropdown:hover {
     transform: scale(1.1);
     transition: 0.5s;
 }
+
 .sub-menu-wrap {
     position: absolute;
     top: 100%;
@@ -113,22 +101,21 @@
     border-radius: 5px;
     max-height: 400;
     overflow: hidden;
-    transition: .5s;
+    transition: max-height 0.3s ease-in-out;
+    max-height: 0;
+    opacity: 0;
+    background: #fff;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.sub-menu-wrap.visible {
+    max-height: 400px;
+    opacity: 1;
 }
 
 .sub-menu {
-    background: #fff;
     padding: 20px;
-    border-radius: 5px;
-    margin: 10px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-
 }
-
-.sub-menu:hover {
-    transform: 1s;
-}
-
 
 .user-info {
     display: flex;
@@ -141,7 +128,7 @@
 }
 
 .user-info img {
-    width: 50px;
+    height: 50px;
     border-radius: 50%;
     margin-right: 10px;
 }
@@ -152,7 +139,6 @@
     width: 100%;
     background: #ccc;
     margin: 15px 0 10px;
-
 }
 
 .sub-menu-link {
@@ -163,24 +149,33 @@
     font-size: 1.1em;
     font-weight: 500;
     margin: 10px 0;
+    transition: color 0.3s ease-in-out;
 }
-
 .sub-menu-link p {
     margin: 0;
     width: 100%;
 }
 
+.sub-menu-link:hover {
+    color: #4f297a;
+}
+
 .sub-menu-link img {
-    width: 30px;
+    height: 30px;
     margin-right: 10px;
     background: #e5e5e5;
     border-radius: 50%;
-    padding: 8px;
-    margin-right: 15px;
+    padding: 5px;
+    transition: transform 0.3s ease-in-out;
 }
 
 .sub-menu-link span {
     font-size: 22px;
+    transition: transform 0.3s ease-in-out;
+}
+
+.sub-menu-link:hover img {
+    transform: scale(1.1);
 }
 
 .sub-menu-link:hover span {
@@ -189,4 +184,21 @@
 
 .sub-menu-link:hover p {
     font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .navigation {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .navigation > a {
+        margin-left: 0;
+        margin-bottom: 10px;
+    }
+
+    .sub-menu-wrap {
+        width: 100%;
+        right: 0;
+    }
 }

@@ -135,7 +135,7 @@ export default function Navbar() {
             className={styles["user-pic"]}
             onClick={toggleSubMenu}
           />
-          <div className={`${styles["sub-menu-wrap"]} ${isSubMenuVisible ? "" : styles.hiddenUser}`}>
+          <div className={`${styles["sub-menu-wrap"]} ${isSubMenuVisible ? styles.visible : ""}`}>
             <div className={styles["sub-menu"]}>
               <div className={styles["user-info"]}>
                 <img
