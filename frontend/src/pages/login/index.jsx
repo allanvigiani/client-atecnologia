@@ -228,6 +228,17 @@ export default function Login() {
                     Criar Conta
                   </a>
                 </div>
+                <div className={`${styles.text__center}`}>
+                  <span className={`${styles.text__create}`}>
+                    Esqueceu sua senha?
+                  </span>
+                  <a
+                    href="/change-password"
+                    className={`${styles.text__create__ancora}`}
+                  >
+                    Recuperar Senha
+                  </a>
+                </div>
               </form>
               <ToastContainer />
             </div>
