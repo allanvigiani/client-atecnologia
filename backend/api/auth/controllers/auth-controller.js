@@ -1,6 +1,18 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import crypto from 'crypto';
+import nodemailer from 'nodemailer';
+import * as fs from 'fs';
+import path from 'path';
+
+import { fileURLToPath } from 'url';
+
+// Resolve __dirname equivalent
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+import SMTP_CONFIG from '../config/smtp.js';
 
 dotenv.config();
 
@@ -121,6 +133,56 @@ class AuthController {
         } catch (error) {
             return { message: error.message, status: 500 };
         }
+    }
+
+    async sendEmailToResetPassword(body) {
+        
+        const { email } = body;
+
+        if (!email) {
+            const errorMessage = `Preencha o email para enviar o email de recuperação de senha.`;
+            return { message: errorMessage, status: 400 };
+        }
+    
+        const user = await this.authRepository.getCompanyByEmail(email);
+        if (!user) {
+            const errorMessage = `Email não encontrado.`;
+            return { message: errorMessage, status: 400 };
+        }
+    
+        const resetToken = crypto.randomBytes(12).toString('hex').slice(0, 12);
+    
+        await this.authRepository.createResetPasswordToken(email, resetToken);
+    
+        const SMTP_TRANSPORTER = nodemailer.createTransport({
+            host: SMTP_CONFIG.host,
+            port: SMTP_CONFIG.port,
+            auth: {
+                user: SMTP_CONFIG.user,
+                pass: SMTP_CONFIG.password
+            }
+        });
+    
+        const templatePath = path.join(__dirname, '../reset-password-template.html');
+        let templateHtml = fs.readFileSync(templatePath).toString();
+    
+        const resetPasswordUrl = `${process.env.RESET_EMAIL_URL}/${email}/${resetToken}`;
+    
+        templateHtml = templateHtml.replace(/{{ reset_password_url }}/g, resetPasswordUrl);
+
+        await SMTP_TRANSPORTER.sendMail({
+            subject: "Recuperação de Senha.",
+            from: `"Suporte - AgendAi" <agendai.suporte@gmail.com>`,
+            to: email,
+            html: templateHtml
+        });
+
+        return {
+            message: {
+                success: `Email enviado com sucesso!`
+            },
+            status: 200
+        };
     }
 
 }

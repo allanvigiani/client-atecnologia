@@ -134,6 +134,25 @@ class AuthRepository {
             throw new Error(error);
         }
     }
+    
+    async createResetPasswordToken(email, resetToken) {
+        let client;
+        try {
+            const conn = await database.generateConnection();
+            client = await conn.connect();
+            const result = await conn.query(`
+                INSERT INTO reset_password (email, reset_token)
+                    VALUES ($1, $2);
+            `, [email, resetToken]);
+            client.release();
+            return result.rows;
+        } catch (error) {
+            if (client) {
+                client.release();
+            }
+            throw new Error(error);
+        }
+    }
 
 }
 

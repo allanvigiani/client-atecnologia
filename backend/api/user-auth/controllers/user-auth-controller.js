@@ -133,26 +133,26 @@ class UserAuthController {
      * @param {json} userData
      * @returns {json}
      */
-        async user(userData) {
-            try {
+    async user(userData) {
+        try {
 
-                const user = await this.userAuthRepository.getUserById(userData.payload.id);
+            const user = await this.userAuthRepository.getUserById(userData.payload.id);
 
-                return {
-                    message: {
-                        id: userData.payload.id,
-                        name: user.name,
-                        address: user.address,
-                        email: user.email,
-                        contact_phone: user.contact_phone
-                    },
-                    status: 200
-                };
+            return {
+                message: {
+                    id: userData.payload.id,
+                    name: user.name,
+                    address: user.address,
+                    email: user.email,
+                    contact_phone: user.contact_phone
+                },
+                status: 200
+            };
 
-            } catch (error) {
-                return { message: error.message, status: 500 };
-            }
+        } catch (error) {
+            return { message: error.message, status: 500 };
         }
+    }
 
 }
 

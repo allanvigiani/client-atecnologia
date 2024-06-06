@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.post('/', async (req, res) => {
     const result = await userController.createUser(req.body);
-    await userController.createUser(req.body);
+    await userController.createUser(req.body); // Resolve problema de lentidão de cadastro na Vercel
     res.status(result.status).json({ message: result.message });
 });
 
