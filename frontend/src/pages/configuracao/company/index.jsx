@@ -51,7 +51,7 @@ export default function ConfiguracaoCompany() {
                 );
                 setCompanyName(companyData.name);
                 setCompanyEmail(companyData.email);
-                setCompanyCnpj(companyData.cnpj? companyData.cnpj : '123.123.123-12');
+                setCompanyCnpj(companyData.cnpj ? companyData.cnpj : '123.123.123-12');
                 setCompanyAddress(companyData.address);
                 setCompanyId(companyData.id);
                 setCookie("companyData", JSON.stringify(companyData));
@@ -60,7 +60,7 @@ export default function ConfiguracaoCompany() {
                 setCompanyId(companyData.id);
                 setCompanyName(companyData.name);
                 setCompanyEmail(companyData.email);
-                setCompanyCnpj(companyData.cnpj? companyData.cnpj : '123.123.123-13');
+                setCompanyCnpj(companyData.cnpj ? companyData.cnpj : '123.123.123-13');
                 setCompanyAddress(companyData.address);
             }
         } catch (error) {
@@ -108,7 +108,7 @@ export default function ConfiguracaoCompany() {
                 }
             );
 
-            setCookie("companyData", JSON.stringify(companyData));
+            setCookie("companyData", companyData.message);
         } catch (err) {
             generateError(err.response?.data?.message);
         }

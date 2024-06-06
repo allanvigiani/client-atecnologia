@@ -181,6 +181,47 @@ class ServiceController {
      * @param {integer} dayId
      * @returns {json}   
       */
+    async getAllHoursByService(serviceId, companyId) {
+        try {
+
+            if (!serviceId || !companyId) {
+                const errorMessage = `ID do serviço ou da empresa não informado.`;
+                return { message: errorMessage, status: 400 };
+            }
+
+            const hours = await this.hourRepository.getHoursByService(serviceId, companyId);
+
+            if (!hours) {
+                const errorMessage = `Erro ao buscar os as horas do serviço. Tente novamente mais tarde!`;
+                return { message: errorMessage, status: 500 };
+            }
+
+            const hoursToArray = JSON.parse(hours.service_hours_id);
+
+            hoursToArray.sort((a, b) => a - b);
+
+            const hoursToResponse = {};
+
+            for (const element of hoursToArray) {
+                const hour = await this.hourRepository.getHour(element);
+                hoursToResponse[hour.id] = hour.start_time;
+            }
+
+            return { message: hoursToResponse, status: 201 };
+        } catch (error) {
+            return { message: error.message, status: 500 };
+        }
+    }
+
+    /**
+     * Lista todas as horas disponíveis por ID
+     * @date 05/03/2024 - 23:02:09
+     * 
+     * @async
+     * 
+     * @param {integer} dayId
+     * @returns {json}   
+      */
     async getHoursByService(serviceId, companyId, serviceDayId, date) {
         try {
 

@@ -7,133 +7,156 @@ import { CheckCircle, Cancel } from "@mui/icons-material";
 import Layout from "../../components/Layout";
 import axios from "axios";
 import { FaFacebook, FaInstagram } from "react-icons/fa";
-import { hasCookie, getCookie } from "cookies-next";
+import { hasCookie, getCookie, setCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import styles from "@/styles/Company.module.css";
 import ptBR from "../../components/DataGrid";
 
-const columns = [
-  { field: 'date', headerName: 'Data', flex: 1, align: 'center', headerAlign: 'center' },
-  { field: 'description', headerName: 'Serviço', flex: 1, align: 'center', headerAlign: 'center' },
-  { field: 'start_time', headerName: 'Horário', flex: 1, align: 'center', headerAlign: 'center' },
-  {
-    field: 'actions',
-    headerName: 'Ações',
-    flex: 0,
-    align: 'right',
-    headerAlign: 'center',
-    renderCell: (params) => (
-      <Box display="flex" justifyContent="flex-end" width="100%">
-        <IconButton className={styles.iconButton} onClick={() => handleAcesss(params.row.id, true)}>
-          <CheckCircle />
-        </IconButton>
-        <IconButton className={`${styles.iconButton} ${styles.error}`} onClick={() => handleAcesss(params.row.id, false)}>
-          <Cancel />
-        </IconButton>
-      </Box>
-    ),
-  },
-];
-
-const columns_show = [
-  { field: 'date', headerName: 'Data', flex: 0.5, align: 'center', headerAlign: 'center' },
-  { field: 'description', headerName: 'Serviço', flex: 1, align: 'center', headerAlign: 'center' },
-  { field: 'description_date', headerName: 'Dia da semana', flex: 1, align: 'center', headerAlign: 'center' },
-  { field: 'start_time', headerName: 'Horário', flex: 0.5, align: 'center', headerAlign: 'center' },
-];
-
 function Company() {
   const router = useRouter();
+  const [companyId, setCompanyId] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [companyInformation, setCompanyInformation] = useState("");
   const [serviceData, setServiceData] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const columns = [
+    {
+      field: 'date',
+      headerName: 'Data',
+      flex: 1,
+      align: 'center',
+      headerAlign: 'center'
+    },
+    {
+      field: 'name',
+      headerName: 'Serviço',
+      flex: 1,
+      align: 'center',
+      headerAlign: 'center'
+    },
+    {
+      field: 'start_time',
+      headerName: 'Horário',
+      flex: 1,
+      align: 'center',
+      headerAlign: 'center'
+    },
+    {
+      field: 'actions',
+      headerName: 'Ações',
+      flex: 0,
+      align: 'right',
+      headerAlign: 'center',
+      renderCell: (params) => (
+        <Box display="flex" justifyContent="flex-end" width="100%">
+          <IconButton className={styles.iconButton} onClick={() => handleAcesss(params.row.id, true)}>
+            <CheckCircle />
+          </IconButton>
+          <IconButton className={`${styles.iconButton} ${styles.error}`} onClick={() => handleAcesss(params.row.id, false)}>
+            <Cancel />
+          </IconButton>
+        </Box>
+      ),
+    },
+  ];
+
+  const columns_show = [
+    {
+      field: 'date',
+      headerName: 'Data',
+      flex: 0.5,
+      align: 'center',
+      headerAlign: 'center'
+    },
+    {
+      field: 'name',
+      headerName: 'Serviço',
+      flex: 1,
+      align: 'center',
+      headerAlign: 'center'
+    },
+    {
+      field: 'description',
+      headerName: 'Dia da semana',
+      flex: 1,
+      align: 'center',
+      headerAlign: 'center'
+    },
+    {
+      field: 'start_time',
+      headerName: 'Horário',
+      flex: 0.5,
+      align: 'center',
+      headerAlign: 'center'
+    },
+  ];
+
   useEffect(() => {
     const verifyUser = async () => {
       if (!hasCookie("user_auth_information")) {
         router.push("/login");
-      } else {
-        const fetchData = async () => {
-          try {
-            const token = getCookie("user_auth_information");
-            const CompanyData = getCookie("companyData");
-            if (!CompanyData) {
-              const { data: companyData } = await axios.get(
-                `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY}/company/`,
-                {
-                  headers: { Authorization: `Bearer ${token}` },
-                }
-              );
-              setCompanyName(companyData.name);
-            }
-            const companyData = JSON.parse(CompanyData);
-            setCompanyName(companyData.name);
-            setCompanyInformation(companyData.address);
+        return;
+      }
 
-            // Transformando os dados fornecidos no formato adequado
-            const serviceData = [
-              {
-                id: 1,
-                date: '13/05/2024',
-                description: 'Outro Serviço',
-                start_time: '11:00:00',
-                description_date: "Segunda",
-              },
-              {
-                id: 8,
-                date: '13/05/2024',
-                description: 'Outro Serviço',
-                start_time: '07:00:00',
-                description_date: "Terça",
-              },
-              {
-                id: 9,
-                date: '15/05/2024',
-                description: 'Outro Serviço',
-                start_time: '07:00:00',
-                description_date: "Quarta",
-              },
-              {
-                id: 11,
-                date: '15/05/2024',
-                description: 'Outro Serviço',
-                start_time: '07:00:00',
-                description_date: "Quinta",
-              },
-              {
-                id: 12,
-                date: '15/05/2024',
-                description: 'Outro Serviço',
-                start_time: '07:00:00',
-                description_date: "Sexta",
-              },
-              {
-                id: 13,
-                date: '15/05/2024',
-                description: 'Outro Serviço',
-                start_time: '07:00:00',
-                description_date: "Sexta",
-              },
-              {
-                id: 14,
-                date: '15/05/2024',
-                description: 'Outro Serviço',
-                start_time: '07:00:00',
-                description_date: "Sexta",
-              }
-            ];
-            setServiceData(serviceData);
-          } catch (error) {
-            console.error("Erro na solicitação GET:", error);
-          } finally {
-            setLoading(false);
-          }
-        };
-        fetchData();
+      await fetchData();
+    };
+
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const token = getCookie("user_auth_information");
+
+        const companyData = await getCompanyData(token);
+        setCompanyData(companyData);
+
+        const serviceData = await getServiceData(token, companyData.id);
+        setServiceData(serviceData);
+
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setLoading(false);
       }
     };
+
+    const getCompanyData = async (token) => {
+      const CompanyData = getCookie("companyData");
+
+      if (CompanyData) {
+        const { data } = await axios.get(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY}/company/`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        setCookie("companyData", data.message);
+        return data.message;
+      }
+
+      return JSON.parse(CompanyData);
+    };
+
+    const setCompanyData = (companyData) => {
+      setCompanyId(companyData.id);
+      setCompanyName(companyData.name);
+      setCompanyInformation(companyData.address);
+    };
+
+    const getServiceData = async (token, companyId) => {
+      const { data } = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE_STATUS}/appointments/${companyId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      return data.message.map((service) => {
+        const date = new Date(service.date);
+        const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+
+        return { ...service, date: formattedDate };
+      });
+    };
+
     verifyUser();
   }, []);
 

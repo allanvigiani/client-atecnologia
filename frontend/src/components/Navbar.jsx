@@ -3,16 +3,19 @@ import styles from "@/styles/Navbar.module.css";
 import { useRouter } from "next/router";
 import { getCookie, setCookie, hasCookie, deleteCookie } from "cookies-next";
 import axios from "axios";
+import { CircularProgress } from "@mui/material";
 
 export default function Navbar() {
   const [isNavbarVisible, setNavbarVisible] = useState(true);
   const router = useRouter();
   const [companyName, setCompanyName] = useState("");
   const [isSubMenuVisible, setSubMenuVisible] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const getCompanyData = () => {
     const data = localStorage.getItem("companyData");
     if (data) {
+      setLoading(false);
       return JSON.parse(data);
     }
     return null;
@@ -43,13 +46,15 @@ export default function Navbar() {
 
         setCompanyName(companyData.name);
         setCookie("companyData", companyData.message);
-
+        setLoading(false);
+        return;
       } catch (error) {
         console.error("Erro na solicitação GET:", error);
       }
     }
     const companyData = JSON.parse(CompanyData);
     setCompanyName(companyData.name);
+    setLoading(false);
   };
 
   const handleConfiguracaoClick = async (e) => {
@@ -58,7 +63,9 @@ export default function Navbar() {
     if (!hasCookie("user_auth_information")) {
       router.push("/login");
     }
+    setLoading(true);
     await router.push("/configuracao/company");
+    setLoading(false);
   };
 
   const handleCadastroClick = async (e) => {
@@ -117,11 +124,18 @@ export default function Navbar() {
     };
   }, []);
 
-  const toggleSubMenu = () => {
+  const toggleSubMenu = async() => {
+    await fetchData();
     setSubMenuVisible(!isSubMenuVisible);
   };
+
   return (
     <>
+      {loading && (
+        <div className={styles.loadingContainer}>
+          <CircularProgress />
+        </div>
+      )}
       <header
         className={`${styles.header} ${isNavbarVisible ? "" : styles.hidden}`}
       >
