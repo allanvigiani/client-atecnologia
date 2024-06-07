@@ -6,7 +6,7 @@
 .main__login {
     width: 100vw;
     height: 100vh;
-    background: #201b2c;
+    background: #fff;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -20,13 +20,13 @@
     align-items: center;
     flex-direction: column;
     padding: 15px;
-    background-color: #201b2c;
+    background-color: #fff;
     margin-left: -10px;
 
 }
 
 .left__login>h1 {
-    color: #77ffc0;
+    color: #4f297a;
 }
 
 .left__image {
@@ -42,7 +42,7 @@
     flex-wrap: wrap;
     padding: 15px;
 
-    background-color: #201b2c;
+    background-color: #fff;
 
 }
 
@@ -53,7 +53,7 @@
     align-items: center;
     flex-direction: column;
     padding: 30px 35px;
-    background: #2f2841;
+    background: #4f297a;
     border-radius: 20px;
     box-shadow: 0px 10px 40px #00000056;
 }
@@ -69,7 +69,7 @@
     line-height: 1.2;
     text-align: center;
 
-    color: #77ffc0;
+    color: #fff;
     font-weight: 800;
     margin: 0;
     margin-top: 10%;
@@ -126,15 +126,15 @@
     -o-transition: all 0.4s;
     -moz-transition: all 0.4s;
 
-    background: -webkit-transition(to left, #30f026, #77ffc0);
-    background: -o-transition(to left, #30f026, #77ffc0);
-    background: -moz-transitio(to left, #30f026, #77ffc0);
-    background: linear-gradient(to left, #30f026, #77ffc0);
+    background: -webkit-transition(to left,#10031e, #fff);
+    background: -o-transition(to left, #10031e, #fff);
+    background: -moz-transitio(to left, #10031e, #fff);
+    background: linear-gradient(to left, #10031e, #fff);
 }
 
 .focus__input::after {
     font-size: 15px;
-    color: #999999;
+    color: #fff;
     line-height: 1.2;
 
     content: attr(data__placeholder);
@@ -184,12 +184,9 @@
     text-transform: uppercase;
     font-weight: 800;
     letter-spacing: 3px;
-    color: #2b134b;
+    color: #4f297a;
 
-    background: -webkit-transition(to left, #10a608, #77ffc0);
-    background: -o-transition(to left, #10a608, #77ffc0);
-    background: -moz-transitio(to left, #10a608, #77ffc0);
-    background: linear-gradient(to left, #10a608, #77ffc0);
+    background: fff;
 }
 
 .right__form__btn:hover {
@@ -206,7 +203,7 @@
 
 .text__create {
     font-size: 14px;
-    color: #adadad;
+    color: #fff;
     line-height: 1.5;
     padding-right: 5px;
     text-decoration: none;
@@ -214,7 +211,7 @@
 
 .text__create__ancora {
     font-size: 14px;
-    color: #77ffc0;
+    color: #b372fc;
     line-height: 1.5;
     text-decoration: none;
 }

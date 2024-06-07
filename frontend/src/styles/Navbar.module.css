@@ -10,7 +10,7 @@
     align-items: center;
     z-index: 99;
     transition: transform 0.3s ease-in-out;
-    background-color: rgba(57, 16, 103, 0.95);
+    background-color: rgba(57, 16, 103);
     padding: 10px 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }

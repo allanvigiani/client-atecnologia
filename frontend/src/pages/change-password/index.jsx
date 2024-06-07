@@ -9,6 +9,7 @@ export default function ChangePassword() {
     const [emailStyle, setEmailStyle] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const router = useRouter();
+    const [randomValue, setRandomValue] = useState(Math.random());
 
     const [values, setValues] = useState({
         email: "",
@@ -67,10 +68,10 @@ export default function ChangePassword() {
                 <div className={`${styles.main__login}`}>
                     <div className={`${styles.left__login}`}>
                         <h1>
-                            Recuperar Senha
+                            Esqueceu sua senha?
                         </h1>
                         <img
-                            src={`/images/server.svg`}
+                            src={`/images/forgot-password-animate.svg?${randomValue}`}
                             className={`${styles.left__image}`}
                             alt="recover-password-animation"
                         />
@@ -82,7 +83,7 @@ export default function ChangePassword() {
                                 className={`${styles.right__form}`}
                             >
                                 <span className={`${styles.right__form__title}`}>
-                                    RECUPERAR SENHA
+                                    Digite seu e-mail
                                 </span>
                                 <div className={`${styles.wrap__input}`}>
                                     <input

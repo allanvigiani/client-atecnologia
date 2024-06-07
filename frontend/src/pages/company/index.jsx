@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import styles from "@/styles/Company.module.css";
 import ptBR from "../../components/DataGrid";
+import { CircularProgress } from "@mui/material";
 
 function Company() {
   const router = useRouter();
@@ -197,6 +198,11 @@ function Company() {
   return (
     <Layout>
       <>
+        {loading && (
+          <div className={styles.loadingContainer}>
+            <CircularProgress />
+          </div>
+        )}
         <section className={styles.home}>
           <div className={styles.container}>
             <Typography variant="h1" gutterBottom>

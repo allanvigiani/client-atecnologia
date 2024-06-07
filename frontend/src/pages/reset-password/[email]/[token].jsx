@@ -9,6 +9,7 @@ export default function ResetPassword() {
     const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const router = useRouter();
+    const [randomValue, setRandomValue] = useState(Math.random());
 
     const { email, token } = router.query;
 
@@ -68,7 +69,7 @@ export default function ResetPassword() {
                             Redefinir Senha
                         </h1>
                         <img
-                            src={`/images/server.svg`}
+                            src={`/images/forgot-password-animate(1).svg?${randomValue}`}
                             className={`${styles.left__image}`}
                             alt="reset-password-animation"
                         />

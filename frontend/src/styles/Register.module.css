@@ -6,7 +6,7 @@
 .main__login {
     width: 100vw;
     height: 100vh;
-    background: #201b2c;
+    background: #fff;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -20,13 +20,13 @@
     align-items: center;
     flex-direction: column;
     padding: 15px;
-    background-color: #201b2c;
+    background-color: #fff;
     margin-left: -1vh;
 
 }
 
 .left__login>h1 {
-    color: #77ffc0;
+    color: #4f297a;
     text-align: center;
 }
 
@@ -43,7 +43,7 @@
     flex-wrap: wrap;
     padding: 15px;
 
-    background-color: #201b2c;
+    background-color: #fff;
 
 }
 
@@ -54,9 +54,9 @@
     align-items: center;
     flex-direction: column;
     padding: 30px 35px;
-    background: #2f2841;
+    background: #4f297a;
     border-radius: 20px;
-    box-shadow: 0px 10px 40px #00000056;
+    box-shadow: 0px 10px 40px #2f2841;
 }
 
 .right__form {
@@ -70,7 +70,7 @@
     line-height: 1.2;
     text-align: center;
 
-    color: #77ffc0;
+    color: #fff;
     font-weight: 800;
     margin: 0;
     margin-top: 5%;
@@ -84,7 +84,7 @@
 .wrap__input {
     width: 100%;
     position: relative;
-    border-bottom: 2px solid #adadad;
+    border-bottom: 2px solid #fff;
     margin-bottom: 37px;
 }
 
@@ -111,7 +111,7 @@
     left: 0;
 
     pointer-events: none;
-    color: #adadad;
+    color: #fff;
 }
 
 .focus__input::before {
@@ -128,15 +128,15 @@
     -o-transition: all 0.4s;
     -moz-transition: all 0.4s;
 
-    background: -webkit-transition(to left, #30f026, #77ffc0);
-    background: -o-transition(to left, #30f026, #77ffc0);
-    background: -moz-transitio(to left, #30f026, #77ffc0);
-    background: linear-gradient(to left, #30f026, #77ffc0);
+    background: -webkit-transition(to left, #fff, #4f297a);
+    background: -o-transition(to left, #fff, #4f297a);
+    background: -moz-transitio(to left, #fff, #4f297a);
+    background: linear-gradient(to left, #fff, #4f297a);
 }
 
 .focus__input::after {
     font-size: 15px;
-    color: #999999;
+    color: #fff;
     line-height: 1.2;
 
     content: attr(data__placeholder);
@@ -187,10 +187,7 @@
     letter-spacing: 3px;
     color: #2b134b;
 
-    background: -webkit-transition(to left, #10a608, #77ffc0);
-    background: -o-transition(to left, #10a608, #77ffc0);
-    background: -moz-transitio(to left, #10a608, #77ffc0);
-    background: linear-gradient(to left, #10a608, #77ffc0);
+    background: fff;
 }
 
 .right__form__btn:hover {
@@ -206,7 +203,7 @@
 
 .text__create {
     font-size: 14px;
-    color: #adadad;
+    color: #fff;
     line-height: 1.5;
     padding-right: 5px;
     text-decoration: none;
@@ -214,7 +211,7 @@
 
 .text__create__ancora {
     font-size: 14px;
-    color: #77ffc0;
+    color: #b372fc;
     line-height: 1.5;
     text-decoration: none;
 }

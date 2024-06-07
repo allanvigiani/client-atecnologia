@@ -3,7 +3,7 @@ import styles from "@/styles/Navbar.module.css";
 import { useRouter } from "next/router";
 import { getCookie, setCookie, hasCookie, deleteCookie } from "cookies-next";
 import axios from "axios";
-import { CircularProgress } from "@mui/material";
+import { Avatar, CircularProgress, IconButton, Menu, MenuItem } from "@mui/material";
 
 export default function Navbar() {
   const [isNavbarVisible, setNavbarVisible] = useState(true);
@@ -11,6 +11,7 @@ export default function Navbar() {
   const [companyName, setCompanyName] = useState("");
   const [isSubMenuVisible, setSubMenuVisible] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const getCompanyData = () => {
     const data = localStorage.getItem("companyData");
@@ -124,9 +125,13 @@ export default function Navbar() {
     };
   }, []);
 
-  const toggleSubMenu = async() => {
-    await fetchData();
-    setSubMenuVisible(!isSubMenuVisible);
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
   };
 
   return (
@@ -143,43 +148,29 @@ export default function Navbar() {
         <nav className={`${styles.navigation}`}>
           <a href="/">Inicio</a>
           <a onClick={handleCadastroClick}>Cadastrar Serviços</a>
-          <img
-            src="/images/profile.png"
-            alt="user"
-            className={styles["user-pic"]}
-            onClick={toggleSubMenu}
-          />
-          <div className={`${styles["sub-menu-wrap"]} ${isSubMenuVisible ? styles.visible : ""}`}>
-            <div className={styles["sub-menu"]}>
-              <div className={styles["user-info"]}>
-                <img
-                  src="/images/profile.png"
-                  alt="user"
-                  className={styles["img-dropdown"]}
-                />
-                <h3>{companyName}</h3>
-              </div>
-              <hr />
-              <a className={styles["sub-menu-link"]}
-                onClick={handleConfiguracaoClick}
-              >
-                <img src="/images/setting.png"
-                  alt="configuracao"
-                  className={styles["img-dropdown"]} />
-                <p>Editar Informações</p>
-                <span> &gt; </span>
-              </a>
-              <a className={styles["sub-menu-link"]}
-                onClick={logOut}
-              >
-                <img src="/images/logout.png"
-                  alt="deslogar"
-                  className={styles["img-dropdown"]} />
-                <p>Deslogar</p>
-                <span> &gt; </span>
-              </a>
-            </div>
-          </div>
+          <IconButton onClick={handleMenuOpen} sx={{ p: 0.5, ml: 4, bgcolor: '#e5e5e5', borderRadius: '50%' }}>
+            <Avatar alt="user" src="/images/profile.png" />
+          </IconButton>
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+          >
+            <MenuItem onClick={handleConfiguracaoClick}>
+              <Avatar
+                src="/images/setting.png"
+                sx={{ marginRight: 1 }}
+              />
+              Editar Informações
+            </MenuItem>
+            <MenuItem onClick={logOut}>
+              <Avatar
+                src="/images/logout.png"
+                sx={{ marginRight: 1 }}
+              />
+              Deslogar
+            </MenuItem>
+          </Menu>
         </nav>
       </header>
     </>
