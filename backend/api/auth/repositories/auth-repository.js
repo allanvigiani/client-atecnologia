@@ -154,6 +154,51 @@ class AuthRepository {
         }
     }
 
+    async getResetPasswordToken(email, resetToken) {
+
+        try {
+            const conn = await database.generateConnection();
+            const result = await conn.query(`
+                SELECT email, reset_token, expired_at FROM reset_password 
+                    WHERE email = $1 AND reset_token = $2;
+            `, [email, resetToken]);
+
+            return result.rows[0];
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
+    async updateCompanyPassword(email, hash) {
+        try {
+            const conn = await database.generateConnection();
+            const result = await conn.query(`
+                UPDATE company SET password = $1 WHERE email = $2;
+            `, [hash, email]);
+            return result.rows;
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
+    async deleteResetPasswordToken(email) {
+        let client;
+        try {
+            const conn = await database.generateConnection();
+            client = await conn.connect();
+            const result = await conn.query(`
+                DELETE FROM reset_password WHERE email = $1;
+            `, [email]);
+            client.release();
+            return result.rows;
+        } catch (error) {
+            if (client) {
+                client.release();
+            }
+            throw new Error(error);
+        }
+    }
+
 }
 
 export default AuthRepository;

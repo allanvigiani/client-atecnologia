@@ -28,6 +28,7 @@ class AuthController {
 
     constructor(authRepository) {
         this.authRepository = authRepository;
+        this.saltRandsPassword = 10;
     }
 
     /**
@@ -180,6 +181,54 @@ class AuthController {
         return {
             message: {
                 success: `Email enviado com sucesso!`
+            },
+            status: 200
+        };
+    }
+
+    async resetPassword(body) {
+        
+        const { email, token, password } = body;
+
+        if (!email) {
+            const errorMessage = `Email não passado como parâmetro.`;
+            return { message: errorMessage, status: 400 };
+        }
+
+        if (!token) {
+            const errorMessage = `Token não passado como parâmetro.`;
+            return { message: errorMessage, status: 400 };
+        }
+    
+        const user = await this.authRepository.getCompanyByEmail(email);
+        if (!user) {
+            const errorMessage = `Email não cadastrado.`;
+            return { message: errorMessage, status: 400 };
+        }
+    
+        const resetToken = await this.authRepository.getResetPasswordToken(email, token);
+        if (!resetToken) {
+            const errorMessage = `Token inválido.`;
+            return { message: errorMessage, status: 400 };
+        }
+
+        const expiredAt = resetToken.expired_at;
+
+        if (expiredAt < new Date()) {
+            const errorMessage = `Token expirado.`;
+            return { message: errorMessage, status: 400 };
+        }
+
+
+        const hash = await bcrypt.hash(password, this.saltRandsPassword);
+        
+        await this.authRepository.updateCompanyPassword(email, hash);
+
+        await this.authRepository.deleteResetPasswordToken(email);
+
+        return {
+            message: {
+                success: `Senha alterada com sucesso!`
             },
             status: 200
         };

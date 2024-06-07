@@ -5,14 +5,12 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import Head from "next/head";
 
-export default function ChangePassword() {
-    const [emailStyle, setEmailStyle] = useState("");
+export default function ResetPassword() {
+    const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const router = useRouter();
 
-    const [values, setValues] = useState({
-        email: "",
-    });
+    const { email, token } = router.query;
 
     const generateError = (err) =>
         toast.error(err, {
@@ -21,24 +19,24 @@ export default function ChangePassword() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const email = e.target.elements.email.value;
 
-        if (email.trim() === "") {
-            setErrorMessage("O campo de e-mail não pode estar vazio.");
+        if (password.trim() === "") {
+            setErrorMessage("O campo de senha não pode estar vazio.");
         } else {
             setErrorMessage("");
             try {
-
                 const { data } = await axios.post(
-                    `${process.env.NEXT_PUBLIC_BACKEND_URL_AUTH_LOCAL}/auth/send-email-password`,
-                    { email }
+                    `${process.env.NEXT_PUBLIC_BACKEND_URL_AUTH_LOCAL}/auth/reset-password`,
+                    { email: email, token: token, password: password }
                 );
 
                 if (data.message.success) {
                     const response = data.message.success;
                     toast.success(response);
 
-                    router.push("/login");
+                    setTimeout(() => {
+                        router.push("/login");
+                    }, 4000);
                 }
             } catch (err) {
                 if (err.response && err.response.data) {
@@ -46,11 +44,11 @@ export default function ChangePassword() {
 
                     generateError(
                         apiError.message ||
-                        "Ocorreu um erro ao processar a recuperação de senha. Tente novamente."
+                        "Ocorreu um erro ao processar a troca de senha. Tente novamente."
                     );
                 } else {
                     generateError(
-                        "Ocorreu um erro ao processar a recuperação de senha. Tente novamente."
+                        "Ocorreu um erro ao processar a troca de senha. Tente novamente."
                     );
                 }
             }
@@ -61,18 +59,18 @@ export default function ChangePassword() {
         <>
             <Head>
                 <link rel="shortcut icon" href="/favicon.ico" />
-                <title>ATecnologia - Recuperar Senha</title>
+                <title>ATecnologia - Redefinir Senha</title>
             </Head>
             <div className={`${styles.container}`}>
                 <div className={`${styles.main__login}`}>
                     <div className={`${styles.left__login}`}>
                         <h1>
-                            Recuperar Senha
+                            Redefinir Senha
                         </h1>
                         <img
                             src={`/images/server.svg`}
                             className={`${styles.left__image}`}
-                            alt="recover-password-animation"
+                            alt="reset-password-animation"
                         />
                     </div>
                     <div className={`${styles.right__login}`}>
@@ -82,28 +80,19 @@ export default function ChangePassword() {
                                 className={`${styles.right__form}`}
                             >
                                 <span className={`${styles.right__form__title}`}>
-                                    RECUPERAR SENHA
+                                    REDEFINIR SENHA
                                 </span>
                                 <div className={`${styles.wrap__input}`}>
                                     <input
-                                        className={`${emailStyle !== ""
-                                                ? `${styles.has__val} ${styles.input}`
-                                                : `${styles.input}`
-                                            }`}
-                                        type="email"
-                                        value={emailStyle}
-                                        name="email"
-                                        onChange={(e) => {
-                                            setEmailStyle(e.target.value);
-                                            setValues({
-                                                ...values,
-                                                [e.target.name]: e.target.value,
-                                            });
-                                        }}
+                                        className={`${styles.input}`}
+                                        type="password"
+                                        value={password}
+                                        name="password"
+                                        onChange={(e) => setPassword(e.target.value)}
                                     />
                                     <span
                                         className={`${styles.focus__input}`}
-                                        data__placeholder="E-mail"
+                                        data__placeholder="Nova Senha"
                                     ></span>
                                 </div>
                                 <div className={`${styles.error__message}`}>
