@@ -1,6 +1,19 @@
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 
+import crypto from 'crypto';
+import nodemailer from 'nodemailer';
+import * as fs from 'fs';
+import path from 'path';
+
+import { fileURLToPath } from 'url';
+
+// Resolve __dirname equivalent
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+import SMTP_CONFIG from '../config/smtp.js';
+
 dotenv.config();
 
 /**
@@ -128,6 +141,102 @@ class UserController {
         } catch (error) {
             return { message: error.message, status: 500 };
         }
+    }
+
+    async sendEmailToResetPassword(body) {
+        
+        const { email } = body;
+
+        if (!email) {
+            const errorMessage = `Preencha o email para enviar o email de recuperação de senha.`;
+            return { message: errorMessage, status: 400 };
+        }
+    
+        const user = await this.authRepository.getUserByEmail(email);
+        if (!user) {
+            const errorMessage = `Email não encontrado.`;
+            return { message: errorMessage, status: 400 };
+        }
+    
+        const resetToken = Math.floor(1000 + Math.random() * 9000);
+    
+        await this.authRepository.createResetPasswordToken(email, resetToken);
+    
+        const SMTP_TRANSPORTER = nodemailer.createTransport({
+            host: SMTP_CONFIG.host,
+            port: SMTP_CONFIG.port,
+            auth: {
+                user: SMTP_CONFIG.user,
+                pass: SMTP_CONFIG.password
+            }
+        });
+    
+        const templatePath = path.join(__dirname, '../reset-password-template.html');
+        let templateHtml = fs.readFileSync(templatePath).toString();
+        
+        templateHtml = templateHtml.replace(/{{ password_code }}/g, resetToken);
+
+        await SMTP_TRANSPORTER.sendMail({
+            subject: "Recuperação de Senha - APP.",
+            from: `"Suporte - AgendAi" <agendai.suporte@gmail.com>`,
+            to: email,
+            html: templateHtml
+        });
+
+        return {
+            message: {
+                success: `Email enviado com sucesso!`
+            },
+            status: 200
+        };
+    }
+
+    async resetPassword(body) {
+        
+        const { email, code, password } = body;
+
+        if (!email) {
+            const errorMessage = `Email não passado como parâmetro.`;
+            return { message: errorMessage, status: 400 };
+        }
+
+        if (!code) {
+            const errorMessage = `Código não passado como parâmetro.`;
+            return { message: errorMessage, status: 400 };
+        }
+    
+        const user = await this.authRepository.getUserByEmail(email);
+        if (!user) {
+            const errorMessage = `Email não cadastrado.`;
+            return { message: errorMessage, status: 400 };
+        }
+    
+        const resetCode = await this.authRepository.getResetPasswordCode(email, code);
+        if (!resetCode) {
+            const errorMessage = `Código inválido.`;
+            return { message: errorMessage, status: 400 };
+        }
+
+        const expiredAt = resetCode.expired_at;
+
+        if (expiredAt < new Date()) {
+            const errorMessage = `Código expirado.`;
+            return { message: errorMessage, status: 400 };
+        }
+
+
+        const hash = await bcrypt.hash(password, this.saltRandsPassword);
+        
+        await this.authRepository.updateUserPassword(email, hash);
+
+        await this.authRepository.deleteResetPasswordCode(email);
+
+        return {
+            message: {
+                success: `Senha alterada com sucesso!`
+            },
+            status: 200
+        };
     }
 
 }

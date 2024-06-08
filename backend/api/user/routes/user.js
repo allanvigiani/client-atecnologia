@@ -27,4 +27,14 @@ router.get('/', authenticateToken, async (req, res) => {
     res.status(result.status).json({ message: result.message });
 });
 
+router.post('/send-email-password', async (req, res) => {
+    const result = await authController.sendEmailToResetPassword(req.body);
+    res.status(result.status).json({ message: result.message });
+});
+
+router.post('/reset-password', async (req, res) => {
+    const result = await authController.resetPassword(req.body);
+    res.status(result.status).json({ message: result.message });
+});
+
 export default router;

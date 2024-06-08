@@ -96,6 +96,47 @@ class UserRepository {
         }
     }
 
+    async getResetPasswordCode(email, resetCode) {
+
+        try {
+            const conn = await database.generateConnection();
+            const result = await conn.query(`
+                SELECT email, reset_code, expired_at FROM reset_password_code 
+                    WHERE email = $1 AND reset_code = $2;
+            `, [email, resetCode]);
+
+            return result.rows[0];
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
+    async updateUserPassword(email, hash) {
+        try {
+            const conn = await database.generateConnection();
+            const result = await conn.query(`
+                UPDATE users SET password = $1 WHERE email = $2;
+            `, [hash, email]);
+            return result.rows;
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
+    async deleteResetPasswordCode(email) {
+
+        try {
+            const conn = await database.generateConnection();
+            const result = await conn.query(`
+                DELETE FROM reset_password_code WHERE email = $1;
+            `, [email]);
+
+            return result.rows;
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
 }
 
 export default UserRepository;
