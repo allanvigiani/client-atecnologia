@@ -3,18 +3,19 @@ import styles from "@/styles/Schedule.module.css";
 import Layout from "../../components/Layout";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import { deleteCookie, hasCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import Select from 'react-select';
 import { DataGrid } from '@mui/x-data-grid';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import { EditNote, Cancel } from "@mui/icons-material";
 import CircularProgress from '@mui/material/CircularProgress';
+import TextField from '@mui/material/TextField';
+import FormHelperText from '@mui/material/FormHelperText';
 import ptBR from "../../components/DataGrid";
-import { set } from "react-hook-form";
 
 export default function Schedule() {
   const router = useRouter();
@@ -37,6 +38,7 @@ export default function Schedule() {
   const [serviceLabel, setServiceLabel] = useState('');
   const [loading, setLoading] = useState(true);
   const [formLoading, setFormLoading] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const columns = [
     { field: 'name', headerName: 'Serviços', flex: 0.5, align: 'center', headerAlign: 'center' },
@@ -139,11 +141,38 @@ export default function Schedule() {
     setServiceHourValue([]);
     setShowModal(false);
     setIsUpdating(false);
+    setErrors({});
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormLoading(true);
+    let formErrors = {};
+
+    if (!serviceName) {
+      formErrors.serviceName = 'Nome do serviço é obrigatório';
+    }
+    if (!professionalName) {
+      formErrors.professionalName = 'Nome do profissional é obrigatório';
+    }
+    if (!price) {
+      formErrors.price = 'Preço é obrigatório';
+    }
+    if (!serviceValue) {
+      formErrors.serviceValue = 'Serviço é obrigatório';
+    }
+    if (serviceDayValue.length === 0) {
+      formErrors.serviceDayValue = 'Selecione pelo menos um dia';
+    }
+    if (serviceHourValue.length === 0) {
+      formErrors.serviceHourValue = 'Selecione pelo menos uma hora';
+    }
+
+    if (Object.keys(formErrors).length > 0) {
+      setErrors(formErrors);
+      setFormLoading(false);
+      return;
+    }
 
     try {
       if (!hasCookie("user_auth_information")) {
@@ -330,6 +359,7 @@ export default function Schedule() {
     }
 
     try {
+      setLoading(true);
       const token = getCookie("user_auth_information");
 
       const { data } = await axios.delete(
@@ -344,7 +374,8 @@ export default function Schedule() {
       const response = data.message;
       toast.success(response);
       clearForm();
-      verifyUser();
+      await verifyUser();
+      setLoading(false);
     } catch (err) {
       generateError(err.response?.data?.message);
     }
@@ -361,8 +392,8 @@ export default function Schedule() {
         price: price,
         service_type_id: servicetypeId,
         other_service_type: serviceDescription,
-        service_hours_id: serviceHourValue.length === 0 ? serviceHour : serviceHourValue,
-        service_days_id: serviceDayValue.length === 0 ? serviceDay : serviceDayValue
+        service_hours_id: serviceHourValue,
+        service_days_id: serviceDayValue
       };
 
       const { data } = await axios.put(
@@ -431,12 +462,14 @@ export default function Schedule() {
                   <h2 className={`${styles.details}`}>{isUpdating ? 'Atualizar Serviço' : 'Adicionar Serviço'}</h2>
                   <div className={`${styles.input__box}`}>
                     <span className={`${styles.details}`}>Nome do Serviço:</span>
-                    <input
+                    <TextField
                       type="text"
                       name="service_name"
                       value={serviceName}
                       onChange={(e) => setServiceName(e.target.value)}
-                      required
+                      error={!!errors.serviceName}
+                      helperText={errors.serviceName}
+                      fullWidth={true}
                     />
                   </div>
                   <div className={`${styles.input__box}`}>
@@ -452,20 +485,25 @@ export default function Schedule() {
                       defaultValue={isUpdating ? { value: servicetypeId, label: serviceLabel } : null}
                       onChange={(selectedOption) => setServiceValue(selectedOption.value)}
                     />
+                    {errors.serviceValue && (
+                      <FormHelperText error>{errors.serviceValue}</FormHelperText>
+                    )}
                   </div>
                   <div className={`${styles.input__box}`}>
                     <span className={`${styles.details}`}>Funcionário:</span>
-                    <input
+                    <TextField
                       type="text"
                       name="professional_name"
                       value={professionalName}
                       onChange={(e) => setProfessionalName(e.target.value)}
-                      required
+                      error={!!errors.professionalName}
+                      helperText={errors.professionalName}
+                      fullWidth={true}
                     />
                   </div>
                   <div className={`${styles.input__box}`}>
                     <span className={`${styles.details}`}>Preço:</span>
-                    <input
+                    <TextField
                       type="text"
                       name="price"
                       value={price}
@@ -473,8 +511,10 @@ export default function Schedule() {
                         formatarCampo(e);
                         setPrice(e.target.value);
                       }}
-                      required
+                      error={!!errors.price}
+                      helperText={errors.price}
                       placeholder="Ex: 500"
+                      fullWidth={true}
                     />
                   </div>
                   <div className={`${styles.input__box}`}>
@@ -518,10 +558,9 @@ export default function Schedule() {
                 </>
               )}
             </form>
-            <ToastContainer />
           </Box>
         </Modal>
-
+        <ToastContainer />
       </>
     </Layout>
   );

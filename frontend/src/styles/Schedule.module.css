@@ -151,7 +151,7 @@
 }
 
 .form-button-modal {
-    background-color: #4CAF50;
+    background-color: rgba(57, 16, 103);
     color: white;
     padding: 14px 20px;
     margin: 8px 0;
@@ -163,7 +163,7 @@
 }
 
 .form-button-modal:hover {
-    background-color: #45a049;
+    background-color: rgb(67, 28, 112);
 }
 
 .modal-label {
@@ -174,6 +174,7 @@
 
 form .input__box {
     width: calc(100% / 2 - 20px);
+    padding: 10px;
 }
 
 .input__box .details {
@@ -209,7 +210,7 @@ form .input__box {
 }
 
 .btn-popup svg:hover {
-    color: #10a608;
+    color: rgba(57, 16, 103);
 }
 
 .loadingContainer {
