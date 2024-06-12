@@ -84,7 +84,7 @@ class ScheduleStatusController{
                 return { message: errorMessage, status: 400 };
             }
 
-            const verifyExistingSchedule = await this.scheduleStatusRepository.getScheduleById(schedule_id);
+            const verifyExistingSchedule = await this.scheduleStatusRepository.getScheduleByScheduleId(schedule_id);
             if (!verifyExistingSchedule) {
                 return { message: `Serviço não encontrado.`, status: 404 };
             }

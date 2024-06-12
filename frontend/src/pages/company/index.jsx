@@ -9,7 +9,7 @@ import axios from "axios";
 import { FaFacebook, FaInstagram } from "react-icons/fa";
 import { hasCookie, getCookie, setCookie } from "cookies-next";
 import { useRouter } from "next/router";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import styles from "@/styles/Company.module.css";
 import ptBR from "../../components/DataGrid";
 import { CircularProgress } from "@mui/material";
@@ -172,22 +172,21 @@ function Company() {
     const confirmed = window.confirm(`Tem certeza que deseja ${status ? "aceitar" : "cancelar"} esse agendamento?`);
     if (confirmed) {
       try {
+        const form = {
+          schedule_id: id,
+          status: 2
+        }
+
         const { data: statusUpdate } = await axios.put(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE}/scheduled-services/${id}`,
-          { status },
+          `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE_STATUS}/`,
+          form,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
 
-        if (statusUpdate.message.result) {
-          toast.success(statusUpdate.message.result);
-          // Atualizar o estado do serviço após a alteração
-          setServiceData((prevData) =>
-            prevData.map((service) =>
-              service.id === id ? { ...service, status } : service
-            )
-          );
+        if (statusUpdate.message) {
+          toast.success(statusUpdate.message);
         }
       } catch (error) {
         toast.error("Erro ao confirmar serviço!");
@@ -271,6 +270,7 @@ function Company() {
             />
           </Box>
         </div>
+        <ToastContainer />
       </>
     </Layout>
   );

@@ -91,14 +91,20 @@ class ScheduleRepository {
         }
     }
 
-    async getScheduleById(id) {
+    async getScheduleByScheduleId(id) {
         let client;
         try {
             const conn = await database.generateConnection();
             client = await conn.connect();
-            const result = await conn.query(`SELECT * FROM schedule WHERE service_id = $1;`, [id]);
+            const result = await conn.query(`SELECT * FROM schedule s
+                                             INNER JOIN schedule_status ss ON s.id = ss.schedule_id
+                                             INNER JOIN status st ON CAST(ss.status_id AS INTEGER) = st.id
+                                             INNER JOIN services s2 ON s.service_id = s2.id
+                                             INNER JOIN service_days sd ON s.service_day_id = sd.id 
+                                             INNER JOIN service_hours sh ON s.service_hour_id = sh.id 
+                                             WHERE ss.schedule_id = $1;`, [id]);
             client.release();
-            return result.rows[0];
+            return result.rows;
         } catch (error) {
             if (client) {
                 client.release();
