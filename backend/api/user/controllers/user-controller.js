@@ -144,24 +144,24 @@ class UserController {
     }
 
     async sendEmailToResetPassword(body) {
-        
+
         const { email } = body;
 
         if (!email) {
             const errorMessage = `Preencha o email para enviar o email de recuperação de senha.`;
             return { message: errorMessage, status: 400 };
         }
-    
-        const user = await this.authRepository.getUserByEmail(email);
+
+        const user = await this.userRepository.getUserByEmail(email);
         if (!user) {
             const errorMessage = `Email não encontrado.`;
             return { message: errorMessage, status: 400 };
         }
-    
+
         const resetToken = Math.floor(1000 + Math.random() * 9000);
-    
-        await this.authRepository.createResetPasswordToken(email, resetToken);
-    
+
+        await this.userRepository.createResetPasswordToken(email, resetToken);
+
         const SMTP_TRANSPORTER = nodemailer.createTransport({
             host: SMTP_CONFIG.host,
             port: SMTP_CONFIG.port,
@@ -170,10 +170,10 @@ class UserController {
                 pass: SMTP_CONFIG.password
             }
         });
-    
+
         const templatePath = path.join(__dirname, '../reset-password-template.html');
         let templateHtml = fs.readFileSync(templatePath).toString();
-        
+
         templateHtml = templateHtml.replace(/{{ password_code }}/g, resetToken);
 
         await SMTP_TRANSPORTER.sendMail({
@@ -192,7 +192,7 @@ class UserController {
     }
 
     async resetPassword(body) {
-        
+
         const { email, code, password } = body;
 
         if (!email) {
@@ -204,13 +204,13 @@ class UserController {
             const errorMessage = `Código não passado como parâmetro.`;
             return { message: errorMessage, status: 400 };
         }
-    
+
         const user = await this.authRepository.getUserByEmail(email);
         if (!user) {
             const errorMessage = `Email não cadastrado.`;
             return { message: errorMessage, status: 400 };
         }
-    
+
         const resetCode = await this.authRepository.getResetPasswordCode(email, code);
         if (!resetCode) {
             const errorMessage = `Código inválido.`;
@@ -226,7 +226,7 @@ class UserController {
 
 
         const hash = await bcrypt.hash(password, this.saltRandsPassword);
-        
+
         await this.authRepository.updateUserPassword(email, hash);
 
         await this.authRepository.deleteResetPasswordCode(email);

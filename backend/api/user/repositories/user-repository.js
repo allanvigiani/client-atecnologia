@@ -58,7 +58,7 @@ class UserRepository {
 
             const result = await conn.query(`SELECT * FROM users WHERE email = $1;`, [`${email}`]);
 
-            return result.rows.length == 0 ? true : false;
+            return result.rowCount > 0 ? result.rows[0] : false;
         } catch (error) {
             throw new Error(error);
         }
@@ -92,6 +92,26 @@ class UserRepository {
 
             return result.rows;
         } catch (error) {
+            throw new Error(error);
+        }
+    }
+
+    async createResetPasswordToken(email, resetToken) {
+        let client;
+
+        try {
+            const conn = await database.generateConnection();
+            client = await conn.connect();
+            const result = await conn.query(`
+                INSERT INTO reset_password (email, reset_token)
+                    VALUES ($1, $2);
+            `, [email, resetToken]);
+            client.release();
+            return result.rows;
+        } catch (error) {
+            if (client) {
+                client.release();
+            }
             throw new Error(error);
         }
     }
