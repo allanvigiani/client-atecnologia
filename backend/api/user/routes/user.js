@@ -28,12 +28,12 @@ router.get('/', authenticateToken, async (req, res) => {
 });
 
 router.post('/send-email-password', async (req, res) => {
-    const result = await authController.sendEmailToResetPassword(req.body);
+    const result = await userController.sendEmailToResetPassword(req.body);
     res.status(result.status).json({ message: result.message });
 });
 
 router.post('/reset-password', async (req, res) => {
-    const result = await authController.resetPassword(req.body);
+    const result = await userController.resetPassword(req.body);
     res.status(result.status).json({ message: result.message });
 });
 
