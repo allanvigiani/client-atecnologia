@@ -171,11 +171,21 @@ class AuthController {
     
         templateHtml = templateHtml.replace(/{{ reset_password_url }}/g, resetPasswordUrl);
 
-        await SMTP_TRANSPORTER.sendMail({
-            subject: "Recuperação de Senha.",
-            from: `"Suporte - AgendAi" <agendai.suporte@gmail.com>`,
-            to: email,
-            html: templateHtml
+        await new Promise((resolve, reject) => {
+            SMTP_TRANSPORTER.sendMail({
+                subject: "Recuperação de Senha.",
+                from: `"Suporte - AgendAi" <agendai.suporte@gmail.com>`,
+                to: email,
+                html: templateHtml
+            }, (err, info) => {
+                if (err) {
+                    console.error(err);
+                    reject(err);
+                } else {
+                    console.log(info);
+                    resolve(info);
+                }
+            });
         });
 
         return {
