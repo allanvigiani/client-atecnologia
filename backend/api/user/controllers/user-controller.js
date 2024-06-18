@@ -176,21 +176,25 @@ class UserController {
 
         templateHtml = templateHtml.replace(/{{ password_code }}/g, resetToken);
         
+        const mailData = {
+            from: {
+                name: "AgendAi",
+                address: "agendai.support@gmail.com",
+            },
+            replyTo: email,
+            to: email,
+            subject: "Recuperação de Senha - APP.",
+            html: templateHtml,
+        };
+        
         await new Promise((resolve, reject) => {
-            SMTP_TRANSPORTER.sendMail({
-                subject: "Recuperação de Senha - APP.",
-                from: `"Suporte - AgendAi" <agendai.suporte@gmail.com>`,
-                to: email,
-                html: templateHtml
-            }, (err, info) => {
+            SMTP_TRANSPORTER.sendMail(mailData, (err, info) => {
                 if (err) {
-                    console.error(err);
                     reject(err);
                 } else {
-                    console.log(info);
                     resolve(info);
                 }
-                });
+            });
         });
 
         return {
