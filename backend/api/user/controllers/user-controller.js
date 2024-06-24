@@ -175,7 +175,7 @@ class UserController {
         let templateHtml = fs.readFileSync(templatePath).toString();
 
         templateHtml = templateHtml.replace(/{{ password_code }}/g, resetToken);
-        
+
         const mailData = {
             from: {
                 name: "AgendAi",
@@ -186,7 +186,7 @@ class UserController {
             subject: "Recuperação de Senha - APP.",
             html: templateHtml,
         };
-        
+
         await new Promise((resolve, reject) => {
             SMTP_TRANSPORTER.sendMail(mailData, (err, info) => {
                 if (err) {
@@ -205,52 +205,100 @@ class UserController {
         };
     }
 
+    async verifyCode(body) {
+        try {
+            const { email, code } = body;
+
+            if (!email) {
+                const errorMessage = `Email não passado como parâmetro.`;
+                return { message: errorMessage, status: 400 };
+            }
+
+            if (!code) {
+                const errorMessage = `Código não passado como parâmetro.`;
+                return { message: errorMessage, status: 400 };
+            }
+
+            const user = await this.authRepository.getUserByEmail(email);
+            if (!user) {
+                const errorMessage = `Email não cadastrado.`;
+                return { message: errorMessage, status: 400 };
+            }
+
+            const resetCode = await this.authRepository.getResetPasswordCode(email, code);
+            if (!resetCode) {
+                const errorMessage = `Código inválido.`;
+                return { message: errorMessage, status: 400 };
+            }
+
+            const expiredAt = resetCode.expired_at;
+
+            if (expiredAt < new Date()) {
+                const errorMessage = `Código expirado.`;
+                return { message: errorMessage, status: 400 };
+            }
+
+            return {
+                message: {
+                    success: `Código válido!`
+                },
+                status: 200
+            };
+        } catch (error) {
+            console.error('Erro ao verificar o código:', error);
+            return { message: 'Erro interno do servidor', status: 500 };
+        }
+    }
+
     async resetPassword(body) {
+        try {
+            const { email, code, password } = body;
 
-        const { email, code, password } = body;
+            if (!email) {
+                const errorMessage = `Email não passado como parâmetro.`;
+                return { message: errorMessage, status: 400 };
+            }
 
-        if (!email) {
-            const errorMessage = `Email não passado como parâmetro.`;
-            return { message: errorMessage, status: 400 };
+            if (!code) {
+                const errorMessage = `Código não passado como parâmetro.`;
+                return { message: errorMessage, status: 400 };
+            }
+
+            const user = await this.authRepository.getUserByEmail(email);
+            if (!user) {
+                const errorMessage = `Email não cadastrado.`;
+                return { message: errorMessage, status: 400 };
+            }
+
+            const resetCode = await this.authRepository.getResetPasswordCode(email, code);
+            if (!resetCode) {
+                const errorMessage = `Código inválido.`;
+                return { message: errorMessage, status: 400 };
+            }
+
+            const expiredAt = resetCode.expired_at;
+
+            if (expiredAt < new Date()) {
+                const errorMessage = `Código expirado.`;
+                return { message: errorMessage, status: 400 };
+            }
+
+            const hash = await bcrypt.hash(password, this.saltRandsPassword);
+
+            await this.authRepository.updateUserPassword(email, hash);
+
+            await this.authRepository.deleteResetPasswordCode(email);
+
+            return {
+                message: {
+                    success: `Senha alterada com sucesso!`
+                },
+                status: 200
+            };
+        } catch (error) {
+            console.error('Erro ao resetar a senha:', error);
+            return { message: 'Erro interno do servidor', status: 500 };
         }
-
-        if (!code) {
-            const errorMessage = `Código não passado como parâmetro.`;
-            return { message: errorMessage, status: 400 };
-        }
-
-        const user = await this.authRepository.getUserByEmail(email);
-        if (!user) {
-            const errorMessage = `Email não cadastrado.`;
-            return { message: errorMessage, status: 400 };
-        }
-
-        const resetCode = await this.authRepository.getResetPasswordCode(email, code);
-        if (!resetCode) {
-            const errorMessage = `Código inválido.`;
-            return { message: errorMessage, status: 400 };
-        }
-
-        const expiredAt = resetCode.expired_at;
-
-        if (expiredAt < new Date()) {
-            const errorMessage = `Código expirado.`;
-            return { message: errorMessage, status: 400 };
-        }
-
-
-        const hash = await bcrypt.hash(password, this.saltRandsPassword);
-
-        await this.authRepository.updateUserPassword(email, hash);
-
-        await this.authRepository.deleteResetPasswordCode(email);
-
-        return {
-            message: {
-                success: `Senha alterada com sucesso!`
-            },
-            status: 200
-        };
     }
 
 }
