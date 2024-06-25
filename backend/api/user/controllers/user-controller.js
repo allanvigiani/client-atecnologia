@@ -219,13 +219,13 @@ class UserController {
                 return { message: errorMessage, status: 400 };
             }
 
-            const user = await this.authRepository.getUserByEmail(email);
+            const user = await this.userRepository.getUserByEmail(email);
             if (!user) {
                 const errorMessage = `Email não cadastrado.`;
                 return { message: errorMessage, status: 400 };
             }
 
-            const resetCode = await this.authRepository.getResetPasswordCode(email, code);
+            const resetCode = await this.userRepository.getResetPasswordCode(email, code);
             if (!resetCode) {
                 const errorMessage = `Código inválido.`;
                 return { message: errorMessage, status: 400 };
@@ -264,13 +264,13 @@ class UserController {
                 return { message: errorMessage, status: 400 };
             }
 
-            const user = await this.authRepository.getUserByEmail(email);
+            const user = await this.userRepository.getUserByEmail(email);
             if (!user) {
                 const errorMessage = `Email não cadastrado.`;
                 return { message: errorMessage, status: 400 };
             }
 
-            const resetCode = await this.authRepository.getResetPasswordCode(email, code);
+            const resetCode = await this.userRepository.getResetPasswordCode(email, code);
             if (!resetCode) {
                 const errorMessage = `Código inválido.`;
                 return { message: errorMessage, status: 400 };
@@ -285,9 +285,9 @@ class UserController {
 
             const hash = await bcrypt.hash(password, this.saltRandsPassword);
 
-            await this.authRepository.updateUserPassword(email, hash);
+            await this.userRepository.updateUserPassword(email, hash);
 
-            await this.authRepository.deleteResetPasswordCode(email);
+            await this.userRepository.deleteResetPasswordCode(email);
 
             return {
                 message: {

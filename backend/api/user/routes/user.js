@@ -32,7 +32,7 @@ router.post('/send-email-password', async (req, res) => {
     res.status(result.status).json({ message: result.message });
 });
 
-router.post('/verify-code', async (req, res) => {
+router.get('/verify-code', async (req, res) => {
     const result = await userController.verifyCode(req.body);
     res.status(result.status).json({ message: result.message });
 });

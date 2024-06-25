@@ -96,16 +96,16 @@ class UserRepository {
         }
     }
 
-    async createResetPasswordToken(email, resetToken) {
+    async createResetPasswordToken(email, resetCode) {
         let client;
 
         try {
             const conn = await database.generateConnection();
             client = await conn.connect();
             const result = await conn.query(`
-                INSERT INTO reset_password (email, reset_token)
+                INSERT INTO reset_password_code (email, reset_code)
                     VALUES ($1, $2);
-            `, [email, resetToken]);
+            `, [email, resetCode]);
             client.release();
             return result.rows;
         } catch (error) {
