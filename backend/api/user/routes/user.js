@@ -32,8 +32,8 @@ router.post('/send-email-password', async (req, res) => {
     res.status(result.status).json({ message: result.message });
 });
 
-router.get('/verify-code', async (req, res) => {
-    const result = await userController.verifyCode(req.body);
+router.get('/verify-code/:email/:code', async (req, res) => {
+    const result = await userController.verifyCode(req.params.email, req.params.code);
     res.status(result.status).json({ message: result.message });
 });
 

@@ -205,9 +205,8 @@ class UserController {
         };
     }
 
-    async verifyCode(body) {
+    async verifyCode(email, code) {
         try {
-            const { email, code } = body;
 
             if (!email) {
                 const errorMessage = `Email não passado como parâmetro.`;
