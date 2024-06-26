@@ -55,7 +55,7 @@ class UserController {
 
             const verifyExistingUser = await this.userRepository.getUserByEmail(email);
 
-            if (!verifyExistingUser) {
+            if (verifyExistingUser) {
                 const errorMessage = `Já existe um usuário cadastrado com esse email.`;
                 return { message: errorMessage, status: 422 };
             }
