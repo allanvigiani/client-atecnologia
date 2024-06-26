@@ -161,12 +161,12 @@ export default function Schedule() {
     if (!serviceValue) {
       formErrors.serviceValue = 'Serviço é obrigatório';
     }
-    if (serviceDayValue.length === 0) {
-      formErrors.serviceDayValue = 'Selecione pelo menos um dia';
-    }
-    if (serviceHourValue.length === 0) {
-      formErrors.serviceHourValue = 'Selecione pelo menos uma hora';
-    }
+    // if (serviceDay.length === 0) {
+    //   formErrors.serviceDayValue = 'Selecione pelo menos um dia';
+    // }
+    // if (serviceHour.length === 0) {
+    //   formErrors.serviceHourValue = 'Selecione pelo menos uma hora';
+    // }
 
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
