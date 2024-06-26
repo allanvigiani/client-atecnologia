@@ -137,24 +137,29 @@ class AuthController {
     }
 
     async sendEmailToResetPassword(body) {
-        
+
         const { email } = body;
 
         if (!email) {
             const errorMessage = `Preencha o email para enviar o email de recuperação de senha.`;
             return { message: errorMessage, status: 400 };
         }
-    
+
         const user = await this.authRepository.getCompanyByEmail(email);
         if (!user) {
             const errorMessage = `Email não encontrado.`;
             return { message: errorMessage, status: 400 };
         }
-    
+
         const resetToken = crypto.randomBytes(12).toString('hex').slice(0, 12);
-    
+
         await this.authRepository.createResetPasswordToken(email, resetToken);
-    
+
+        if (!SMTP_CONFIG) {
+            const errorMessage = `Configuração de SMTP não encontrada.`;
+            return { message: errorMessage, status: 500 };
+        }
+
         const SMTP_TRANSPORTER = nodemailer.createTransport({
             host: SMTP_CONFIG.host,
             port: SMTP_CONFIG.port,
@@ -163,26 +168,30 @@ class AuthController {
                 pass: SMTP_CONFIG.password
             }
         });
-    
+
         const templatePath = path.join(__dirname, '../reset-password-template.html');
         let templateHtml = fs.readFileSync(templatePath).toString();
-    
+
         const resetPasswordUrl = `${process.env.RESET_EMAIL_URL}/${email}/${resetToken}`;
-    
+
         templateHtml = templateHtml.replace(/{{ reset_password_url }}/g, resetPasswordUrl);
 
+        const mailData = {
+            from: {
+                name: "Suporte - AgendAi",
+                address: "agendai.support@gmail.com",
+            },
+            replyTo: email,
+            to: email,
+            subject: "Recuperação de Senha.",
+            html: templateHtml,
+        };
+
         await new Promise((resolve, reject) => {
-            SMTP_TRANSPORTER.sendMail({
-                subject: "Recuperação de Senha.",
-                from: `"Suporte - AgendAi" <agendai.suporte@gmail.com>`,
-                to: email,
-                html: templateHtml
-            }, (err, info) => {
+            SMTP_TRANSPORTER.sendMail(mailData, (err, info) => {
                 if (err) {
-                    console.error(err);
                     reject(err);
                 } else {
-                    console.log(info);
                     resolve(info);
                 }
             });
@@ -197,7 +206,7 @@ class AuthController {
     }
 
     async resetPassword(body) {
-        
+
         const { email, token, password } = body;
 
         if (!email) {
@@ -209,13 +218,13 @@ class AuthController {
             const errorMessage = `Token não passado como parâmetro.`;
             return { message: errorMessage, status: 400 };
         }
-    
+
         const user = await this.authRepository.getCompanyByEmail(email);
         if (!user) {
             const errorMessage = `Email não cadastrado.`;
             return { message: errorMessage, status: 400 };
         }
-    
+
         const resetToken = await this.authRepository.getResetPasswordToken(email, token);
         if (!resetToken) {
             const errorMessage = `Token inválido.`;
@@ -231,7 +240,7 @@ class AuthController {
 
 
         const hash = await bcrypt.hash(password, this.saltRandsPassword);
-        
+
         await this.authRepository.updateCompanyPassword(email, hash);
 
         await this.authRepository.deleteResetPasswordToken(email);
