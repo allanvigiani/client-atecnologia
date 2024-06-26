@@ -99,14 +99,14 @@ class ServiceRepository {
         }
     }
 
-    async getAllServices() {
+    async getAllServices(companyId) {
         let client;
         try {
             const conn = await database.generateConnection();
             client = await conn.connect();
             const result = await conn.query(`SELECT services.id, services.name, services.price, services.professional_name, company.name as company_name, company.address, company.id as company_id FROM services 
             INNER JOIN company ON services.company_id = company.id
-            WHERE services.deleted_at IS NULL ORDER BY services.name ASC;`);
+            WHERE company.id = $1 services.deleted_at IS NULL ORDER BY services.name ASC;`, [companyId]);
             client.release();
             return result.rows;
         } catch (error) {
