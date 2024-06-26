@@ -20,18 +20,13 @@ class TypeRepository {
     }
 
     async getTypesById(id) {
-        let client;
         try {
 
             const conn = await database.generateConnection();
-            client = await conn.connect();
-            const result = await conn.query(`SELECT id, type FROM service_type WHERE id = $1`, [`${id}`]);
-            client.release();
+            const result = await conn.query(`SELECT id, type FROM service_type INNER JOIN services s ON s.service_type_id = service_type.id WHERE s.id = $1`, [`${id}`]);
             return result.rows;
+            
         } catch (error) {
-            if (client) {
-                client.release();
-            }
             throw new Error(error);
         }
     }

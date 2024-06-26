@@ -346,10 +346,10 @@ class ServiceController {
     * @async
     * @returns {json}
     */
-    async getTypesById(typesId) {
+    async getTypesById(serviceId) {
         try {
 
-            const result = await this.typeRepository.getTypesById(typesId);
+            const result = await this.typeRepository.getTypesById(serviceId);
             if (!result) {
                 const errorMessage = `Erro ao buscar o tipos de serviço. Tente novamente mais tarde`;
                 return { message: errorMessage, status: 500 };

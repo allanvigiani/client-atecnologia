@@ -23,8 +23,8 @@ router.get('/all-types', authenticateToken, async (req, res) => {
     res.status(result.status).json({ message: result.message });
 });
 
-router.get('/:typesId?', authenticateToken, async (req, res) => {
-    const result = await serviceController.getTypesById(req.params.typesId, req.user.payload.id);
+router.get('/:serviceId?', authenticateToken, async (req, res) => {
+    const result = await serviceController.getTypesById(req.params.serviceId, req.user.payload.id);
     res.status(result.status).json({ message: result.message });
 });
 
