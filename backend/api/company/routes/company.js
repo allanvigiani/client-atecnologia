@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.post('/', async (req, res) => {
     const result = await companyController.createCompany(req.body);
-    await companyController.createCompany(req.body); // Resolve problema de lentidão de cadastro na Vercel
+    // await companyController.createCompany(req.body); // Resolve problema de lentidão de cadastro na Vercel
     res.status(result.status).json({ message: result.message });
 });
 
