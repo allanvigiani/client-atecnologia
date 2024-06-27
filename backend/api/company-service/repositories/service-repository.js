@@ -117,6 +117,24 @@ class ServiceRepository {
         }
     }
 
+    async getAllServicesApp() {
+        let client;
+        try {
+            const conn = await database.generateConnection();
+            client = await conn.connect();
+            const result = await conn.query(`SELECT services.id, services.name, services.price, services.professional_name, company.name as company_name, company.address, company.id as company_id FROM services 
+            INNER JOIN company ON services.company_id = company.id
+            WHERE services.deleted_at IS NULL ORDER BY services.name ASC;`);
+            client.release();
+            return result.rows;
+        } catch (error) {
+            if (client) {
+                client.release();
+            }
+            throw new Error(error);
+        }
+    }
+
     async getAllServicesByType(id_type) {
         let client;
         try {

@@ -58,4 +58,9 @@ router.get('/services-types/:typeService?', async (req, res) => {
     res.status(result.status).json({ message: result.message });
 });
 
+router.get('/services-types-app/:typeService?', async (req, res) => {
+    const result = await serviceController.getServicesByTypeToApp(req.params.typeService);
+    res.status(result.status).json({ message: result.message });
+});
+
 export default router;
