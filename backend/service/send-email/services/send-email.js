@@ -1,15 +1,8 @@
-import dotenv from 'dotenv';
-dotenv.config(); // Carrega as variáveis de ambiente
-
-import connectRabbitMq from './connections/queue-connection.js';
-import ScheduleConfirmation from './database/schemas/SendEmail.js';
+import ScheduleConfirmation from '../database/schemas/SendEmail.js';
 import nodemailer from 'nodemailer';
 import * as fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
-import SMTP_CONFIG from './config/smtp.js';
-import express from 'express';
-
-const app = express();
+import SMTP_CONFIG from '../config/smtp.js';
 
 const SMTP_TRANSPORTER = nodemailer.createTransport({
     host: SMTP_CONFIG.host,
@@ -20,22 +13,8 @@ const SMTP_TRANSPORTER = nodemailer.createTransport({
     }
 });
 
-async function setupRabbitMQ() {
-    setInterval(async () => {
-        console.log(` [*] Lendo mensagens na fila client/send_email.`);
-        await consumeQueue('client/send_email', processEmailMessage);
-    }, 30000);
-}
-
-setupRabbitMQ();
-
-app.listen(process.env.PORT, () => {
-    console.log(`Servidor está rodando na porta ${process.env.PORT}`);
-});
-
 async function processEmailMessage(msg) {
     try {
-
         const data = JSON.parse(msg);
 
         const {
@@ -69,8 +48,8 @@ async function processEmailMessage(msg) {
 
         await SMTP_TRANSPORTER.sendMail({
             subject: "Confirmação de agendamento!",
-            from: `${company_email}`,
-            to: "vigianiallan@gmail.com",
+            from: company_email,
+            to: client_email,
             html: templateHtml
         });
 
@@ -96,24 +75,4 @@ async function createEmailLog(logs) {
     }
 }
 
-async function consumeQueue(queue) {
-
-    const channel = await connectRabbitMq();
-    try {
-        await channel.consume(queue, message => {
-            if (message !== null) {
-                console.log(" [x] Recebido '%s'", message.content.toString());
-                channel.ack(message);
-                processEmailMessage(message.content.toString());
-            }
-        }, { noAck: false });
-    } catch (error) {
-        console.error("Erro ao consumir mensagem:", error);
-        if (message) {
-            channel.nack(message, false, false);
-        }
-        throw error;
-    } finally {
-        // await channel.close();
-    }
-}
+export default processEmailMessage;
