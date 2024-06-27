@@ -29,6 +29,11 @@ router.get('/appointments/:userId', async (req, res) => {
     res.status(result.status).json({ message: result.message });
 });
 
+router.get('/appointments-app/:userId', async (req, res) => {
+    const result = await scheduleStatusController.getAppointmentsByUserToApp(req.params.userId);
+    res.status(result.status).json({ message: result.message });
+});
+
 router.get('/:serviceId?', authenticateToken, async (req, res) => {
     const result = await scheduleStatusController.getScheduleStatusByServiceId(req.params.serviceId, req.user.payload.id);
     res.status(result.status).json({ message: result.message });
