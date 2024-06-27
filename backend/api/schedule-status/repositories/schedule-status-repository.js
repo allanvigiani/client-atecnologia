@@ -79,7 +79,7 @@ class ScheduleRepository {
             INNER JOIN services s2 ON s.service_id = s2.id
             INNER JOIN service_days sd ON s.service_day_id = sd.id 
             INNER JOIN service_hours sh ON s.service_hour_id = sh.id 
-            WHERE s.company_id = $1;
+            WHERE s.company_id = $1 AND status_id = 1;
             `, [id]);
             client.release();
             return result.rows;
