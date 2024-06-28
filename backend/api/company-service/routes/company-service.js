@@ -33,7 +33,7 @@ router.put('/', authenticateToken, async (req, res) => {
     res.status(result.status).json({ message: result.message });
 });
 
-router.get('/all-informations', async (req, res) => {
+router.get('/all-informations', authenticateToken, async (req, res) => {
     const result = await serviceController.getAllInformations(req.user.payload.id);
     res.status(result.status).json({ message: result.message });
 });
