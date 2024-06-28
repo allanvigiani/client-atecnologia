@@ -494,7 +494,7 @@ class ServiceController {
             const days = await this.dayRepository.getDays();
             const types = await this.typeRepository.getTypes();
 
-            return { data: { hours, days, types }, status: 200 };
+            return { data: { hours: hours, days: days, types: types }, status: 200 };
         } catch (error) {
             return { message: error.message, status: 500 };
         }
