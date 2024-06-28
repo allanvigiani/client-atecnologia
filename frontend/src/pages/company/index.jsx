@@ -20,6 +20,7 @@ function Company() {
   const [companyName, setCompanyName] = useState("");
   const [companyInformation, setCompanyInformation] = useState("");
   const [serviceData, setServiceData] = useState([]);
+  const [serviceDataConfirmed, setServiceDataConfirmed] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const columns = [
@@ -115,6 +116,9 @@ function Company() {
         const serviceData = await getServiceData(token, companyData.id);
         setServiceData(serviceData);
 
+        const serviceDataConfirmed = await getServiceDataConfirmed(token, companyData.id);
+        setServiceDataConfirmed(serviceDataConfirmed);
+
         setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -155,6 +159,20 @@ function Company() {
         const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
 
         return { ...service, date: formattedDate };
+      });
+    };
+
+    const getServiceDataConfirmed = async (token, companyId) => {
+      const { data } = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE_STATUS}/appointments-confirmed/${companyId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      return data.message.map((serviceConfirmed) => {
+        const date = new Date(serviceConfirmed.date);
+        const formattedDateConfirmed = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+
+        return { ...serviceConfirmed, date: formattedDateConfirmed };
       });
     };
 
@@ -253,12 +271,12 @@ function Company() {
               Próximos Agendamentos
             </Typography>
             <DataGrid
-              rows={serviceData}
+              rows={serviceDataConfirmed}
               columns={columns_show}
               pageSize={5}
-              {...serviceData}
+              {...serviceDataConfirmed}
               initialState={{
-                ...serviceData.initialState,
+                ...serviceDataConfirmed.initialState,
                 pagination: { paginationModel: { pageSize: 5 } },
               }}
               pageSizeOptions={[5, 10, 25]}

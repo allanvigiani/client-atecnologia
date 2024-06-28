@@ -79,7 +79,37 @@ class ScheduleRepository {
             INNER JOIN services s2 ON s.service_id = s2.id
             INNER JOIN service_days sd ON s.service_day_id = sd.id 
             INNER JOIN service_hours sh ON s.service_hour_id = sh.id 
-            WHERE s.company_id = $1 AND status_id = 1;
+            WHERE s.company_id = $1 AND status_id = '1' AND s.deleted_at IS NULL;
+            `, [id]);
+            client.release();
+            return result.rows;
+        } catch (error) {
+            if (client) {
+                client.release();
+            }
+            throw new Error(error);
+        }
+    }
+
+    async getSchedulesByUserIdConfirmed(id) {
+        let client;
+        try {
+            const conn = await database.generateConnection();
+            client = await conn.connect();
+            const result = await conn.query(`
+            SELECT st.id AS id_status,
+                    st.description AS descr_status,
+                    s.*,
+                    sd.description,
+                    sh.start_time,
+                    s2."name"
+            FROM schedule s
+            INNER JOIN schedule_status ss ON s.id = ss.schedule_id
+            INNER JOIN status st ON CAST(ss.status_id AS INTEGER) = st.id
+            INNER JOIN services s2 ON s.service_id = s2.id
+            INNER JOIN service_days sd ON s.service_day_id = sd.id 
+            INNER JOIN service_hours sh ON s.service_hour_id = sh.id 
+            WHERE s.company_id = $1 AND status_id = '2' AND s.deleted_at IS NULL;
             `, [id]);
             client.release();
             return result.rows;

@@ -29,6 +29,11 @@ router.get('/appointments/:userId', async (req, res) => {
     res.status(result.status).json({ message: result.message });
 });
 
+router.get('/appointments-confirmed/:userId', async (req, res) => {
+    const result = await scheduleStatusController.getAppointmentsByUserConfirmed(req.params.userId);
+    res.status(result.status).json({ message: result.message });
+});
+
 router.get('/appointments-app/:userId', async (req, res) => {
     const result = await scheduleStatusController.getAppointmentsByUserToApp(req.params.userId);
     res.status(result.status).json({ message: result.message });

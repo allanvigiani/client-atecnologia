@@ -17,6 +17,35 @@ import TextField from '@mui/material/TextField';
 import FormHelperText from '@mui/material/FormHelperText';
 import ptBR from "../../components/DataGrid";
 
+const serviceDays = [
+  { id: 1, description: 'Segunda-feira' },
+  { id: 2, description: 'Terça-feira' },
+  { id: 3, description: 'Quarta-feira' },
+  { id: 4, description: 'Quinta-feira' },
+  { id: 5, description: 'Sexta-feira' },
+  { id: 6, description: 'Sábado' },
+  { id: 7, description: 'Domingo' },
+];
+
+const serviceHours = [
+  { id: 1, start_time: '07:00:00' },
+  { id: 2, start_time: '08:00:00' },
+  { id: 3, start_time: '09:00:00' },
+  { id: 4, start_time: '10:00:00' },
+  { id: 5, start_time: '11:00:00' },
+  { id: 6, start_time: '12:00:00' },
+  { id: 7, start_time: '13:00:00' },
+  { id: 8, start_time: '14:00:00' },
+  { id: 9, start_time: '15:00:00' },
+  { id: 10, start_time: '16:00:00' },
+  { id: 11, start_time: '17:00:00' },
+  { id: 12, start_time: '18:00:00' },
+  { id: 13, start_time: '19:00:00' },
+  { id: 14, start_time: '20:00:00' },
+  { id: 15, start_time: '21:00:00' },
+  { id: 16, start_time: '22:00:00' },
+];
+
 export default function Schedule() {
   const router = useRouter();
   const [companyId, setCompanyId] = useState('');
@@ -93,36 +122,6 @@ export default function Schedule() {
         }
       );
 
-      const { data: serviceDataHours } = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY_SERVICE}/hours/all-hours`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const { data: serviceDataDays } = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY_SERVICE}/days/all-days`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const { data: serviceDatatypes } = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY_SERVICE}/types/all-types`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      setServiceOptions(serviceDatatypes.message.result);
-      setServiceDay(serviceDataDays.message.result);
-      setServiceHour(serviceDataHours.message.result);
       setServices(serviceData.message.result);
       setLoading(false);
     } catch (error) {
@@ -161,12 +160,6 @@ export default function Schedule() {
     if (!serviceValue) {
       formErrors.serviceValue = 'Serviço é obrigatório';
     }
-    // if (serviceDay.length === 0) {
-    //   formErrors.serviceDayValue = 'Selecione pelo menos um dia';
-    // }
-    // if (serviceHour.length === 0) {
-    //   formErrors.serviceHourValue = 'Selecione pelo menos uma hora';
-    // }
 
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
@@ -527,12 +520,16 @@ export default function Schedule() {
                       defaultValue={serviceDay ? serviceDay.map(option => ({
                         value: option.id,
                         label: option.description
-                      })) : []}
-                      options={serviceDay && Array.isArray(serviceDay) ? serviceDay.map(option => ({
+                      })) : (serviceDays ? serviceDays.map(option => ({
+                        value: option.id,
+                        label: option.description
+                      })) : [])}
+                      options={serviceDays && Array.isArray(serviceDays) ? serviceDays.map(option => ({
                         value: option.id,
                         label: option.description
                       })) : []}
-                      onChange={(serviceDay) => setServiceDayValue(serviceDay.map(option => option.value))} />
+                      onChange={(serviceDay) => setServiceDayValue(serviceDay.map(option => option.value))}
+                    />
                   </div>
                   <div className={`${styles.input__box}`}>
                     <span className={`${styles.details}`}>Hora dos serviços:</span>
@@ -541,11 +538,14 @@ export default function Schedule() {
                       name="hour_service"
                       className="basic-multi-select"
                       classNamePrefix="select"
-                      defaultValue={serviceHour.length > 0 ? serviceHour.map(option => ({
+                      defaultValue={serviceHour ? serviceHour.map(option => ({
                         value: option.id,
                         label: option.start_time
-                      })) : []}
-                      options={serviceHour && Array.isArray(serviceHour) ? serviceHour.map(option => ({
+                      })) : (serviceHours ? serviceHours.map(option => ({
+                        value: option.id,
+                        label: option.start_time
+                      })) : [])}
+                      options={serviceHours && Array.isArray(serviceHours) ? serviceHours.map(option => ({
                         value: option.id,
                         label: option.start_time
                       })) : []}
