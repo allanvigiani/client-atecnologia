@@ -104,80 +104,79 @@ function Company() {
 
       await fetchData();
     };
-
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const token = getCookie("user_auth_information");
-
-        const companyData = await getCompanyData(token);
-        setCompanyData(companyData);
-
-        const serviceData = await getServiceData(token, companyData.id);
-        setServiceData(serviceData);
-
-        const serviceDataConfirmed = await getServiceDataConfirmed(token, companyData.id);
-        setServiceDataConfirmed(serviceDataConfirmed);
-
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setLoading(false);
-      }
-    };
-
-    const getCompanyData = async (token) => {
-      const CompanyData = getCookie("companyData");
-
-      if (CompanyData) {
-        const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY}/company/`,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-
-        setCookie("companyData", data.message);
-        return data.message;
-      }
-
-      return JSON.parse(CompanyData);
-    };
-
-    const setCompanyData = (companyData) => {
-      setCompanyId(companyData.id);
-      setCompanyName(companyData.name);
-      setCompanyInformation(companyData.address);
-    };
-
-    const getServiceData = async (token, companyId) => {
-      const { data } = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE_STATUS}/appointments/${companyId}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
-      return data.message.map((service) => {
-        const date = new Date(service.date);
-        const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
-
-        return { ...service, date: formattedDate };
-      });
-    };
-
-    const getServiceDataConfirmed = async (token, companyId) => {
-      const { data } = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE_STATUS}/appointments-confirmed/${companyId}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
-      return data.message.map((serviceConfirmed) => {
-        const date = new Date(serviceConfirmed.date);
-        const formattedDateConfirmed = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
-
-        return { ...serviceConfirmed, date: formattedDateConfirmed };
-      });
-    };
-
     verifyUser();
   }, []);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const token = getCookie("user_auth_information");
+
+      const companyData = await getCompanyData(token);
+      setCompanyData(companyData);
+
+      const serviceData = await getServiceData(token, companyData.id);
+      setServiceData(serviceData);
+
+      const serviceDataConfirmed = await getServiceDataConfirmed(token, companyData.id);
+      setServiceDataConfirmed(serviceDataConfirmed);
+
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setLoading(false);
+    }
+  };
+
+  const getCompanyData = async (token) => {
+    const CompanyData = getCookie("companyData");
+
+    if (CompanyData) {
+      const { data } = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY}/company/`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setCookie("companyData", data.message);
+      return data.message;
+    }
+
+    return JSON.parse(CompanyData);
+  };
+
+  const setCompanyData = (companyData) => {
+    setCompanyId(companyData.id);
+    setCompanyName(companyData.name);
+    setCompanyInformation(companyData.address);
+  };
+
+  const getServiceData = async (token, companyId) => {
+    const { data } = await axios.get(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE_STATUS}/appointments/${companyId}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    return data.message.map((service) => {
+      const date = new Date(service.date);
+      const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+
+      return { ...service, date: formattedDate };
+    });
+  };
+
+  const getServiceDataConfirmed = async (token, companyId) => {
+    const { data } = await axios.get(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE_STATUS}/appointments-confirmed/${companyId}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    return data.message.map((serviceConfirmed) => {
+      const date = new Date(serviceConfirmed.date);
+      const formattedDateConfirmed = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+
+      return { ...serviceConfirmed, date: formattedDateConfirmed };
+    });
+  };
 
   const handleAcesss = async (id, status) => {
     const token = getCookie("user_auth_information");
@@ -190,24 +189,47 @@ function Company() {
     const confirmed = window.confirm(`Tem certeza que deseja ${status ? "aceitar" : "cancelar"} esse agendamento?`);
     if (confirmed) {
       try {
-        const form = {
-          schedule_id: id,
-          status: 2
-        }
-
-        const { data: statusUpdate } = await axios.put(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE_STATUS}/`,
-          form,
-          {
-            headers: { Authorization: `Bearer ${token}` },
+        setLoading(true);
+        if (status == true) {
+          const form = {
+            schedule_id: id,
+            status: 2
           }
-        );
 
-        if (statusUpdate.message) {
-          toast.success(statusUpdate.message);
+          const { data: statusUpdate } = await axios.put(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE_STATUS}/`,
+            form,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+
+          if (statusUpdate.message) {
+            toast.success('Agendamento confirmado com sucesso!');
+          }
+        } else {
+          const form = {
+            schedule_id: id,
+            status: 3
+          }
+
+          const { data: statusUpdate } = await axios.put(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL_SCHEDULE_STATUS}/`,
+            form,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+
+          if (statusUpdate.message) {
+            toast.success('Agendamento cancelado com sucesso!');
+          }
         }
+        await fetchData();
+        setLoading(false);
       } catch (error) {
-        toast.error("Erro ao confirmar serviço!");
+        toast.error("Erro ao confirmar agendamento!");
+        setLoading(false);
       }
     }
   };
