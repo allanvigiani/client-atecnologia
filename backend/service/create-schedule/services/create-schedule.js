@@ -49,7 +49,15 @@ async function createSchedule(message) {
             throw new Error('Erro ao criar o status do agendamento. Tente novamente mais tarde');
         }
 
-        await queueRepository.sendToQueue('client/send_email', messageToSend);
+        await new Promise((resolve, reject) => {
+            try {
+                queueRepository.sendToQueue('client/send_email', messageToSend);
+                resolve();
+            } catch (error) {
+                reject(error);
+            }
+        });
+
         console.log(" [x] Enviado para a fila client/send_email -> '%s'", JSON.stringify(messageToSend));
 
     } catch (error) {
