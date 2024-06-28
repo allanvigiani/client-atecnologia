@@ -12,6 +12,10 @@ const scheduleController = new ScheduleController(scheduleRepository, queueRepos
 
 const router = express.Router();
 
+router.get('/teste', authenticateToken, async (req, res) => {
+    res.status(200).json({ message: "Server está ok na rota GET." });
+});
+
 router.post('/', authenticateToken, async (req, res) => {
     const userId = req.user.payload.id;
     const result = await scheduleController.sendScheduleToQueue(req.body, userId);
