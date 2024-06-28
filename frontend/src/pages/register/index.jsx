@@ -7,6 +7,7 @@ import Head from "next/head";
 
 export default function Register() {
   const [nomeStyle, setNomeStyle] = useState("");
+  const [cnpjStyle, setCnpjStyle] = useState("");
   const [emailStyle, setEmailStyle] = useState("");
   const [confirmEmail, setConfirmEmail] = useState("");
   const [addressStyle, setAddressStyle] = useState("");
@@ -15,6 +16,7 @@ export default function Register() {
   const [randomValue, setRandomValue] = useState(Math.random());
   const [values, setValues] = useState({
     name: "",
+    cnpj: "",
     email: "",
     confirmEmail: "",
     address: "",
@@ -77,6 +79,7 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const name = e.target.elements.name.value;
+    const cnpj = e.target.elements.cnpj.value;
     const email = e.target.elements.email.value;
     const confirmEmail = e.target.elements.confirmEmail.value;
     const address = e.target.elements.address.value;
@@ -87,6 +90,8 @@ export default function Register() {
       setErrorMessage("O campo Nome da Empresa não pode estar vazio.");
     } else if (email.trim() === "") {
       setErrorMessage("O campo de E-mail não pode estar vazio.");
+    } else if (cnpj.trim() === "") {
+      setErrorMessage("O campo de CNPJ não pode estar vazio.");
     } else if (confirmEmail.trim() === "") {
       setErrorMessage("O campo Confirmar E-mail não pode estar vazio.");
     } else if (email !== confirmEmail) {
@@ -110,14 +115,14 @@ export default function Register() {
           toast.success(responseData);
           setTimeout(() => {
             router.push("/login");
-          }, 2000);
+          }, 1700);
         } catch (err) {
           if (err.response && err.response.data) {
             const apiError = err.response.data;
 
             generateError(
               apiError.message ||
-                "Ocorreu um erro ao processar o registro. Tente novamente."
+              "Ocorreu um erro ao processar o registro. Tente novamente."
             );
           } else {
             generateError(
@@ -128,6 +133,30 @@ export default function Register() {
       } else {
         setErrorMessage("A senha não atende aos critérios de força.");
       }
+    }
+  };
+
+  const formatarCNPJ = (value) => {
+
+    const cnpjNumeros = value.replace(/\D/g, '');
+
+    return cnpjNumeros
+      .replace(/^(\d{2})(\d)/, '$1.$2')
+      .replace(/^(\d{2}\.\d{3})(\d)/, '$1.$2')
+      .replace(/^(\d{2}\.\d{3}\.\d{3})(\d)/, '$1/$2')
+      .replace(/^(\d{2}\.\d{3}\.\d{3}\/\d{4})(\d)/, '$1-$2');
+  };
+
+  const handleChange = (e) => {
+    const rawValue = e.target.value.replace(/\D/g, '');
+
+    if (rawValue.length <= 14) {
+      const formattedValue = formatarCNPJ(rawValue);
+      setCnpjStyle(formattedValue);
+      setValues({
+        ...values,
+        [e.target.name]: formattedValue,
+      });
     }
   };
 
@@ -160,11 +189,10 @@ export default function Register() {
                 </span>
                 <div className={`${styles.wrap__input}`}>
                   <input
-                    className={`${
-                      nomeStyle !== ""
-                        ? `${styles.has__val} ${styles.input}`
-                        : `${styles.input}`
-                    }`}
+                    className={`${nomeStyle !== ""
+                      ? `${styles.has__val} ${styles.input}`
+                      : `${styles.input}`
+                      }`}
                     type="name"
                     value={nomeStyle}
                     name="name"
@@ -183,11 +211,26 @@ export default function Register() {
                 </div>
                 <div className={`${styles.wrap__input}`}>
                   <input
-                    className={`${
-                      emailStyle !== ""
-                        ? `${styles.has__val} ${styles.input}`
-                        : `${styles.input}`
-                    }`}
+                    className={`${cnpjStyle !== ''
+                      ? `${styles.has__val} ${styles.input}`
+                      : `${styles.input}`
+                      }`}
+                    type="cnpj"
+                    value={cnpjStyle}
+                    name="cnpj"
+                    onChange={handleChange}
+                  />
+                  <span
+                    className={`${styles.focus__input}`}
+                    data__placeholder="CNPJ"
+                  ></span>
+                </div>
+                <div className={`${styles.wrap__input}`}>
+                  <input
+                    className={`${emailStyle !== ""
+                      ? `${styles.has__val} ${styles.input}`
+                      : `${styles.input}`
+                      }`}
                     type="email"
                     value={emailStyle}
                     name="email"
@@ -206,11 +249,10 @@ export default function Register() {
                 </div>
                 <div className={`${styles.wrap__input}`}>
                   <input
-                    className={`${
-                      confirmEmail !== ""
-                        ? `${styles.has__val} ${styles.input}`
-                        : `${styles.input}`
-                    }`}
+                    className={`${confirmEmail !== ""
+                      ? `${styles.has__val} ${styles.input}`
+                      : `${styles.input}`
+                      }`}
                     type="email"
                     value={confirmEmail}
                     name="confirmEmail"
@@ -232,11 +274,10 @@ export default function Register() {
                 </div>
                 <div className={`${styles.wrap__input}`}>
                   <input
-                    className={`${
-                      addressStyle !== ""
-                        ? `${styles.has__val} ${styles.input}`
-                        : `${styles.input}`
-                    }`}
+                    className={`${addressStyle !== ""
+                      ? `${styles.has__val} ${styles.input}`
+                      : `${styles.input}`
+                      }`}
                     type="text"
                     value={addressStyle}
                     name="address"
@@ -255,11 +296,10 @@ export default function Register() {
                 </div>
                 <div className={`${styles.wrap__input}`}>
                   <input
-                    className={`${
-                      passwordStyle !== ""
-                        ? `${styles.has__val} ${styles.input}`
-                        : `${styles.input}`
-                    }`}
+                    className={`${passwordStyle !== ""
+                      ? `${styles.has__val} ${styles.input}`
+                      : `${styles.input}`
+                      }`}
                     type="password"
                     value={passwordStyle}
                     name="password"

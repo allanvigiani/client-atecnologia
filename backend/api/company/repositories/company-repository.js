@@ -4,14 +4,14 @@ class CompanyRepository {
 
     async createCompany(data) {
         try {
-            const { name, email, password, address, created_at } = data;
+            const { name, email, password, address, created_at, cnpj } = data;
 
             const conn = await database.generateConnection();
             const result = await conn.query(`
                 INSERT INTO public.company
-                    (name, email, password, address, created_at)
-                    VALUES ($1, $2, $3, $4, $5 ) RETURNING id;
-            `, [`${name}`, `${email}`, `${password}`, `${address}`, created_at]);
+                    (name, email, password, address, created_at, cnpj)
+                    VALUES ($1, $2, $3, $4, $5, $6 ) RETURNING id;
+            `, [`${name}`, `${email}`, `${password}`, `${address}`, created_at, `${cnpj}`]);
 
             return result.rows[0];
         } catch (error) {
@@ -36,7 +36,7 @@ class CompanyRepository {
         try {
             const conn = await database.generateConnection();
             const result = await conn.query(`
-            SELECT id, name, email, address FROM company WHERE id = $1;
+            SELECT id, name, email, address, cnpj FROM company WHERE id = $1;
         `, [`${userId}`]);
 
             return result.rows[0];
@@ -50,7 +50,7 @@ class CompanyRepository {
         try {
             const conn = await database.generateConnection();
             client = await conn.connect();
-            const result = await conn.query(`SELECT id, name, email, address FROM company;`);
+            const result = await conn.query(`SELECT id, name, email, address, cnpj FROM company;`);
             client.release();
             return result.rows;
         } catch (error) {

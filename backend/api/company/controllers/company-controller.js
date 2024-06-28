@@ -27,7 +27,7 @@ class CompanyController {
      */
     async createCompany(body) {
         try {
-            const { name, email, password, address } = body;
+            const { name, email, password, address, cnpj } = body;
 
             if (!name || !email || !password) {
                 const errorMessage = `Campos não recebidos.`;
@@ -55,6 +55,7 @@ class CompanyController {
                 email: email,
                 password: hash,
                 address: address,
+                cnpj: cnpj,
                 created_at: new Date(),
             }
 
