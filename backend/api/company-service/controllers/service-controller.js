@@ -487,6 +487,18 @@ class ServiceController {
             return { message: error.message, status: 500 };
         }
     }
+
+    async getAllInformations(userId) {
+        try {
+            const hours = await this.hourRepository.getHours();
+            const days = await this.dayRepository.getDays();
+            const types = await this.typeRepository.getTypes();
+
+            return { data: { hours, days, types }, status: 200 };
+        } catch (error) {
+            return { message: error.message, status: 500 };
+        }
+    }
 }
 
 export default ServiceController;
