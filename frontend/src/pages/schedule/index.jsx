@@ -23,7 +23,8 @@ export default function Schedule() {
   const router = useRouter();
   const [companyId, setCompanyId] = useState('');
   const [services, setServices] = useState([]);
-  const [showModal, setShowModal] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [serviceValue, setServiceValue] = useState('');
   const [serviceDescription, setServiceDescription] = useState('');
   const [professionalName, setProfessionalName] = useState('');
@@ -32,10 +33,10 @@ export default function Schedule() {
   const [serviceId, setServiceId] = useState('');
   const [serviceDay, setServiceDay] = useState([]);
   const [serviceDayValue, setServiceDayValue] = useState([]);
+  const [serviceDayValueEdit, setServiceDayValueEdit] = useState([]);
   const [serviceHour, setServiceHour] = useState([]);
   const [serviceHourValue, setServiceHourValue] = useState([]);
-  const [serviceOptions, setServiceOptions] = useState([]);
-  const [isUpdating, setIsUpdating] = useState(false);
+  const [serviceHourValueEdit, setServiceHourValueEdit] = useState([]);
   const [servicetypeId, setServicetypeId] = useState('');
   const [serviceLabel, setServiceLabel] = useState('');
   const [loading, setLoading] = useState(true);
@@ -69,13 +70,7 @@ export default function Schedule() {
 
   useEffect(() => {
     verifyUser();
-
-    if (showModal) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'auto';
-    }
-  }, [showModal]);
+  }, []);
 
   const verifyUser = async () => {
     if (!hasCookie("user_auth_information")) {
@@ -182,10 +177,7 @@ export default function Schedule() {
         router.push("/login");
       }
 
-      // Remover caracteres não numéricos exceto a vírgula e converter vírgula para ponto
       const cleanedPrice = price.replace(/[^\d,]/g, '').replace(',', '.');
-
-      // Usar parseFloat para converter em número decimal
       const formattedPrice = parseFloat(cleanedPrice);
 
       if (isNaN(formattedPrice)) {
@@ -195,7 +187,7 @@ export default function Schedule() {
       const formData = {
         name: serviceName,
         professional_name: professionalName,
-        price: formattedPrice.toFixed(2), // Garantir 2 casas decimais
+        price: formattedPrice.toFixed(2),
         service_type_id: serviceValue,
         other_service_type: serviceDescription,
         service_hours_id: serviceHourValue.length === 0 ? serviceHour : serviceHourValue,
@@ -218,7 +210,7 @@ export default function Schedule() {
       toast.success(response);
       clearForm();
       setFormLoading(false);
-      handleCloseModal();
+      handleCloseCreateModal();
     } catch (err) {
       setFormLoading(false);
       generateError(err.response?.data?.message || err.message);
@@ -323,38 +315,42 @@ export default function Schedule() {
       setServiceDescription(service.other_service_type);
       setProfessionalName(service.professional_name);
       setPrice(formattedPrice); // Utiliza o preço formatado
-      setServiceOptions(servicetype.message.result);
       setServiceValue(servicetype.message.result[0].id);
       setServicetypeId(servicetype.message.result[0].id);
       setServiceLabel(servicetype.message.result[0].type);
       setServiceDay(serviceDayEntries);
       setServiceHour(serviceHoursEntries);
 
-      setIsUpdating(true);
-      setShowModal(true);
+
+      const idsHours = Object.entries(hoursOnService).map(subArray => subArray[0]);
+      setServiceHourValueEdit(idsHours);
+
+      const idsDays = Object.entries(daysOnService).map(subArray => subArray[0]);
+      setServiceDayValueEdit(idsDays);
+
+      setShowUpdateModal(true);
     } catch (err) {
       setLoading(false);
       generateError(err.response?.data?.message);
     }
   };
 
-  const handleShowModal = async (e) => {
+  const handleShowCreateModal = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setIsUpdating(false);
     await verifyUser();
-    setShowModal(true);
+    setShowCreateModal(true);
   };
 
-  const handleCloseModal = async () => {
-    setShowModal(false);
+  const handleCloseCreateModal = async () => {
+    setShowCreateModal(false);
     setFormLoading(false);
     clearForm();
   };
 
-  const handleCloseModalUpdate = async () => {
+  const handleCloseUpdateModal = async () => {
     await verifyUser();
-    setShowModal(false);
+    setShowUpdateModal(false);
     setFormLoading(false);
     clearForm();
   };
@@ -392,7 +388,8 @@ export default function Schedule() {
     }
   };
 
-  const onUpdate = async (serviceId) => {
+  const onUpdate = async (e) => {
+    e.preventDefault();
     setFormLoading(true);
     try {
       if (!hasCookie("user_auth_information")) {
@@ -404,19 +401,21 @@ export default function Schedule() {
       const formattedPrice = parseFloat(price.replace(/[^\d]/g, '').replace(',', '.'));
 
       const formData = {
+        id: serviceId,
+        company_id: companyId,
         name: serviceName,
         professional_name: professionalName,
-        price: formattedPrice,
+        price: formattedPrice.toFixed(2),
         service_type_id: serviceValue,
         other_service_type: serviceDescription,
-        service_hours_id: serviceHourValue.length === 0 ? serviceHour : serviceHourValue,
-        service_days_id: serviceDayValue.length === 0 ? serviceDay : serviceDayValue
+        service_hours_id: serviceHourValueEdit,
+        service_days_id: serviceDayValueEdit
       };
 
       const token = getCookie("user_auth_information");
 
       const { data } = await axios.put(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY_SERVICE}/${serviceId}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY_SERVICE}/`,
         formData,
         {
           headers: {
@@ -429,8 +428,7 @@ export default function Schedule() {
       toast.success(response);
       clearForm();
       setFormLoading(false);
-      setIsUpdating(false);
-      handleCloseModal();
+      handleCloseUpdateModal();
     } catch (err) {
       setFormLoading(false);
       generateError(err.response?.data?.message);
@@ -447,7 +445,7 @@ export default function Schedule() {
             </div>
           )}
           <div className={styles.form}>
-            <button onClick={handleShowModal} className={styles['form-button']}>Novo Serviço</button>
+            <button onClick={handleShowCreateModal} className={styles['form-button']}>Novo Serviço</button>
             <Box sx={{ height: 'auto', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <DataGrid
                 rows={services}
@@ -467,9 +465,10 @@ export default function Schedule() {
             </Box>
           </div>
         </div>
+        {/* Modal de Criação */}
         <Modal
-          open={showModal}
-          onClose={handleCloseModal}
+          open={showCreateModal}
+          onClose={handleCloseCreateModal}
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
@@ -481,7 +480,7 @@ export default function Schedule() {
                 </div>
               ) : (
                 <>
-                  <h2 className={`${styles.details}`}>{isUpdating ? 'Atualizar Serviço' : 'Adicionar Serviço'}</h2>
+                  <h2 className={`${styles.details}`}>Adicionar Serviço</h2>
                   <div className={`${styles.input__box}`}>
                     <span className={`${styles.details}`}>Nome do Serviço:</span>
                     <TextField
@@ -504,7 +503,6 @@ export default function Schedule() {
                         value: option.id,
                         label: option.type
                       })) : []}
-                      defaultValue={isUpdating ? { value: servicetypeId, label: serviceLabel } : null}
                       onChange={(selectedOption) => setServiceValue(selectedOption.value)}
                     />
                     {errors.serviceValue && (
@@ -547,13 +545,10 @@ export default function Schedule() {
                       name="week_service"
                       className="basic-multi-select"
                       classNamePrefix="select"
-                      defaultValue={isUpdating ? serviceDay.map(option => ({
+                      defaultValue={optionServiceDay && Array.isArray(optionServiceDay) ? optionServiceDay.map(option => ({
                         value: option.id,
                         label: option.description
-                      })) : (optionServiceDay ? optionServiceDay.map(option => ({
-                        value: option.id,
-                        label: option.description
-                      })) : [])}
+                      })) : []}
                       options={optionServiceDay && Array.isArray(optionServiceDay) ? optionServiceDay.map(option => ({
                         value: option.id,
                         label: option.description
@@ -568,13 +563,11 @@ export default function Schedule() {
                       name="hour_service"
                       className="basic-multi-select"
                       classNamePrefix="select"
-                      defaultValue={isUpdating ? serviceHour.map(option => ({
+                      defaultValue={optionServiceHour && Array.isArray(optionServiceHour) ? optionServiceHour.map(option => ({
                         value: option.id,
                         label: option.start_time
-                      })) : (optionServiceHour ? optionServiceHour.map(option => ({
-                        value: option.id,
-                        label: option.start_time
-                      })) : [])}
+                      })) : []
+                      }
                       options={optionServiceHour && Array.isArray(optionServiceHour) ? optionServiceHour.map(option => ({
                         value: option.id,
                         label: option.start_time
@@ -583,7 +576,126 @@ export default function Schedule() {
                     />
                   </div>
                   <button type="submit" className={styles['form-button-modal']}>
-                    {isUpdating ? 'Atualizar Serviço' : 'Adicionar Serviço'}
+                    Adicionar Serviço
+                  </button>
+                </>
+              )}
+            </form>
+          </Box>
+        </Modal>
+
+        {/* Modal de Atualização */}
+        <Modal
+          open={showUpdateModal}
+          onClose={handleCloseUpdateModal}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box className={styles.modalContent}>
+            <form onSubmit={onUpdate} className={styles['form-modal']}>
+              {formLoading ? (
+                <div className={styles.loadingContainer}>
+                  <CircularProgress />
+                </div>
+              ) : (
+                <>
+                  <h2 className={`${styles.details}`}>Atualizar Serviço</h2>
+                  <div className={`${styles.input__box}`}>
+                    <span className={`${styles.details}`}>Nome do Serviço:</span>
+                    <TextField
+                      type="text"
+                      name="service_name"
+                      value={serviceName}
+                      onChange={(e) => setServiceName(e.target.value)}
+                      error={!!errors.serviceName}
+                      helperText={errors.serviceName}
+                      fullWidth={true}
+                    />
+                  </div>
+                  <div className={`${styles.input__box}`}>
+                    <span className={`${styles.details}`}>Serviço:</span>
+                    <Select
+                      name="serviceValue"
+                      className="basic-multi-select"
+                      classNamePrefix="select"
+                      options={optionServiceOptions && Array.isArray(optionServiceOptions) ? optionServiceOptions.map(option => ({
+                        value: option.id,
+                        label: option.type
+                      })) : []}
+                      defaultValue={{ value: servicetypeId, label: serviceLabel }}
+                      onChange={(selectedOption) => setServiceValue(selectedOption.value)}
+                    />
+                    {errors.serviceValue && (
+                      <FormHelperText error>{errors.serviceValue}</FormHelperText>
+                    )}
+                  </div>
+                  <div className={`${styles.input__box}`}>
+                    <span className={`${styles.details}`}>Funcionário:</span>
+                    <TextField
+                      type="text"
+                      name="professional_name"
+                      value={professionalName}
+                      onChange={(e) => setProfessionalName(e.target.value)}
+                      error={!!errors.professionalName}
+                      helperText={errors.professionalName}
+                      fullWidth={true}
+                    />
+                  </div>
+                  <div className={`${styles.input__box}`}>
+                    <span className={`${styles.details}`}>Preço:</span>
+                    <CurrencyInput
+                      variant="outlined"
+                      label="Preço"
+                      fullWidth
+                      margin="normal"
+                      name="price"
+                      value={price}
+                      prefix="R$ "
+                      groupSeparator="."
+                      decimalSeparator=","
+                      onValueChange={(value) => setPrice(value)}
+                      error={!!errors.price}
+                      helperText={errors.price}
+                    />
+                  </div>
+                  <div className={`${styles.input__box}`}>
+                    <span className={`${styles.details}`}>Dia(s):</span>
+                    <Select
+                      isMulti
+                      name="week_service"
+                      className="basic-multi-select"
+                      classNamePrefix="select"
+                      defaultValue={serviceDay.map(option => ({
+                        value: option.id,
+                        label: option.description
+                      }))}
+                      options={optionServiceDay && Array.isArray(optionServiceDay) ? optionServiceDay.map(option => ({
+                        value: option.id,
+                        label: option.description
+                      })) : []}
+                      onChange={(serviceDay) => setServiceDayValue(serviceDay.map(option => option.value))}
+                    />
+                  </div>
+                  <div className={`${styles.input__box}`}>
+                    <span className={`${styles.details}`}>Horário(s):</span>
+                    <Select
+                      isMulti
+                      name="hour_service"
+                      className="basic-multi-select"
+                      classNamePrefix="select"
+                      defaultValue={serviceHour.map(option => ({
+                        value: option.id,
+                        label: option.start_time
+                      }))}
+                      options={optionServiceHour && Array.isArray(optionServiceHour) ? optionServiceHour.map(option => ({
+                        value: option.id,
+                        label: option.start_time
+                      })) : []}
+                      onChange={(serviceHour) => setServiceHourValue(serviceHour.map(option => option.value))}
+                    />
+                  </div>
+                  <button type="submit" className={styles['form-button-modal']}>
+                    Atualizar Serviço
                   </button>
                 </>
               )}
