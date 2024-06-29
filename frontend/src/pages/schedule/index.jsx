@@ -295,6 +295,7 @@ export default function Schedule() {
       setProfessionalName(service.professional_name);
       setPrice(service.price);
       setServiceOptions(servicetype.message.result);
+      setServiceValue(servicetype.message.result[0].id)
       setServicetypeId(servicetype.message.result[0].id);
       setServiceLabel(servicetype.message.result[0].type);
       setServiceDay(serviceDayEntries);
