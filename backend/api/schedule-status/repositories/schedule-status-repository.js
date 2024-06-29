@@ -49,7 +49,7 @@ class ScheduleRepository {
             const conn = await database.generateConnection();
             client = await conn.connect();
             const result = await conn.query(`
-                SELECT id, schedule_id, status_id FROM schedule_status WHERE schedule_id = $1;
+                SELECT id, schedule_id, status_id FROM schedule_status WHERE schedule_id = $1 ORDER BY id;
             `, [id]);
             client.release();
             return result.rows[0];
@@ -79,7 +79,8 @@ class ScheduleRepository {
             INNER JOIN services s2 ON s.service_id = s2.id
             INNER JOIN service_days sd ON s.service_day_id = sd.id 
             INNER JOIN service_hours sh ON s.service_hour_id = sh.id 
-            WHERE s.company_id = $1 AND status_id = '1' AND s.deleted_at IS NULL;
+            WHERE s.company_id = $1 AND status_id = '1' AND s.deleted_at IS NULL 
+            ORDER BY s.created_at DESC;
             `, [id]);
             client.release();
             return result.rows;
@@ -109,7 +110,8 @@ class ScheduleRepository {
             INNER JOIN services s2 ON s.service_id = s2.id
             INNER JOIN service_days sd ON s.service_day_id = sd.id 
             INNER JOIN service_hours sh ON s.service_hour_id = sh.id 
-            WHERE s.company_id = $1 AND status_id = '2' AND s.deleted_at IS NULL;
+            WHERE s.company_id = $1 AND status_id = '2' AND s.deleted_at IS NULL 
+            ORDER BY s.created_at DESC;
             `, [id]);
             client.release();
             return result.rows;
@@ -139,7 +141,7 @@ class ScheduleRepository {
             INNER JOIN services s2 ON s.service_id = s2.id
             INNER JOIN service_days sd ON s.service_day_id = sd.id 
             INNER JOIN service_hours sh ON s.service_hour_id = sh.id 
-            WHERE s.user_id = $1;
+            WHERE s.user_id = $1 ORDER BY s.created_at DESC;
             `, [id]);
             client.release();
             return result.rows;
@@ -162,7 +164,9 @@ class ScheduleRepository {
                                              INNER JOIN services s2 ON s.service_id = s2.id
                                              INNER JOIN service_days sd ON s.service_day_id = sd.id 
                                              INNER JOIN service_hours sh ON s.service_hour_id = sh.id 
-                                             WHERE ss.schedule_id = $1;`, [id]);
+                                             WHERE ss.schedule_id = $1 
+                                             ORDER BY s.created_at DESC;
+                                             `, [id]);
             client.release();
             return result.rows;
         } catch (error) {
