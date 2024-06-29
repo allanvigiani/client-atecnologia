@@ -67,7 +67,8 @@ class ServiceRepository {
             client = await conn.connect();
             const result = await conn.query(`
             SELECT * FROM services 
-            WHERE services.company_id = $1 AND services.deleted_at IS NULL;
+            WHERE services.company_id = $1 AND services.deleted_at IS NULL
+            ORDER BY services.created_at;
         `, [companyId]);
             client.release();
             return result.rows;

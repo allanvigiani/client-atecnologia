@@ -293,7 +293,6 @@ export default function Schedule() {
       try {
 
         if ((cleanPrice)) {
-          // Formata o número como moeda
           formattedPrice = cleanPrice.toLocaleString('pt-BR', {
             style: 'currency',
             currency: 'BRL',
@@ -305,16 +304,15 @@ export default function Schedule() {
         }
       } catch (err) {
         console.error('Erro na formatação do preço:', err);
-        formattedPrice = 'Erro na formatação'; // Trata o erro de forma adequada
+        formattedPrice = 'Erro na formatação'; 
       }
 
-      // Definição dos estados para a interface de edição
       setCompanyId(companyId);
       setServiceId(service.id);
       setServiceName(service.name);
       setServiceDescription(service.other_service_type);
       setProfessionalName(service.professional_name);
-      setPrice(formattedPrice); // Utiliza o preço formatado
+      setPrice(formattedPrice);
       setServiceValue(servicetype.message.result[0].id);
       setServicetypeId(servicetype.message.result[0].id);
       setServiceLabel(servicetype.message.result[0].type);
@@ -343,6 +341,7 @@ export default function Schedule() {
   };
 
   const handleCloseCreateModal = async () => {
+    await verifyUser();
     setShowCreateModal(false);
     setFormLoading(false);
     clearForm();
@@ -350,9 +349,10 @@ export default function Schedule() {
 
   const handleCloseUpdateModal = async () => {
     await verifyUser();
-    setShowUpdateModal(false);
     setFormLoading(false);
+    setLoading(false);
     clearForm();
+    setShowUpdateModal(false);
   };
 
   const generateError = (err) =>
@@ -391,6 +391,7 @@ export default function Schedule() {
   const onUpdate = async (e) => {
     e.preventDefault();
     setFormLoading(true);
+    setLoading(true);
     try {
       if (!hasCookie("user_auth_information")) {
         router.push("/login");
@@ -426,9 +427,8 @@ export default function Schedule() {
 
       const response = data.message;
       toast.success(response);
-      clearForm();
+      await handleCloseUpdateModal();
       setFormLoading(false);
-      handleCloseUpdateModal();
     } catch (err) {
       setFormLoading(false);
       generateError(err.response?.data?.message);
