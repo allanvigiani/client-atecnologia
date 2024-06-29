@@ -16,7 +16,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import TextField from '@mui/material/TextField';
 import FormHelperText from '@mui/material/FormHelperText';
 import ptBR from "../../components/DataGrid";
-import { set } from "react-hook-form";
+import CurrencyInput from 'react-currency-input-field';
 
 
 export default function Schedule() {
@@ -182,20 +182,25 @@ export default function Schedule() {
         router.push("/login");
       }
 
+      // Remover caracteres não numéricos exceto a vírgula e converter vírgula para ponto
+      const cleanedPrice = price.replace(/[^\d,]/g, '').replace(',', '.');
+
+      // Usar parseFloat para converter em número decimal
+      const formattedPrice = parseFloat(cleanedPrice);
+
+      if (isNaN(formattedPrice)) {
+        throw new Error('Preço inválido');
+      }
+
       const formData = {
         name: serviceName,
         professional_name: professionalName,
-        price: price,
+        price: formattedPrice.toFixed(2), // Garantir 2 casas decimais
         service_type_id: serviceValue,
         other_service_type: serviceDescription,
         service_hours_id: serviceHourValue.length === 0 ? serviceHour : serviceHourValue,
         service_days_id: serviceDayValue.length === 0 ? serviceDay : serviceDayValue
       };
-
-      if (isUpdating) {
-        await onUpdate(serviceId);
-        return;
-      }
 
       const token = getCookie("user_auth_information");
 
@@ -216,16 +221,19 @@ export default function Schedule() {
       handleCloseModal();
     } catch (err) {
       setFormLoading(false);
-      generateError(err.response?.data?.message);
+      generateError(err.response?.data?.message || err.message);
     }
   };
 
   const handleEditModal = async (service) => {
     setLoading(true);
+
     if (!hasCookie("user_auth_information")) {
       router.push("/login");
       setLoading(false);
+      return;
     }
+
     const id = parseInt(service.id);
     const companyId = parseInt(service.company_id);
 
@@ -261,8 +269,6 @@ export default function Schedule() {
 
       const CompanyData = getCookie("companyData");
       if (!CompanyData) {
-        const token = getCookie("user_auth_information");
-
         const { data: companyData } = await axios.get(
           `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY}/company/`,
           {
@@ -274,6 +280,7 @@ export default function Schedule() {
 
         setCompanyName(companyData.name);
       }
+
       const daysOnService = serviceDays.message;
       const serviceDayEntries = Object.entries(daysOnService).map(([id, description]) => ({
         id: parseInt(id),
@@ -286,16 +293,38 @@ export default function Schedule() {
         start_time: startTime
       }));
 
-      const companyData = JSON.parse(CompanyData);
+      let numberPrice = parseFloat(service.price);
+      const cleanPrice = numberPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-      setCompanyId(companyData.id);
+      let formattedPrice = '';
+
+      try {
+
+        if ((cleanPrice)) {
+          // Formata o número como moeda
+          formattedPrice = cleanPrice.toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          });
+        } else {
+          throw new Error('Preço inválido');
+        }
+      } catch (err) {
+        console.error('Erro na formatação do preço:', err);
+        formattedPrice = 'Erro na formatação'; // Trata o erro de forma adequada
+      }
+
+      // Definição dos estados para a interface de edição
+      setCompanyId(companyId);
       setServiceId(service.id);
       setServiceName(service.name);
       setServiceDescription(service.other_service_type);
       setProfessionalName(service.professional_name);
-      setPrice(service.price);
+      setPrice(formattedPrice); // Utiliza o preço formatado
       setServiceOptions(servicetype.message.result);
-      setServiceValue(servicetype.message.result[0].id)
+      setServiceValue(servicetype.message.result[0].id);
       setServicetypeId(servicetype.message.result[0].id);
       setServiceLabel(servicetype.message.result[0].type);
       setServiceDay(serviceDayEntries);
@@ -328,20 +357,6 @@ export default function Schedule() {
     setShowModal(false);
     setFormLoading(false);
     clearForm();
-  };
-
-  const formatarCampo = (e) => {
-    if (e.target.name === "price") {
-      const price = e.target.value.replace(/[^\d$,]/g, "");
-      e.target.value = price;
-
-      const formattedPrice = `$ ${price}`.replace(
-        /(\d{3})(?=(\d{3})*($|$))/,
-        "$1,"
-      );
-
-      return formattedPrice;
-    }
   };
 
   const generateError = (err) =>
@@ -377,23 +392,31 @@ export default function Schedule() {
     }
   };
 
-  const onUpdate = async (itemId) => {
+  const onUpdate = async (serviceId) => {
+    setFormLoading(true);
     try {
-      const token = getCookie("user_auth_information");
+      if (!hasCookie("user_auth_information")) {
+        router.push("/login");
+        return;
+      }
+
+      // Converter o preço formatado para double precision
+      const formattedPrice = parseFloat(price.replace(/[^\d]/g, '').replace(',', '.'));
+
       const formData = {
-        id: itemId,
-        company_id: companyId,
         name: serviceName,
         professional_name: professionalName,
-        price: price,
-        service_type_id: servicetypeId,
+        price: formattedPrice,
+        service_type_id: serviceValue,
         other_service_type: serviceDescription,
-        service_hours_id: serviceHourValue,
-        service_days_id: serviceDayValue
+        service_hours_id: serviceHourValue.length === 0 ? serviceHour : serviceHourValue,
+        service_days_id: serviceDayValue.length === 0 ? serviceDay : serviceDayValue
       };
 
+      const token = getCookie("user_auth_information");
+
       const { data } = await axios.put(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY_SERVICE}/`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY_SERVICE}/${serviceId}`,
         formData,
         {
           headers: {
@@ -402,11 +425,14 @@ export default function Schedule() {
         }
       );
 
-      const response = await data.message;
+      const response = data.message;
       toast.success(response);
       clearForm();
-      handleCloseModalUpdate();
+      setFormLoading(false);
+      setIsUpdating(false);
+      handleCloseModal();
     } catch (err) {
+      setFormLoading(false);
       generateError(err.response?.data?.message);
     }
   };
@@ -499,22 +525,23 @@ export default function Schedule() {
                   </div>
                   <div className={`${styles.input__box}`}>
                     <span className={`${styles.details}`}>Preço:</span>
-                    <TextField
-                      type="text"
+                    <CurrencyInput
+                      variant="outlined"
+                      label="Preço"
+                      fullWidth
+                      margin="normal"
                       name="price"
                       value={price}
-                      onChange={(e) => {
-                        formatarCampo(e);
-                        setPrice(e.target.value);
-                      }}
+                      prefix="R$ "
+                      groupSeparator="."
+                      decimalSeparator=","
+                      onValueChange={(value) => setPrice(value)}
                       error={!!errors.price}
                       helperText={errors.price}
-                      placeholder="Ex: 500"
-                      fullWidth={true}
                     />
                   </div>
                   <div className={`${styles.input__box}`}>
-                    <span className={`${styles.details}`}>Dia dos serviços:</span>
+                    <span className={`${styles.details}`}>Dia(s):</span>
                     <Select
                       isMulti
                       name="week_service"
@@ -535,7 +562,7 @@ export default function Schedule() {
                     />
                   </div>
                   <div className={`${styles.input__box}`}>
-                    <span className={`${styles.details}`}>Hora dos serviços:</span>
+                    <span className={`${styles.details}`}>Horário(s):</span>
                     <Select
                       isMulti
                       name="hour_service"
