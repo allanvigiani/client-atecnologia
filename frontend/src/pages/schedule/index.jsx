@@ -16,35 +16,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 import TextField from '@mui/material/TextField';
 import FormHelperText from '@mui/material/FormHelperText';
 import ptBR from "../../components/DataGrid";
+import { set } from "react-hook-form";
 
-const serviceDays = [
-  { id: 1, description: 'Segunda-feira' },
-  { id: 2, description: 'Terça-feira' },
-  { id: 3, description: 'Quarta-feira' },
-  { id: 4, description: 'Quinta-feira' },
-  { id: 5, description: 'Sexta-feira' },
-  { id: 6, description: 'Sábado' },
-  { id: 7, description: 'Domingo' },
-];
-
-const serviceHours = [
-  { id: 1, start_time: '07:00:00' },
-  { id: 2, start_time: '08:00:00' },
-  { id: 3, start_time: '09:00:00' },
-  { id: 4, start_time: '10:00:00' },
-  { id: 5, start_time: '11:00:00' },
-  { id: 6, start_time: '12:00:00' },
-  { id: 7, start_time: '13:00:00' },
-  { id: 8, start_time: '14:00:00' },
-  { id: 9, start_time: '15:00:00' },
-  { id: 10, start_time: '16:00:00' },
-  { id: 11, start_time: '17:00:00' },
-  { id: 12, start_time: '18:00:00' },
-  { id: 13, start_time: '19:00:00' },
-  { id: 14, start_time: '20:00:00' },
-  { id: 15, start_time: '21:00:00' },
-  { id: 16, start_time: '22:00:00' },
-];
 
 export default function Schedule() {
   const router = useRouter();
@@ -68,6 +41,9 @@ export default function Schedule() {
   const [loading, setLoading] = useState(true);
   const [formLoading, setFormLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [optionServiceDay, setOptionServiceDay] = useState([]);
+  const [optionServiceHour, setOptionServiceHour] = useState([]);
+  const [optionServiceOptions, setOptionServiceOptions] = useState([]);
 
   const columns = [
     { field: 'name', headerName: 'Serviços', flex: 0.5, align: 'center', headerAlign: 'center' },
@@ -122,7 +98,43 @@ export default function Schedule() {
         }
       );
 
+      const { data: allInformation } = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY_SERVICE}/all-informations/`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const serviceDays = allInformation.message.days.map(day => ({
+        id: day.id,
+        description: day.description
+      }));
+
+      const serviceHours = allInformation.message.hours.map(hour => ({
+        id: hour.id,
+        start_time: hour.start_time
+      }));
+
+      const serviceOptions = allInformation.message.types.map(type => ({
+        id: type.id,
+        type: type.type
+      }));
+
+      setOptionServiceDay(serviceDays);
+      setOptionServiceHour(serviceHours);
+      setOptionServiceOptions(serviceOptions);
       setServices(serviceData.message.result);
+
+      serviceHours.map((hour) => {
+        serviceHourValue.push(hour.id);
+      });
+
+      serviceDays.map((day) => {
+        serviceDayValue.push(day.id);
+      });
+
       setLoading(false);
     } catch (error) {
       console.error("Erro na solicitação GET:", error);
@@ -132,14 +144,12 @@ export default function Schedule() {
 
   const clearForm = () => {
     setServiceName('');
+    setServiceDescription('');
     setProfessionalName('');
     setPrice('');
     setServiceValue('');
-    setServiceDescription('');
     setServiceDayValue([]);
     setServiceHourValue([]);
-    setShowModal(false);
-    setIsUpdating(false);
     setErrors({});
   };
 
@@ -170,18 +180,6 @@ export default function Schedule() {
     try {
       if (!hasCookie("user_auth_information")) {
         router.push("/login");
-      }
-
-      if (serviceHourValue.length === 0) {
-        serviceHour.map((hour) => {
-          serviceHourValue.push(hour.id);
-        });
-      }
-
-      if (serviceDayValue.length === 0) {
-        serviceDay.map((day) => {
-          serviceDayValue.push(day.id);
-        });
       }
 
       const formData = {
@@ -320,11 +318,15 @@ export default function Schedule() {
 
   const handleCloseModal = async () => {
     setShowModal(false);
+    setFormLoading(false);
+    clearForm();
   };
 
   const handleCloseModalUpdate = async () => {
     await verifyUser();
     setShowModal(false);
+    setFormLoading(false);
+    clearForm();
   };
 
   const formatarCampo = (e) => {
@@ -471,7 +473,7 @@ export default function Schedule() {
                       name="serviceValue"
                       className="basic-multi-select"
                       classNamePrefix="select"
-                      options={serviceOptions && Array.isArray(serviceOptions) ? serviceOptions.map(option => ({
+                      options={optionServiceOptions && Array.isArray(optionServiceOptions) ? optionServiceOptions.map(option => ({
                         value: option.id,
                         label: option.type
                       })) : []}
@@ -517,14 +519,14 @@ export default function Schedule() {
                       name="week_service"
                       className="basic-multi-select"
                       classNamePrefix="select"
-                      defaultValue={serviceDay ? serviceDay.map(option => ({
+                      defaultValue={isUpdating ? serviceDay.map(option => ({
                         value: option.id,
                         label: option.description
-                      })) : (serviceDays ? serviceDays.map(option => ({
+                      })) : (optionServiceDay ? optionServiceDay.map(option => ({
                         value: option.id,
                         label: option.description
                       })) : [])}
-                      options={serviceDays && Array.isArray(serviceDays) ? serviceDays.map(option => ({
+                      options={optionServiceDay && Array.isArray(optionServiceDay) ? optionServiceDay.map(option => ({
                         value: option.id,
                         label: option.description
                       })) : []}
@@ -538,14 +540,14 @@ export default function Schedule() {
                       name="hour_service"
                       className="basic-multi-select"
                       classNamePrefix="select"
-                      defaultValue={serviceHour ? serviceHour.map(option => ({
+                      defaultValue={isUpdating ? serviceHour.map(option => ({
                         value: option.id,
                         label: option.start_time
-                      })) : (serviceHours ? serviceHours.map(option => ({
+                      })) : (optionServiceHour ? optionServiceHour.map(option => ({
                         value: option.id,
                         label: option.start_time
                       })) : [])}
-                      options={serviceHours && Array.isArray(serviceHours) ? serviceHours.map(option => ({
+                      options={optionServiceHour && Array.isArray(optionServiceHour) ? optionServiceHour.map(option => ({
                         value: option.id,
                         label: option.start_time
                       })) : []}
