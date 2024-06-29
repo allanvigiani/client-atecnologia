@@ -130,17 +130,22 @@ class ScheduleRepository {
             client = await conn.connect();
             const result = await conn.query(`
             SELECT st.id AS id_status,
-                    st.description AS descr_status,
-                    s.*,
-                    sd.description,
-                    sh.start_time,
-                    s2."name"
+                   st.description AS descr_status,
+                   s.*,
+                   sd.description,
+                   sh.start_time,
+                   s2."name",
+				   s2.professional_name,
+                   c.name as name_company,
+				   c.address as address_company,
+				   c.cnpj as cnpj_company
             FROM schedule s
             INNER JOIN schedule_status ss ON s.id = ss.schedule_id
             INNER JOIN status st ON CAST(ss.status_id AS INTEGER) = st.id
             INNER JOIN services s2 ON s.service_id = s2.id
             INNER JOIN service_days sd ON s.service_day_id = sd.id 
             INNER JOIN service_hours sh ON s.service_hour_id = sh.id 
+            INNER JOIN company c ON s2.company_id = c.id
             WHERE s.user_id = $1 ORDER BY s.created_at DESC;
             `, [id]);
             client.release();
