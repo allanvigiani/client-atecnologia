@@ -108,6 +108,7 @@ CREATE TABLE IF NOT EXISTS "services" (
     "other_service_type" VARCHAR(120),
     "service_hours_id" TEXT,
     "service_days_id" TEXT,
+    "created_at" TIMESTAMP DEFAULT NOW(),
     "deleted_at" TIMESTAMP(3),
     CONSTRAINT "services_pkey" PRIMARY KEY ("id"),
     CONSTRAINT "services_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "company" ("id") ON DELETE RESTRICT ON UPDATE cascade,
