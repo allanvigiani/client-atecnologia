@@ -150,6 +150,25 @@ class ServiceController {
     }
 
     /**
+     * Método responsável por buscar um serviço
+     * @date 05/03/2024 - 22:59:57
+     *
+     * @async
+     * @param {integer} serviceId
+     * @returns {json}
+     */
+    async getServicesApp(serviceId) {
+        try {
+            let result;
+            result = await this.serviceRepository.getServiceByIdApp(serviceId);
+
+            return { message: { result }, status: 200 };
+        } catch (error) {
+            return { message: error.message, status: 500 };
+        }
+    }
+
+    /**
      * Lista todas as horas disponíveis
      * @date 05/03/2024 - 23:02:09
      *

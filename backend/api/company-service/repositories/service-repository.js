@@ -118,6 +118,27 @@ class ServiceRepository {
         }
     }
 
+    async getServiceByIdApp(id) {
+        let client;
+        try {
+            const conn = await database.generateConnection();
+            client = await conn.connect();
+            const result = await conn.query(`
+            SELECT services.id, services.name, services.price, services.professional_name, company.name as company_name, company.address, company.id as company_id 
+            FROM services 
+            INNER JOIN company ON services.company_id = company.id
+            WHERE services.id = $1 AND services.deleted_at IS NULL;
+        `, [id]);
+            client.release();
+            return result.rows[0];
+        } catch (error) {
+            if (client) {
+                client.release();
+            }
+            throw new Error(error);
+        }
+    }
+
     async getAllServicesApp() {
         let client;
         try {
