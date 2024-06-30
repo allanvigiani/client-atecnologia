@@ -440,6 +440,21 @@ class ServiceController {
         }
     }
 
+    async getResultBySearchWithType(text, typeService) {
+        try {
+
+            const results = await this.serviceRepository.getResultsBySearchWithType(text, typeService);
+            if (!results) {
+                const errorMessage = `Nenhum resultado encontrado.`;
+                return { message: errorMessage, status: 500 };
+            }
+
+            return { message: results, status: 201 };
+        } catch (error) {
+            return { message: error.message, status: 500 };
+        }
+    }
+
     /**
      * Método responsável por buscar um serviço pelo tipo
      * @date 14/03/2024 - 22:59:57

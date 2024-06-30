@@ -233,6 +233,42 @@ class ServiceRepository {
         }
     }
 
+    async getResultsBySearchWithType(text, typeService) {
+        let client;
+        try {
+
+            const conn = await database.generateConnection();
+            client = await conn.connect();
+            const result = await conn.query(`
+                SELECT 
+                    services.id,
+                    services.name,
+                    services.price,
+                    services.professional_name,
+                    company.name as company_name,
+                    company.address, 
+                    company.id as company
+                FROM services
+                INNER JOIN company ON services.company_id = company.id
+                INNER JOIN service_type ON services.service_type_id = service_type.id
+                WHERE services.deleted_at IS NULL
+                AND (services.name ILIKE $1
+                    OR service_type.type ILIKE $1
+                    OR services.other_service_type ILIKE $1
+                    OR company.name ILIKE $1)
+                AND service_type.id = $2
+                ORDER BY services.name ASC;`, [`%${text}%`, typeService]);
+            client.release();
+            return result.rows;
+        }
+        catch (error) {
+            if (client) {
+                client.release();
+            }
+            throw new Error(error);
+        }
+    }
+
     async verifyRevogedToken(token) {
         let client;
         try {
