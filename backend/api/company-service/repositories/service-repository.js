@@ -136,7 +136,7 @@ class ServiceRepository {
             WHERE services.id = $1 AND services.deleted_at IS NULL;
         `, [id]);
             client.release();
-            return result.rows[0];
+            return result.rows;
         } catch (error) {
             if (client) {
                 client.release();
