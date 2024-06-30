@@ -159,10 +159,13 @@ class ServiceController {
      */
     async getServicesApp(serviceId) {
         try {
-            let result;
-            result = await this.serviceRepository.getServiceByIdApp(serviceId);
+            const results = await this.serviceRepository.getServiceByIdApp(serviceId);
+            if(!results){
+                const errorMessage = `Erro ao buscar os serviços. Tente novamente mais tarde`;
+                return { message: errorMessage, status: 500 };
+            }
 
-            return { message: { result }, status: 200 };
+            return { message: results , status: 200 };
         } catch (error) {
             return { message: error.message, status: 500 };
         }
