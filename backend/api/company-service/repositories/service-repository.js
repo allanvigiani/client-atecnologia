@@ -143,7 +143,7 @@ class ServiceRepository {
             const conn = await database.generateConnection();
             client = await conn.connect();
             const result = await conn.query(`
-                SELECT services.id as id_service, services.name 
+                SELECT services.id, services.name, services.price, services.professional_name, company.name as company_name, company.address, company.id as company_id
                 FROM services 
                 INNER JOIN company ON services.company_id = company.id
                 INNER JOIN service_type ON services.service_type_id = service_type.id
