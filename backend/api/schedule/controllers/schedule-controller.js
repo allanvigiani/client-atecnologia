@@ -52,14 +52,9 @@ class ScheduleController {
 
             const queue = "user/schedule_information";
 
-            await new Promise((resolve, reject) => {
-                try {
-                    this.queueRepository.sendToQueue(queue, message);
-                    resolve();
-                } catch (error) {
-                    reject(error);
-                }
-            });
+            console.log(`Preparando para enviar para a fila: ${queue} com as informações ${JSON.stringify(message)}`)
+
+            await this.queueRepository.sendToQueue(queue, message);
             
             return { message: `Informações do serviço enviados para a fila!`, status: 200 };
         } catch (error) {

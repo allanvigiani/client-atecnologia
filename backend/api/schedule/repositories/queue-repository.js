@@ -8,7 +8,7 @@ class QueueRepository {
         try {
             const bufferMessage = Buffer.from(typeof message === 'object' ? JSON.stringify(message) : message);
             await channel.sendToQueue(queue, bufferMessage);
-            console.log(" [x] Enviado '%s'", message);
+            console.log(" [x] Informações enviados: '%s'", message);
         } catch (error) {
             console.error("Erro ao enviar mensagem:", error);
         }
