@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS "users" (
     "password" TEXT NOT NULL,
     "address" VARCHAR(250),
     "contact_phone" VARCHAR(20),
+    "cpf" VARCHAR(20),
     "login_attempts" INT DEFAULT 0,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),

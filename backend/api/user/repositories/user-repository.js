@@ -24,25 +24,17 @@ class UserRepository {
 
     async updateUserInformation(data, userId) {
         try {
-            const { name, contact_phone, address } = data;
+            const { name, contact_phone, address, cpf } = data;
 
             const conn = await database.generateConnection();
 
-            if (name && address && !contact_phone) {
-                const result = await conn.query(`
-                    UPDATE users SET name = $1, address = $2 WHERE id = $3;
-                `, [`${name}`, `${address}`, userId]);
 
-                return result.rowCount > 0 ? true : false;
-            }
+            const result = await conn.query(`
+                    UPDATE users SET name = $1, address = $2, contact_phone = $3, cpf = $4 WHERE id = $5;
+                `, [`${name}`, `${address}`, `${contact_phone}`, `${cpf}`, userId]);
 
-            if (contact_phone) {
-                const result = await conn.query(`
-                    UPDATE users SET contact_phone = $1 WHERE id = $2;
-                `, [`${contact_phone}`, userId]);
+            return result.rowCount > 0 ? true : false;
 
-                return result.rowCount > 0 ? true : false;
-            }
 
         } catch (error) {
             throw new Error(error);

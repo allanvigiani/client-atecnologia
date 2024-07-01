@@ -94,7 +94,7 @@ class UserController {
     async changeUserInformation(body, companyId) {
         try {
 
-            const { name, contact_phone, address } = body;
+            const { name, contact_phone, address, cpf } = body;
 
             if (!name && !contact_phone && !address) {
                 const errorMessage = `Nenhum dado recebido para atualização.`;
