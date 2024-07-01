@@ -398,15 +398,38 @@ export default function Schedule() {
         return;
       }
 
-      // Converter o preço formatado para double precision
-      const formattedPrice = parseFloat(price.replace(/[^\d]/g, '').replace(',', '.'));
+      let numberPrice = parseFloat(price.replace(',', '.'));
+      
+      if (isNaN(numberPrice)) {
+        throw new Error('Preço inválido');
+      }
+
+      const cleanPrice = numberPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      let formattedPrice = '';
+
+      try {
+        if (cleanPrice) {
+          formattedPrice = numberPrice.toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          });
+        } else {
+          throw new Error('Preço inválido');
+        }
+      } catch (err) {
+        console.error('Erro na formatação do preço:', err);
+        formattedPrice = 'Erro na formatação'; 
+      }
 
       const formData = {
         id: serviceId,
         company_id: companyId,
         name: serviceName,
         professional_name: professionalName,
-        price: formattedPrice.toFixed(2),
+        price: numberPrice.toFixed(2),
         service_type_id: serviceValue,
         other_service_type: serviceDescription,
         service_hours_id: serviceHourValueEdit,
@@ -433,7 +456,7 @@ export default function Schedule() {
       setFormLoading(false);
       generateError(err.response?.data?.message);
     }
-  };
+};
 
   return (
     <Layout>

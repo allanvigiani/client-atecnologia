@@ -42,7 +42,7 @@ class UserController {
         try {
             const { name, email, password, address, contact_phone } = body;
 
-            if (!name || !email || !password) {
+            if (!name || !email || !password || !address || !contact_phone) {
                 const errorMessage = `Campos não recebidos.`;
                 return { message: errorMessage, status: 400 };
             }

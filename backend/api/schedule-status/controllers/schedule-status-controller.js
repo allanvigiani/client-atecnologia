@@ -60,7 +60,7 @@ class ScheduleStatusController {
                 return { message: `Erro ao deletar o serviço.`, status: 500 };
             }
 
-            return { message: `Serviço deletado com sucesso!`, status: 201 };
+            return { message: `Serviço excluído com sucesso!`, status: 201 };
         } catch (error) {
             return { message: error.message, status: 500 };
         }

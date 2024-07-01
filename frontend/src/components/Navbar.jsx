@@ -147,7 +147,7 @@ export default function Navbar() {
         <img className={`${styles.logo}`} src="/images/logo_navbar-removebg-preview.png" />
         <nav className={`${styles.navigation}`}>
           <a href="/">Inicio</a>
-          <a onClick={handleCadastroClick}>Cadastrar Serviços</a>
+          <a onClick={handleCadastroClick}>Serviços</a>
           <IconButton onClick={handleMenuOpen} sx={{ p: 0.5, ml: 4, bgcolor: '#e5e5e5', borderRadius: '50%' }}>
             <Avatar alt="user" src="/images/profile.png" />
           </IconButton>

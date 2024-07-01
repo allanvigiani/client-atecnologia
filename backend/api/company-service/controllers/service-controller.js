@@ -82,7 +82,7 @@ class ServiceController {
 
             await this.serviceRepository.deleteService(serviceId, companyId);
 
-            return { message: `Serviço deletado com sucesso!`, status: 201 };
+            return { message: `Serviço excluído com sucesso!`, status: 201 };
         } catch (error) {
             return { message: error.message, status: 500 };
         }
@@ -119,7 +119,7 @@ class ServiceController {
 
             await this.serviceRepository.updateService(service, company_id);
 
-            return { message: `Serviço Atualizado com sucesso!`, status: 201 };
+            return { message: `Serviço atualizado com sucesso!`, status: 201 };
         } catch (error) {
             return { message: error.message, status: 500 };
         }
