@@ -28,13 +28,21 @@ class UserRepository {
 
             const conn = await database.generateConnection();
 
-
-            const result = await conn.query(`
+            if (name && address && !contact_phone) {
+                const result = await conn.query(`
                     UPDATE users SET name = $1, address = $2, contact_phone = $3, cpf = $4 WHERE id = $5;
                 `, [`${name}`, `${address}`, `${contact_phone}`, `${cpf}`, userId]);
 
-            return result.rowCount > 0 ? true : false;
+                return result.rowCount > 0 ? true : false;
+            }
 
+            if (contact_phone) {
+                const result = await conn.query(`
+                    UPDATE users SET contact_phone = $1 WHERE id = $2;
+                `, [`${contact_phone}`, userId]);
+
+                return result.rowCount > 0 ? true : false;
+            }
 
         } catch (error) {
             throw new Error(error);
