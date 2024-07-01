@@ -70,7 +70,7 @@ class UserRepository {
             const conn = await database.generateConnection();
 
             const result = await conn.query(`
-            SELECT id, name, email, contact_phone, address FROM users WHERE id = $1;
+            SELECT id, name, email, contact_phone, address, cpf FROM users WHERE id = $1;
             `, [`${userId}`]);
 
             return result.rows[0];
