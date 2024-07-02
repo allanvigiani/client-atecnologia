@@ -12,7 +12,8 @@ async function createSchedule(message) {
 
         const { company_id, user_id, service_id, service_hour_id, service_day_id, date } = msg;
         if (!company_id || !user_id || !service_id || !service_hour_id || !service_day_id || !date) {
-            console.log('Campos não recebidos. IGNORANDO!!!!');
+            console.log('Campos não recebidos. Ignorando mensagem FAKE!');
+            return;
         }
 
         const result = await scheduleRepository.createSchedule(msg);
