@@ -1,14 +1,18 @@
 import amqp from 'amqplib';
 
-async function connectRabbitMQ() {
+async function connectRabbitMq() {
+    if (channel && connection) {
+        return channel;
+    }
     try {
-        const connection = await amqp.connect(process.env.RABBITMQ_URL);
-        const channel = await connection.createChannel();
+        connection = await amqp.connect('amqp://localhost');
+        channel = await connection.createChannel();
+        await channel.confirmSelect();
         return channel;
     } catch (error) {
-        console.error("Erro ao conectar ao RabbitMQ:", error);
-        process.exit(1);
+        console.error('Erro ao conectar com RabbitMQ:', error);
+        throw error;  // Propague o erro para garantir que falhas de conexão sejam tratadas.
     }
 }
 
-export default connectRabbitMQ;
+export default connectRabbitMq;
