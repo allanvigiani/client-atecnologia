@@ -12,7 +12,7 @@ async function createSchedule(message) {
 
         const { company_id, user_id, service_id, service_hour_id, service_day_id, date } = msg;
         if (!company_id || !user_id || !service_id || !service_hour_id || !service_day_id || !date) {
-            throw new Error('Faltando parâmetros do agendamento do serviço');
+            console.log('Campos não recebidos. IGNORANDO!!!!');
         }
 
         const result = await scheduleRepository.createSchedule(msg);
