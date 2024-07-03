@@ -42,7 +42,7 @@ export default function ConfiguracaoCompany() {
 
         try {
             const CompanyData = getCookie("companyData");
-            console.log('ok')
+
             if (!CompanyData) {
                 const { data: companyData } = await axios.get(
                     `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY}/company/`,
@@ -52,7 +52,7 @@ export default function ConfiguracaoCompany() {
                         },
                     }
                 );
-
+                console.log(companyData)
                 setCompanyName(companyData.name);
                 setCompanyEmail(companyData.email);
                 setCompanyCnpj(companyData.cnpj ? companyData.cnpj : '123.123.123-12');
