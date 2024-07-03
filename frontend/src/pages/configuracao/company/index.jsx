@@ -10,6 +10,7 @@ import TextField from '@mui/material/TextField';
 import { deleteCookie, setCookie, hasCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import { Button, Typography } from "@mui/material";
+import InputMask from 'react-input-mask';
 
 export default function ConfiguracaoCompany() {
     const router = useRouter();
@@ -18,6 +19,7 @@ export default function ConfiguracaoCompany() {
     const [companyEmail, setCompanyEmail] = useState('');
     const [companyAddress, setCompanyAddress] = useState('');
     const [companyCnpj, setCompanyCnpj] = useState('');
+    const [companyPhone, setCompanyPhone] = useState('');
 
     useEffect(() => {
         verifyUser();
@@ -40,6 +42,7 @@ export default function ConfiguracaoCompany() {
 
         try {
             const CompanyData = getCookie("companyData");
+            console.log('ok')
             if (!CompanyData) {
                 const { data: companyData } = await axios.get(
                     `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY}/company/`,
@@ -49,10 +52,12 @@ export default function ConfiguracaoCompany() {
                         },
                     }
                 );
+
                 setCompanyName(companyData.name);
                 setCompanyEmail(companyData.email);
                 setCompanyCnpj(companyData.cnpj ? companyData.cnpj : '123.123.123-12');
                 setCompanyAddress(companyData.address);
+                setCompanyPhone(companyData.contact_phone);
                 setCompanyId(companyData.id);
                 setCookie("companyData", JSON.stringify(companyData));
             } else {
@@ -62,6 +67,7 @@ export default function ConfiguracaoCompany() {
                 setCompanyEmail(companyData.email);
                 setCompanyCnpj(companyData.cnpj ? companyData.cnpj : '123.123.123-13');
                 setCompanyAddress(companyData.address);
+                setCompanyPhone(companyData.contact_phone);
             }
         } catch (error) {
             console.error("Erro na solicitação GET:", error);
@@ -81,8 +87,9 @@ export default function ConfiguracaoCompany() {
                 name: companyName,
                 email: companyEmail,
                 address: companyAddress,
+                contact_phone: companyPhone,
             };
-
+            console.log(formData);
             const token = getCookie("user_auth_information");
 
             const { data } = await axios.put(
@@ -178,6 +185,21 @@ export default function ConfiguracaoCompany() {
                             value={companyAddress}
                             onChange={(e) => setCompanyAddress(e.target.value)}
                         />
+
+                        <InputMask
+                            mask="(99) 99999-9999"
+                            value={companyPhone}
+                            onChange={(e) => setCompanyPhone(e.target.value)}
+                        >
+                            {(inputProps) => <TextField
+                                {...inputProps}
+                                label="Telefone:"
+                                type="text"
+                                name="companyPhone"
+                                id="companyPhone"
+                            />}
+                        </InputMask>
+
                         <button type="submit" className={styles['form-button-modal']}>Atualizar</button>
                     </Box>
                 </Container>

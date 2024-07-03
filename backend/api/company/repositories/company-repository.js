@@ -36,7 +36,7 @@ class CompanyRepository {
         try {
             const conn = await database.generateConnection();
             const result = await conn.query(`
-            SELECT id, name, email, address, cnpj FROM company WHERE id = $1;
+            SELECT id, name, email, address, cnpj, contact_phone FROM company WHERE id = $1;
         `, [`${userId}`]);
 
             return result.rows[0];
@@ -61,18 +61,17 @@ class CompanyRepository {
         }
     }
 
-
     async updateCompanyInformation(body, companyId) {
         let client;
         try {
 
-            const { name, address } = body
+            const { name, address, contact_phone } = body
 
             const conn = await database.generateConnection();
             client = await conn.connect();
             const result = await conn.query(`
-            UPDATE company SET name = $1, address = $2, updated_at = NOW() WHERE id = $3 RETURNING id;
-        `, [`${name}`, `${address}`, companyId]);
+            UPDATE company SET name = $1, address = $2, contact_phone = $3, updated_at = NOW() WHERE id = $4 RETURNING id;
+        `, [`${name}`, `${address}`, `${contact_phone}`, companyId]);
 
             client.release();
 

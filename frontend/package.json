@@ -24,6 +24,7 @@
     "react-currency-input-field": "^3.8.0",
     "react-hook-form": "^7.47.0",
     "react-icons": "^4.11.0",
+    "react-input-mask": "^2.0.4",
     "react-phone-number-input": "^3.3.7",
     "react-router-dom": "^6.19.0",
     "react-select": "^5.8.0",
