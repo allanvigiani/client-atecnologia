@@ -163,7 +163,7 @@ export default function Schedule() {
       formErrors.price = 'Preço é obrigatório';
     }
     if (!serviceValue) {
-      formErrors.serviceValue = 'Serviço é obrigatório';
+      formErrors.serviceValue = 'Tipo de serviço é obrigatório';
     }
 
     if (Object.keys(formErrors).length > 0) {
@@ -468,7 +468,7 @@ export default function Schedule() {
             </div>
           )}
           <div className={styles.form}>
-            <Button onClick={handleShowCreateModal} className={styles['form-button-modal']} >Novo Serviço</Button>
+            <button onClick={handleShowCreateModal} className={styles['form-button-modal']}>Novo Serviço</button>
             <Box sx={{ height: 'auto', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <DataGrid
                 rows={services}
@@ -505,7 +505,7 @@ export default function Schedule() {
                 <>
                   <h2 className={`${styles.details_name}`}>Preencha as Informações</h2>
                   <div className={`${styles.input__box}`}>
-                    <span className={`${styles.details}`}>Nome do Serviço:</span>
+                    <span className={`${styles.details}`}>Nome:</span>
                     <TextField
                       type="text"
                       name="service_name"
@@ -517,7 +517,7 @@ export default function Schedule() {
                     />
                   </div>
                   <div className={`${styles.input__box}`}>
-                    <span className={`${styles.details}`}>Serviço:</span>
+                    <span className={`${styles.details}`}>Tipo:</span>
                     <Select
                       name="serviceValue"
                       className="basic-multi-select"
@@ -533,7 +533,7 @@ export default function Schedule() {
                     )}
                   </div>
                   <div className={`${styles.input__box}`}>
-                    <span className={`${styles.details}`}>Funcionário:</span>
+                    <span className={`${styles.details}`}>Profissional:</span>
                     <TextField
                       type="text"
                       name="professional_name"
@@ -598,7 +598,7 @@ export default function Schedule() {
                       onChange={(serviceHour) => setServiceHourValue(serviceHour.map(option => option.value))}
                     />
                   </div>
-                  <Button type="submit" className={styles['form-button-modal']} >Novo Serviço</Button>
+                  <button type="submit" className={styles['form-button-modal']}>Novo Serviço</button>
                 </>
               )}
             </form>
@@ -622,7 +622,7 @@ export default function Schedule() {
                 <>
                   <h2 className={`${styles.details_name}`}>Atualizar Serviço</h2>
                   <div className={`${styles.input__box}`}>
-                    <span className={`${styles.details}`}>Nome do Serviço:</span>
+                    <span className={`${styles.details}`}>Nome:</span>
                     <TextField
                       type="text"
                       name="service_name"
@@ -634,7 +634,7 @@ export default function Schedule() {
                     />
                   </div>
                   <div className={`${styles.input__box}`}>
-                    <span className={`${styles.details}`}>Serviço:</span>
+                    <span className={`${styles.details}`}>Tipo:</span>
                     <Select
                       name="serviceValue"
                       className="basic-multi-select"
@@ -651,7 +651,7 @@ export default function Schedule() {
                     )}
                   </div>
                   <div className={`${styles.input__box}`}>
-                    <span className={`${styles.details}`}>Funcionário:</span>
+                    <span className={`${styles.details}`}>Profissional:</span>
                     <TextField
                       type="text"
                       name="professional_name"
@@ -715,7 +715,7 @@ export default function Schedule() {
                       onChange={(serviceHour) => setServiceHourValue(serviceHour.map(option => option.value))}
                     />
                   </div>
-                  <Button type="submit" className={styles['form-button-modal']} >Atualizar</Button>
+                  <button type="submit" className={styles['form-button-modal']}>Atualizar</button>
                 </>
               )}
             </form>

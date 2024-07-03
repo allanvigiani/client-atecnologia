@@ -143,7 +143,7 @@ export default function ConfiguracaoCompany() {
 
                         <TextField
                             disabled
-                            label="Email da Empresa:"
+                            label="Email:"
                             type="email"
                             name="companyEmail"
                             id="companyEmail"
@@ -162,7 +162,7 @@ export default function ConfiguracaoCompany() {
                         />
 
                         <TextField
-                            label="Nome da Empresa:"
+                            label="Razão Social/Nome Fantasia:"
                             type="text"
                             name="companyName"
                             id="companyName"
@@ -171,14 +171,14 @@ export default function ConfiguracaoCompany() {
                         />
 
                         <TextField
-                            label="Endereço da Empresa:"
+                            label="Endereço:"
                             type="text"
                             name="companyAddress"
                             id="companyAddress"
                             value={companyAddress}
                             onChange={(e) => setCompanyAddress(e.target.value)}
                         />
-                        <Button type="submit" className={styles['form-button-modal']} variant="contained">Atualizar</Button>
+                        <button type="submit" className={styles['form-button-modal']}>Atualizar</button>
                     </Box>
                 </Container>
             </React.Fragment>

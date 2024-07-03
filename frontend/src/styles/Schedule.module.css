@@ -152,6 +152,8 @@
 .form-button-modal {
     background-color: rgba(57, 16, 103);
     color: white;
+    font-weight: bold;
+    font-size: 1em;
     padding: 14px 21px;
     margin: 8px 0;
     border: none;
