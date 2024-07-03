@@ -17,7 +17,7 @@ import TextField from '@mui/material/TextField';
 import FormHelperText from '@mui/material/FormHelperText';
 import ptBR from "../../components/DataGrid";
 import CurrencyInput from 'react-currency-input-field';
-
+import { Button } from "@mui/material";
 
 export default function Schedule() {
   const router = useRouter();
@@ -468,7 +468,7 @@ export default function Schedule() {
             </div>
           )}
           <div className={styles.form}>
-            <button onClick={handleShowCreateModal} className={styles['form-button']}>Novo Serviço</button>
+            <Button onClick={handleShowCreateModal} className={styles['form-button-modal']} >Novo Serviço</Button>
             <Box sx={{ height: 'auto', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <DataGrid
                 rows={services}
@@ -503,7 +503,7 @@ export default function Schedule() {
                 </div>
               ) : (
                 <>
-                  <h2 className={`${styles.details}`}>Adicionar Serviço</h2>
+                  <h2 className={`${styles.details_name}`}>Preencha as Informações</h2>
                   <div className={`${styles.input__box}`}>
                     <span className={`${styles.details}`}>Nome do Serviço:</span>
                     <TextField
@@ -598,9 +598,7 @@ export default function Schedule() {
                       onChange={(serviceHour) => setServiceHourValue(serviceHour.map(option => option.value))}
                     />
                   </div>
-                  <button type="submit" className={styles['form-button-modal']}>
-                    Adicionar Serviço
-                  </button>
+                  <Button type="submit" className={styles['form-button-modal']} >Novo Serviço</Button>
                 </>
               )}
             </form>
@@ -622,7 +620,7 @@ export default function Schedule() {
                 </div>
               ) : (
                 <>
-                  <h2 className={`${styles.details}`}>Atualizar Serviço</h2>
+                  <h2 className={`${styles.details_name}`}>Atualizar Serviço</h2>
                   <div className={`${styles.input__box}`}>
                     <span className={`${styles.details}`}>Nome do Serviço:</span>
                     <TextField
@@ -717,9 +715,7 @@ export default function Schedule() {
                       onChange={(serviceHour) => setServiceHourValue(serviceHour.map(option => option.value))}
                     />
                   </div>
-                  <button type="submit" className={styles['form-button-modal']}>
-                    Atualizar Serviço
-                  </button>
+                  <Button type="submit" className={styles['form-button-modal']} >Atualizar</Button>
                 </>
               )}
             </form>

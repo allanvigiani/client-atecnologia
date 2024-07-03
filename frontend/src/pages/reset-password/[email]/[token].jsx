@@ -60,7 +60,7 @@ export default function ResetPassword() {
         <>
             <Head>
                 <link rel="shortcut icon" href="/favicon.ico" />
-                <title>ATecnologia - Redefinir Senha</title>
+                <title>AgendAí - Redefinir Senha</title>
             </Head>
             <div className={`${styles.container}`}>
                 <div className={`${styles.main__login}`}>

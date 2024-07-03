@@ -62,7 +62,7 @@ export default function ChangePassword() {
         <>
             <Head>
                 <link rel="shortcut icon" href="/favicon.ico" />
-                <title>ATecnologia - Recuperar Senha</title>
+                <title>AgendAí - Recuperar Senha</title>
             </Head>
             <div className={`${styles.container}`}>
                 <div className={`${styles.main__login}`}>

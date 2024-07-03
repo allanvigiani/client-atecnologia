@@ -127,7 +127,6 @@
     align-items: center;
     overflow-y: auto;
     max-height: 80vh;
-
 }
 
 .form-label-modal {
@@ -175,6 +174,14 @@
 form .input__box {
     width: calc(100% / 2 - 20px);
     padding: 10px;
+}
+
+.details_name {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 10px;
+    color: rgba(57, 16, 103);
+    font-weight: bold;
 }
 
 .input__box .details {

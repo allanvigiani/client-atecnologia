@@ -134,7 +134,7 @@ export default function Login() {
     <>
       <Head>
         <link rel="shortcut icon" href="/favicon.ico" />
-        <title>ATecnologia</title>
+        <title>AgendAí</title>
       </Head>
       <div className={`${styles.container}`}>
         <div className={`${styles.main__login}`}>

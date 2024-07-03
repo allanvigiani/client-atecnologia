@@ -244,10 +244,10 @@ function Company() {
         )}
         <section className={styles.home}>
           <div className={styles.container}>
-            <Typography variant="h1" gutterBottom>
+            <Typography variant="h1" gutterBottom className={styles.companyName}>
               {companyName}
             </Typography>
-            <Typography variant="h7" gutterBottom>
+            <Typography variant="h7" gutterBottom className={styles.companyInformation}>
               {companyInformation}
             </Typography>
           </div>
@@ -266,7 +266,7 @@ function Company() {
         </section>
         <div className={styles['container-middle']}>
           <Box sx={{ height: 'auto', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <Typography variant="h6" gutterBottom>
+            <Typography variant="h6" gutterBottom className={styles.schedule_title}>
               Confirmação de Agendamento
             </Typography>
             <DataGrid
@@ -289,7 +289,7 @@ function Company() {
         </div>
         <div className={styles['container-middle']}>
           <Box sx={{ height: 'auto', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <Typography variant="h6" gutterBottom>
+            <Typography variant="h6" gutterBottom className={styles.schedule_title}>
               Próximos Agendamentos
             </Typography>
             <DataGrid

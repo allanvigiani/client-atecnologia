@@ -8,7 +8,7 @@ export default function Layout({ children }) {
     <>
       <Head>
         <link rel="shortcut icon" href="/favicon.ico" />
-        <title>ATecnologia</title>
+        <title>AgendAí</title>
       </Head>
       <Header />
       <main> {children} </main>

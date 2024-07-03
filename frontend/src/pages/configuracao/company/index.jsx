@@ -138,7 +138,7 @@ export default function ConfiguracaoCompany() {
                         onSubmit={handleSubmit}
                     >
                         <Typography variant="h4" className={`${styles.details}`} gutterBottom>
-                            Atualizar dados da Empresa
+                            Atualizar Informações
                         </Typography>
 
                         <TextField
@@ -178,7 +178,7 @@ export default function ConfiguracaoCompany() {
                             value={companyAddress}
                             onChange={(e) => setCompanyAddress(e.target.value)}
                         />
-                        <Button type="submit" className={styles['form-button-modal']} variant="contained">Atualizar Dados</Button>
+                        <Button type="submit" className={styles['form-button-modal']} variant="contained">Atualizar</Button>
                     </Box>
                 </Container>
             </React.Fragment>

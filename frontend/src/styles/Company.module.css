@@ -1,20 +1,34 @@
 /* Empresa.Modulo.css */
 
 .home {
-    position: relative;
-    width: 100%;
-    min-height: 70vh;
     display: flex;
-    justify-content: center;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 90vh;
+    text-align: center;
 
 }
+
+.companyName {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.companyInformation {
+    font-size: 1.5rem;
+    color: gray;
+}
+
 
 .home .container {
     z-index: 888;
     color: #4f297a;
     width: 70%;
     margin-top: 50px;
+    text-align: center;
+    overflow-x: hidden;
 }
 
 .home .container>h1 {
@@ -31,12 +45,10 @@
 }
 
 .home .media__icons {
-    z-index: 888;
-    position: absolute;
-    right: 20vh;
     display: flex;
-    flex-direction: column;
-    transition: 0.5s ease;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
 }
 
 .home .media__icons>a {
@@ -300,6 +312,12 @@
     width: 100px;
     /* Ajuste a largura conforme necessário */
     text-align: center;
+}
+
+.schedule_title {
+    color: #4f297a;
+    font-size: 24px;
+    font-weight: bold;
 }
 
 .loadingContainer {
