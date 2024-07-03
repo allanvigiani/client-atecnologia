@@ -47,7 +47,7 @@ async function processEmailMessage(msg) {
                                    .replace(/{{date}}/g, date);
 
         await SMTP_TRANSPORTER.sendMail({
-            subject: "Confirmação de agendamento!",
+            subject: "Informações do agendamento!",
             from: company_email,
             to: client_email,
             html: templateHtml
