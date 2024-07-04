@@ -1,6 +1,6 @@
 const ptBR = {
     // Root
-    noRowsLabel: 'Nenhuma linha',
+    noRowsLabel: 'Nenhum Serviço',
     noResultsOverlayLabel: 'Nenhum resultado encontrado.',
   
     // Density selector toolbar button text

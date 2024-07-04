@@ -167,8 +167,7 @@ export default function Navbar() {
               <Avatar
                 src="/images/logout.png"
                 sx={{ marginRight: 1 }}
-              />
-              Deslogar
+              />Logout
             </MenuItem>
           </Menu>
         </nav>

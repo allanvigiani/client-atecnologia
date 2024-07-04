@@ -265,49 +265,65 @@ function Company() {
           </div>
         </section>
         <div className={styles['container-middle']}>
-          <Box sx={{ height: 'auto', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Typography variant="h6" gutterBottom className={styles.schedule_title}>
               Confirmação de Agendamento
             </Typography>
-            <DataGrid
-              rows={serviceData}
-              columns={columns}
-              pageSize={5}
-              {...serviceData}
-              initialState={{
-                ...serviceData.initialState,
-                pagination: { paginationModel: { pageSize: 5 } },
-              }}
-              rowsPerPageOptions={[5, 10, 25]}
-              loading={loading}
-              pagination
-              localeText={ptBR}
-              sx={{ width: '70%', height: 400, margin: '10px 0' }}
-              disableRowSelectionOnClick
-            />
+            <Box sx={{ width: '100%' }}>
+              <DataGrid
+                rows={serviceData}
+                columns={columns}
+                autoHeight
+                pageSize={5}
+                {...serviceData}
+                initialState={{
+                  ...serviceData.initialState,
+                  pagination: { paginationModel: { pageSize: 5 } },
+                }}
+                rowsPerPageOptions={[5, 10, 25]}
+                loading={loading}
+                pagination
+                localeText={ptBR}
+                sx={{
+                  width: '100%',
+                  '& .MuiDataGrid-columnHeaders': {
+                    backgroundColor: '#f5f5f5',
+                  },
+                }}
+                disableRowSelectionOnClick
+              />
+            </Box>
           </Box>
         </div>
         <div className={styles['container-middle']}>
-          <Box sx={{ height: 'auto', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Typography variant="h6" gutterBottom className={styles.schedule_title}>
               Próximos Agendamentos
             </Typography>
-            <DataGrid
-              rows={serviceDataConfirmed}
-              columns={columns_show}
-              pageSize={5}
-              {...serviceDataConfirmed}
-              initialState={{
-                ...serviceDataConfirmed.initialState,
-                pagination: { paginationModel: { pageSize: 5 } },
-              }}
-              pageSizeOptions={[5, 10, 25]}
-              loading={loading}
-              pagination
-              localeText={ptBR}
-              sx={{ width: '70%', height: 400, margin: '10px 0' }}
-              disableRowSelectionOnClick
-            />
+            <Box sx={{ width: '100%' }}>
+              <DataGrid
+                rows={serviceDataConfirmed}
+                columns={columns_show}
+                autoHeight
+                pageSize={5}
+                {...serviceDataConfirmed}
+                initialState={{
+                  ...serviceDataConfirmed.initialState,
+                  pagination: { paginationModel: { pageSize: 5 } },
+                }}
+                rowsPerPageOptions={[5, 10, 25]}
+                loading={loading}
+                pagination
+                localeText={ptBR}
+                sx={{
+                  width: '100%',
+                  '& .MuiDataGrid-columnHeaders': {
+                    backgroundColor: '#f5f5f5',
+                  },
+                }}
+                disableRowSelectionOnClick
+              />
+            </Box>
           </Box>
         </div>
         <ToastContainer />
