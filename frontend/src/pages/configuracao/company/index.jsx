@@ -52,7 +52,7 @@ export default function ConfiguracaoCompany() {
                         },
                     }
                 );
-                console.log(companyData)
+
                 setCompanyName(companyData.name);
                 setCompanyEmail(companyData.email);
                 setCompanyCnpj(companyData.cnpj ? companyData.cnpj : '123.123.123-12');
@@ -89,7 +89,7 @@ export default function ConfiguracaoCompany() {
                 address: companyAddress,
                 contact_phone: companyPhone,
             };
-            console.log(formData);
+
             const token = getCookie("user_auth_information");
 
             const { data } = await axios.put(
