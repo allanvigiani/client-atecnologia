@@ -139,7 +139,8 @@ class ScheduleRepository {
                    c.name as name_company,
 				   c.address as address_company,
 				   c.cnpj as cnpj_company,
-                   c.contact_phone as contact_phone_company
+                   c.contact_phone as contact_phone_company,
+                   c.email as email_company
             FROM schedule s
             INNER JOIN schedule_status ss ON s.id = ss.schedule_id
             INNER JOIN status st ON CAST(ss.status_id AS INTEGER) = st.id
