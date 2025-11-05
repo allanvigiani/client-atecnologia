@@ -93,6 +93,21 @@ export default function Login() {
             toast.success(response);
 
             setCookie("user_auth_information", data.message.token);
+
+            const token = getCookie("user_auth_information");
+            const { data: companyData } = await axios.get(
+              `${process.env.NEXT_PUBLIC_BACKEND_URL_COMPANY}/company/`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+      
+            if (companyData) {
+              setCookie("companyData", companyData.message);
+            }
+
             router.push("/");
           }
         } catch (err) {
@@ -119,7 +134,7 @@ export default function Login() {
     <>
       <Head>
         <link rel="shortcut icon" href="/favicon.ico" />
-        <title>ATecnologia</title>
+        <title>AgendAí</title>
       </Head>
       <div className={`${styles.container}`}>
         <div className={`${styles.main__login}`}>
@@ -211,6 +226,17 @@ export default function Login() {
                     className={`${styles.text__create__ancora}`}
                   >
                     Criar Conta
+                  </a>
+                </div>
+                <div className={`${styles.text__center}`}>
+                  <span className={`${styles.text__create}`}>
+                    Esqueceu sua senha?
+                  </span>
+                  <a
+                    href="/change-password"
+                    className={`${styles.text__create__ancora}`}
+                  >
+                    Recuperar Senha
                   </a>
                 </div>
               </form>

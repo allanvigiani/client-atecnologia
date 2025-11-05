@@ -8,6 +8,18 @@ services:
     networks:
       - mynetwork
 
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+        - 5672:5672
+        - 15672:15672
+    volumes:
+        - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+        - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+      - mynetwork
+
   auth:
     build:
       context: ./backend/api/auth
@@ -15,6 +27,8 @@ services:
       - "3001:3001"
     networks:
       - mynetwork
+    depends_on:
+      - rabbitmq
 
   company:
     build:
@@ -23,28 +37,66 @@ services:
       - "3002:3002"
     networks:
       - mynetwork
+    depends_on:
+      - rabbitmq
 
-  schedule:
+  company-service:
     build:
       context: ./backend/api/company-service
     ports:
       - "3003:3003"
     networks:
       - mynetwork
+    depends_on:
+      - rabbitmq
 
-  create-schedule:
+  schedule:
     build:
-      context: ./backend/service/create-schedule
+      context: ./backend/api/schedule
     ports:
-      - "3009:3009"
+      - "3004:3004"
     networks:
       - mynetwork
+    depends_on:
+      - rabbitmq
 
-  send-email:
+  user:
+    build:
+      context: ./backend/api/user
+    ports:
+      - "3005:3005"
+    networks:
+      - mynetwork
+    depends_on:
+      - rabbitmq
+
+  user-auth:
+    build:
+      context: ./backend/api/user-auth
+    ports:
+      - "3008:3008"
+    networks:
+      - mynetwork
+    depends_on:
+      - rabbitmq
+
+  # service-create-schedule:
+  #   build:
+  #     context: ./backend/service/create-schedule
+  #   ports:
+  #     - "3006:3006"
+  #   depends_on:
+  #     - rabbitmq
+  #   networks:
+  #     - mynetwork
+
+  service-send-email:
     build:
       context: ./backend/service/send-email
     ports:
-      - "3008:3008"
+      - "3007:3007"
+    depends_on:
+      - rabbitmq
     networks:
       - mynetwork
 

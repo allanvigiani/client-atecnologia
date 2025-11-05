@@ -1,73 +1,77 @@
-import React from "react";
-import styles from "@/styles/Footer.module.css";
+import React from 'react';
+import { Box, Typography, Link, Container, IconButton } from '@mui/material';
+import { Facebook, Instagram, Twitter } from '@mui/icons-material';
 
 export default function Footer() {
   return (
-    <>
-    <div className={`${styles.footer}`}>
-      <div className={`${styles.section__padding}`}>
-        {/* <div className={`${styles.links}`}>
-          <div className={`${styles.links_div}`}>
-            <h4> For Business</h4>
-            <a href="/employer">
-              <p>Employer</p>
-            </a>
-          </div>
-          <div className={`${styles.links_div}`}>
-            <h4> For Business</h4>
-            <a href="/employer">
-              <p>Employer</p>
-            </a>
-          </div>
-          <div className={`${styles.links_div}`}>
-            <h4> For Business</h4>
-            <a href="/employer">
-              <p>Employer</p>
-            </a>
-          </div>
-          <div className={`${styles.links_div}`}>
-            <h4> For Business</h4>
-            <div className={`${styles.socialmedia}`}>
-              <p>
-                <img></img>
-              </p>
-            </div>
-          </div>
-        </div> */}
-        <hr></hr>
-
-        <div className={`${styles.below}`}>
-          <div className={`${styles.copyright}`}>
-            <p>
-              &copy; {new Date().getFullYear()} ATecnologia. Todos os direitos
-              reservados.
-            </p>
-          </div>
-          <div className={`${styles.below__links}`}>
-            <a href="/terms">
-              <div>
-                <p>Termos & Condições</p>
-              </div>
-            </a>
-            <a href="/privacy">
-              <div>
-                <p>Privacidade</p>
-              </div>
-            </a>
-            <a href="/security">
-              <div>
-                <p>Segurança</p>
-              </div>
-            </a>
-            <a href="/cookies">
-              <div>
-                <p>Cookies</p>
-              </div>
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-    </>
+    <Box
+      component="footer"
+      sx={{
+        py: 4,
+        px: 2,
+        mt: 'auto',
+        backgroundColor: '#5e21a3',
+        color: '#FFFFFF',
+        textAlign: 'center',
+      }}
+    >
+      <Container maxWidth="lg">
+        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+          <IconButton
+            aria-label="Facebook"
+            href=""
+            sx={{
+              color: '#FFFFFF',
+              '&:hover': {
+                transform: 'scale(1.2)',
+              },
+              transition: 'transform 0.2s',
+            }}
+          >
+            <Facebook />
+          </IconButton>
+          <IconButton
+            aria-label="Instagram"
+            href=""
+            sx={{
+              color: '#FFFFFF',
+              '&:hover': {
+                transform: 'scale(1.2)',
+              },
+              transition: 'transform 0.2s',
+            }}
+          >
+            <Instagram />
+          </IconButton>
+          <IconButton
+            aria-label="Twitter"
+            href=""
+            sx={{
+              color: '#FFFFFF',
+              '&:hover': {
+                transform: 'scale(1.2)',
+              },
+              transition: 'transform 0.2s',
+            }}
+          >
+            <Twitter />
+          </IconButton>
+        </Box>
+        <Typography variant="body2">Infomações · Suporte </Typography>
+        <Typography variant="body2" sx={{ my: 1 }}>
+          <Link color="inherit" sx={{ mx: 1, cursor:'pointer' }}>
+            Termos de uso
+          </Link>
+          ·
+          <Link color="inherit" sx={{ mx: 1, cursor:'pointer' }}>
+            Política de privacidade
+          </Link>
+        </Typography>
+        <Typography variant="body2" sx={{ mt: 2 }}>
+          {'© '}
+          {new Date().getFullYear()} AgendAi LTDA
+        </Typography>
+      </Container>
+    </Box>
   );
 };

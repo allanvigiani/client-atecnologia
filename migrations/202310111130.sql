@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS "company" (
     "name" TEXT,
     "password" TEXT NOT NULL,
     "address" VARCHAR(250),
+    "cnpj" VARCHAR(25),
     "login attempts" INTEGER DEFAULT 0,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),
@@ -29,22 +30,35 @@ CREATE TABLE IF NOT EXISTS "company_sessions" (
     CONSTRAINT "company_sessions_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "company" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
--- CreateTable: services
-CREATE TABLE IF NOT EXISTS "services" (
+CREATE TABLE IF NOT EXISTS "users" (
     "id" SERIAL NOT NULL,
-    "company_id" INTEGER NOT NULL,
-    "name" TEXT NOT NULL,
-    "professional_name" TEXT,
-    "price" DOUBLE PRECISION,
-    "service_type_id" INTEGER NOT NULL,
-    "other_service_type" VARCHAR(120),
-    "service_hours_id" TEXT,
-    "service_days_id" TEXT,
+    "email" TEXT NOT NULL,
+    "name" TEXT,
+    "password" TEXT NOT NULL,
+    "address" VARCHAR(250),
+    "contact_phone" VARCHAR(20),
+    "cpf" VARCHAR(20),
+    "login_attempts" INT DEFAULT 0,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3),
     "deleted_at" TIMESTAMP(3),
-    CONSTRAINT "services_pkey" PRIMARY KEY ("id"),
-    CONSTRAINT "services_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "company" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
-    CONSTRAINT "services_type_id_fkey" FOREIGN KEY ("service_type_id") REFERENCES "service_type" ("id")
+    CONSTRAINT "user_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX IF NOT EXISTS "user_id_key" ON "users"("id");
+CREATE UNIQUE INDEX IF NOT EXISTS "user_email_key" ON "users"("email");
+
+CREATE TABLE IF NOT EXISTS "user_sessions" (
+    "id" SERIAL NOT NULL,
+    "user_id" INTEGER NOT NULL,
+    "start_login" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "end_login" TIMESTAMP(3),
+    "token" TEXT,
+    CONSTRAINT "user_sessions_pkey" PRIMARY KEY ("id")
+);
+
+ALTER TABLE "user_sessions" ADD CONSTRAINT "user_sessions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- CreateTable: service_hours
 CREATE TABLE IF NOT EXISTS "service_hours" (
@@ -80,9 +94,27 @@ CREATE TABLE IF NOT EXISTS "service_type" (
 );
 
 -- INSERTs for service_type
-INSERT INTO service_type (id, description) VALUES 
+INSERT INTO service_type (id, type) VALUES 
 (1, 'Automotivos'), (2, 'Beleza e Bem-estar'), (3, 'Construção'), (4, 'Educação'),
 (5, 'Gastronomia'), (6, 'Imobiliários'), (7, 'Lazer'), (8, 'Pet Care'), (9, 'Saúde'), (10, 'Outro');
+
+-- CreateTable: services
+CREATE TABLE IF NOT EXISTS "services" (
+    "id" SERIAL NOT NULL,
+    "company_id" INTEGER NOT NULL,
+    "name" TEXT NOT NULL,
+    "professional_name" TEXT,
+    "price" DOUBLE PRECISION,
+    "service_type_id" INTEGER NOT NULL,
+    "other_service_type" VARCHAR(120),
+    "service_hours_id" TEXT,
+    "service_days_id" TEXT,
+    "created_at" TIMESTAMP DEFAULT NOW(),
+    "deleted_at" TIMESTAMP(3),
+    CONSTRAINT "services_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "services_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "company" ("id") ON DELETE RESTRICT ON UPDATE cascade,
+    CONSTRAINT "services_type_id_fkey" FOREIGN KEY ("service_type_id") REFERENCES "service_type" ("id")
+);
 
 -- CreateTable: schedule
 CREATE TABLE IF NOT EXISTS "schedule" (
@@ -92,6 +124,7 @@ CREATE TABLE IF NOT EXISTS "schedule" (
     "service_id" INTEGER NOT NULL,
     "service_hour_id" INTEGER NOT NULL,
     "service_day_id" INTEGER NOT NULL,
+    "date" DATE NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "deleted_at" TIMESTAMP(3),
     CONSTRAINT "schedule_pkey" PRIMARY KEY ("id"),
@@ -101,3 +134,19 @@ CREATE TABLE IF NOT EXISTS "schedule" (
     CONSTRAINT "schedule_service_day_id_fkey" FOREIGN KEY ("service_day_id") REFERENCES "service_days" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS "schedule_status" (
+    "id" SERIAL NOT NULL,
+    "schedule_id" INTEGER NOT NULL,
+    "status_id" TEXT NOT NULL,
+    CONSTRAINT "schedule_status_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "schedule_status_schedule_id_fkey" FOREIGN KEY ("schedule_id") REFERENCES "schedule" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS "status" (
+    "id" SERIAL NOT NULL,
+    "description" TEXT NOT NULL,
+    CONSTRAINT "status_pkey" PRIMARY KEY ("id")
+);
+
+INSERT INTO status (id, description) VALUES 
+(1, 'Aguardando'), (2, 'Aceito'), (3, 'Cancelado Empresa'), (4, 'Cancelado Usuário');

@@ -9,17 +9,25 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
     "@hookform/resolvers": "^3.3.2",
+    "@mui/icons-material": "^5.15.18",
+    "@mui/material": "^5.15.18",
+    "@mui/x-data-grid": "^7.5.1",
     "axios": "^1.5.1",
     "cookies-next": "^4.1.0",
     "dotenv": "^16.3.1",
     "jsonwebtoken": "^9.0.2",
     "next": "13.5.4",
     "react": "^18",
+    "react-currency-input-field": "^3.8.0",
     "react-hook-form": "^7.47.0",
     "react-icons": "^4.11.0",
+    "react-input-mask": "^2.0.4",
     "react-phone-number-input": "^3.3.7",
     "react-router-dom": "^6.19.0",
+    "react-select": "^5.8.0",
     "react-toastify": "^9.1.3"
   }
 }

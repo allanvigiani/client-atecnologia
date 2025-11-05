@@ -82,7 +82,44 @@ class ServiceController {
 
             await this.serviceRepository.deleteService(serviceId, companyId);
 
-            return { message: `Serviço deletado com sucesso!`, status: 201 };
+            return { message: `Serviço excluído com sucesso!`, status: 201 };
+        } catch (error) {
+            return { message: error.message, status: 500 };
+        }
+    }
+
+    /**
+     * Método responsável por deletar um serviço
+     * @date 05/03/2024 - 22:59:23
+     *
+     * @async
+     * @param {integer} serviceId
+     * @returns {json}
+     */
+    async updateService(body) {
+        try {
+
+            const { id, name, professional_name, price, service_type_id, service_hours_id, service_days_id, company_id } = body;
+
+            if (!name || !professional_name || !price || !service_type_id || !service_hours_id || !service_days_id) {
+                const errorMessage = `Campos não recebidos.`;
+                return { message: errorMessage, status: 400 };
+            }
+
+            const service = {
+                id: id,
+                name: name,
+                professional_name: professional_name,
+                price: parseFloat(price),
+                company_id: company_id,
+                service_type_id: service_type_id,
+                service_hours_id: JSON.stringify(service_hours_id),
+                service_days_id: JSON.stringify(service_days_id)
+            }
+
+            await this.serviceRepository.updateService(service, company_id);
+
+            return { message: `Serviço atualizado com sucesso!`, status: 201 };
         } catch (error) {
             return { message: error.message, status: 500 };
         }
@@ -113,6 +150,28 @@ class ServiceController {
     }
 
     /**
+     * Método responsável por buscar um serviço
+     * @date 05/03/2024 - 22:59:57
+     *
+     * @async
+     * @param {integer} serviceId
+     * @returns {json}
+     */
+    async getServicesApp(serviceId) {
+        try {
+            const results = await this.serviceRepository.getServiceByIdApp(serviceId);
+            if(!results){
+                const errorMessage = `Erro ao buscar os serviços. Tente novamente mais tarde`;
+                return { message: errorMessage, status: 500 };
+            }
+
+            return { message: results , status: 200 };
+        } catch (error) {
+            return { message: error.message, status: 500 };
+        }
+    }
+
+    /**
      * Lista todas as horas disponíveis
      * @date 05/03/2024 - 23:02:09
      *
@@ -120,7 +179,7 @@ class ServiceController {
      * @param {integer} companyId
      * @returns {json}
      */
-    async getHours(companyId) {
+    async getHours() {
         try {
 
             const result = await this.hourRepository.getHours();
@@ -136,6 +195,91 @@ class ServiceController {
     }
 
     /**
+     * Lista todas as horas disponíveis por ID
+     * @date 05/03/2024 - 23:02:09
+     * 
+     * @async
+     * 
+     * @param {integer} dayId
+     * @returns {json}   
+      */
+    async getAllHoursByService(serviceId, companyId) {
+        try {
+
+            if (!serviceId || !companyId) {
+                const errorMessage = `ID do serviço ou da empresa não informado.`;
+                return { message: errorMessage, status: 400 };
+            }
+
+            const hours = await this.hourRepository.getHoursByService(serviceId, companyId);
+
+            if (!hours) {
+                const errorMessage = `Erro ao buscar os as horas do serviço. Tente novamente mais tarde!`;
+                return { message: errorMessage, status: 500 };
+            }
+
+            const hoursToArray = JSON.parse(hours.service_hours_id);
+
+            hoursToArray.sort((a, b) => a - b);
+
+            const hoursToResponse = {};
+
+            for (const element of hoursToArray) {
+                const hour = await this.hourRepository.getHour(element);
+                hoursToResponse[hour.id] = hour.start_time;
+            }
+
+            return { message: hoursToResponse, status: 201 };
+        } catch (error) {
+            return { message: error.message, status: 500 };
+        }
+    }
+
+    /**
+     * Lista todas as horas disponíveis por ID
+     * @date 05/03/2024 - 23:02:09
+     * 
+     * @async
+     * 
+     * @param {integer} dayId
+     * @returns {json}   
+      */
+    async getHoursByService(serviceId, companyId, serviceDayId, date) {
+        try {
+
+            const scheduledHours = await this.hourRepository.scheduledHours(serviceId, serviceDayId, date);
+
+            for (let i = 0; i < scheduledHours.length; i++) {
+                scheduledHours[i] = scheduledHours[i].service_hour_id;
+            }
+
+            const hours = await this.hourRepository.getHoursByService(serviceId, companyId);
+
+            if (!hours) {
+                const errorMessage = `Erro ao buscar os as horas do serviço. Tente novamente mais tarde!`;
+                return { message: errorMessage, status: 500 };
+            }
+
+            const hoursToArray = JSON.parse(hours.service_hours_id);
+
+            hoursToArray.sort((a, b) => a - b);
+
+            const filteredDays = hoursToArray.filter(elemento => !scheduledHours.includes(elemento));
+
+            const hoursToResponse = {};
+
+            for (const element of filteredDays) {
+                const hour = await this.hourRepository.getHour(element);
+                hoursToResponse[hour.id] = hour.start_time;
+            }
+
+            return { message: hoursToResponse, status: 201 };
+        } catch (error) {
+            return { message: error.message, status: 500 };
+        }
+    }
+
+    /**
      * Lista todos os dias
      * @date 05/03/2024 - 23:02:09
      *
@@ -143,7 +287,7 @@ class ServiceController {
      * @param {integer} companyId
      * @returns {json}
      */
-    async getDays(companyId) {
+    async getDays() {
         try {
 
             const result = await this.dayRepository.getDays();
@@ -159,19 +303,77 @@ class ServiceController {
     }
 
     /**
-     * Lista todos os dias
+     * Lista todos os dias por ID
+     * @date 05/03/2024 - 23:02:09
+     * 
+     * @async
+     * 
+     * @param {integer} dayId
+     * @returns {json}
+     * 
+    */
+    async getDaysByService(serviceId, companyId) {
+        try {
+
+            const days = await this.dayRepository.getDaysByService(serviceId, companyId);
+
+            if (!days) {
+                const errorMessage = `Erro ao buscar os dias do serviço. Tente novamente mais tarde!`;
+                return { message: errorMessage, status: 500 };
+            }
+
+            const daysToArray = JSON.parse(days.service_days_id);
+
+            daysToArray.sort((a, b) => a - b);
+
+            const daysToResponse = {};
+
+            for (const element of daysToArray) {
+                const day = await this.dayRepository.getDay(element);
+                daysToResponse[day.id] = day.description;
+            }
+
+            return { message: daysToResponse, status: 201 };
+        } catch (error) {
+            return { message: error.message, status: 500 };
+        }
+    }
+
+    /**
+     * Lista todos os tipos
      * @date 05/03/2024 - 23:02:09
      *
      * @async
-     * @param {integer} companyId
      * @returns {json}
      */
-    async getTypes(companyId) {
+    async getTypes() {
         try {
 
             const result = await this.typeRepository.getTypes();
             if (!result) {
                 const errorMessage = `Erro ao buscar os tipos de serviço. Tente novamente mais tarde`;
+                return { message: errorMessage, status: 500 };
+            }
+
+            return { message: { result }, status: 201 };
+        } catch (error) {
+            return { message: error.message, status: 500 };
+        }
+    }
+
+    /**
+    * Lista tipos de serviço por ID
+    * @date 05/03/2024 - 23:02:09
+    *
+    * @async
+    * @returns {json}
+    */
+    async getTypesById(serviceId) {
+        try {
+
+            const result = await this.typeRepository.getTypesById(serviceId);
+            if (!result) {
+                const errorMessage = `Erro ao buscar o tipos de serviço. Tente novamente mais tarde`;
                 return { message: errorMessage, status: 500 };
             }
 
@@ -237,6 +439,103 @@ class ServiceController {
         }
     }
 
+    /**
+     * Busca de acordo com o parâmetro recebido
+     * @date 05/03/2024 - 23:11:05
+     *
+     * @async
+     * @param {string} text
+     * @returns {json}
+     */
+    async getResultBySearch(text) {
+        try {
+
+            const results = await this.serviceRepository.getResultsBySearch(text);
+            if (!results) {
+                const errorMessage = `Erro ao buscar dados da pesquisa. Tente novamente mais tarde!`;
+                return { message: errorMessage, status: 500 };
+            }
+
+            return { message: results, status: 201 };
+        } catch (error) {
+            return { message: error.message, status: 500 };
+        }
+    }
+
+    async getResultBySearchWithType(text, typeService) {
+        try {
+
+            const results = await this.serviceRepository.getResultsBySearchWithType(text, typeService);
+            if (!results) {
+                const errorMessage = `Nenhum resultado encontrado.`;
+                return { message: errorMessage, status: 500 };
+            }
+
+            return { message: results, status: 201 };
+        } catch (error) {
+            return { message: error.message, status: 500 };
+        }
+    }
+
+    /**
+     * Método responsável por buscar um serviço pelo tipo
+     * @date 14/03/2024 - 22:59:57
+     *
+     * @async
+     * @param {integer} serviceType
+     * @returns {json}
+     */
+    async getServicesByType(serviceType) {
+        try {
+            let result;
+
+            if (serviceType != 0) {
+                result = await this.serviceRepository.getAllServicesByType(serviceType);
+            } else {
+                result = await this.serviceRepository.getAllServices();
+            }
+
+            return { message: { result }, status: 200 };
+        } catch (error) {
+            return { message: error.message, status: 500 };
+        }
+    }
+
+    /**
+     * Método responsável por buscar um serviço pelo tipo para o APP
+     * @date 14/03/2024 - 22:59:57
+     * 
+     * @async
+     * @param {integer} serviceType
+     * @returns {json}
+     */
+    async getServicesByTypeToApp(serviceType) {
+        try {
+            let result;
+
+            if (serviceType != 0) {
+                result = await this.serviceRepository.getAllServicesByType(serviceType);
+            } else {
+                result = await this.serviceRepository.getAllServicesApp();
+            }
+
+            return { message: { result }, status: 200 };
+        } catch (error) {
+            return { message: error.message, status: 500 };
+        }
+    }
+
+    async getAllInformations(userId) {
+        try {
+            const hours = await this.hourRepository.getHours();
+            const days = await this.dayRepository.getDays();
+            const types = await this.typeRepository.getTypes();
+
+            return { message: { hours: hours, days: days, types: types }, status: 200 };
+        } catch (error) {
+            return { message: error.message, status: 500 };
+        }
+    }
 }
 
 export default ServiceController;

@@ -28,8 +28,23 @@ router.delete('/:serviceId', authenticateToken, async (req, res) => {
     res.status(result.status).json({ message: result.message });
 });
 
+router.put('/', authenticateToken, async (req, res) => {
+    const result = await serviceController.updateService(req.body, req.user.payload.id);
+    res.status(result.status).json({ message: result.message });
+});
+
+router.get('/all-informations', authenticateToken, async (req, res) => {
+    const result = await serviceController.getAllInformations(req.user.payload.id);
+    res.status(result.status).json({ message: result.message });
+});
+
 router.get('/:serviceId?', authenticateToken, async (req, res) => {
     const result = await serviceController.getServices(req.params.serviceId, req.user.payload.id);
+    res.status(result.status).json({ message: result.message });
+});
+
+router.get('/get-service-app/:serviceId?', authenticateToken, async (req, res) => {
+    const result = await serviceController.getServicesApp(req.params.serviceId, req.user.payload.id);
     res.status(result.status).json({ message: result.message });
 });
 
@@ -43,19 +58,25 @@ router.get('/company-services/:companyId?', async (req, res) => {
     res.status(result.status).json({ message: result.message });
 });
 
-router.get('/service/hours', authenticateToken, async (req, res) => {
-    const result = await serviceController.getHours(req.user.payload.id);
+router.get('/search/:text', async (req, res) => {
+    const result = await serviceController.getResultBySearch(req.params.text);
     res.status(result.status).json({ message: result.message });
 });
 
-router.get('/service/days', authenticateToken, async (req, res) => {
-    const result = await serviceController.getDays(req.user.payload.id);
+router.get('/search-types/:text/:typeService', async (req, res) => {
+    const result = await serviceController.getResultBySearchWithType(req.params.text, req.params.typeService);
     res.status(result.status).json({ message: result.message });
 });
 
-router.get('/service/types', authenticateToken, async (req, res) => {
-    const result = await serviceController.getTypes(req.user.payload.id);
+router.get('/services-types/:typeService?', async (req, res) => {
+    const result = await serviceController.getServicesByType(req.params.typeService);
     res.status(result.status).json({ message: result.message });
 });
+
+router.get('/services-types-app/:typeService?', async (req, res) => {
+    const result = await serviceController.getServicesByTypeToApp(req.params.typeService);
+    res.status(result.status).json({ message: result.message });
+});
+
 
 export default router;

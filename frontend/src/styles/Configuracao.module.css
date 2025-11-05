@@ -1,0 +1,131 @@
+/* Estilos do modal esquerdo */
+.modal {
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin-bottom: 5vw;
+    /* Metade da largura da tela */
+}
+
+/* Estilos do conteúdo do modal esquerdo */
+.modalContent {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 10px;
+    border: 1px solid #888;
+    width: 90%;
+    /* Largura do conteúdo do modal */
+    max-width: 400px;
+    border-radius: 5px;
+    position: relative;
+}
+
+
+.container-modal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-modal {
+    width: 80%;
+    margin-top: 2vw;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 2%;
+    display: flex;
+    flex-direction: column;
+    gap: 5%;
+    align-items: center;
+    height: 80vh;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.form-label-modal {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.form-input-modal {
+    width: calc(100% - 20px);
+    padding: 8px;
+    margin-bottom: 10px;
+}
+
+.inputField {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.form-button-modal {
+    background-color: rgba(57, 16, 103);
+    color: white;
+    font-weight: bold;
+    font-size: 1em;
+    padding: 14px 21px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 10vw;
+    align-self: center;
+}
+
+.form-button-modal:hover {
+    background-color: rgb(67, 28, 112);
+}
+
+.modal-label {
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+}
+
+form .input__box {
+    width: calc(100% / 2 - 20px);
+}
+
+.details {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.input__box input {
+    height: 40px;
+    width: 100%;
+    outline: none;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding-left: 15px;
+    font-size: 16px;
+    border-bottom-width: 2px;
+    transition: all 0.3 ease;
+
+}
+
+.btn-popup {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-popup svg {
+    font-size: 1.5em;
+    cursor: pointer;
+    color: #333;
+    transition: color 0.3s ease;
+}
+
+.btn-popup svg:hover {
+    color: rgba(57, 16, 103);
+}

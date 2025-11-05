@@ -15,7 +15,7 @@
         }
 
         .header {
-            background-color: #3498db;
+            background-color: #4f297a;
             color: #ffffff;
             padding: 10px;
         }
@@ -25,7 +25,7 @@
         }
 
         .signature {
-            background-color: #3498db;
+            background-color: #4f297a;
             color: #ffffff;
             padding: 10px;
             text-align: center;
@@ -36,22 +36,24 @@
 <body>
     <div class="email-container">
         <div class="header">
-            <h2>Confirmação de Serviço</h2>
+            <h2>Informações de Serviço</h2>
         </div>
         <div class="content">
             <p>Prezado, {{client_name}}</p>
 
-            <p>Este é para confirmar o agendamento do serviço com os seguintes detalhes:</p>
+            <p>Este email é para passar as informações do agendamento solicitado:</p>
 
             <ul>
                 <li><strong>Nome do Serviço:</strong> {{service_name}}</li>
                 <li><strong>Horário do Serviço:</strong> {{service_hour}}</li>
+                <li><strong>Data do Serviço:</strong> {{date}}</li>
                 <li><strong>Profissinal responsável:</strong> {{professional_name}}</li>
                 <li><strong>Local:</strong> {{company_address}}</li>
                 <li><strong>Código do serviço:</strong> {{service_code}}</li>
+                <li><strong>Status:</strong> Aguardando Confirmação </li>
             </ul>
 
-            <p>Agradecemos por escolher os nossos serviços. Estamos ansiosos para atendê-lo(a) no horário agendado.</p>
+            <p>Agradecemos por escolher os nossos serviços. Estamos ansiosos para atendê-lo(a).</p>
 
             <p>Se você tiver alguma dúvida ou precisar reagendar, entre em contato conosco o mais rápido possível.</p>
 

@@ -4,15 +4,15 @@ class CompanyRepository {
 
     async createCompany(data) {
         try {
-            const { name, email, password, address, url_name, created_at } = data;
+            const { name, email, password, address, created_at, cnpj } = data;
 
             const conn = await database.generateConnection();
             const result = await conn.query(`
                 INSERT INTO public.company
-                    (name, email, password, address, url_name, created_at)
-                    VALUES ($1, $2, $3, $4, $5, $6) RETURNING id;
-            `, [`${name}`, `${email}`, `${password}`, `${address}`, `${url_name}`,  created_at]);
-    
+                    (name, email, password, address, created_at, cnpj)
+                    VALUES ($1, $2, $3, $4, $5, $6 ) RETURNING id;
+            `, [`${name}`, `${email}`, `${password}`, `${address}`, created_at, `${cnpj}`]);
+
             return result.rows[0];
         } catch (error) {
             throw new Error(error);
@@ -26,7 +26,7 @@ class CompanyRepository {
             SELECT * FROM company WHERE email = $1;
         `, [`${email}`]);
 
-        return result.rows.length == 0 ? true : false;
+            return result.rows.length == 0 ? true : false;
         } catch (error) {
             throw new Error(error);
         }
@@ -36,67 +36,71 @@ class CompanyRepository {
         try {
             const conn = await database.generateConnection();
             const result = await conn.query(`
-            SELECT id, name, email, url_name, address FROM company WHERE id = $1;
+            SELECT id, name, email, address, cnpj, contact_phone FROM company WHERE id = $1;
         `, [`${userId}`]);
 
-        return result.rows[0];
-        } catch (error) {
-            throw new Error(error);
-        }
-    }
-
-    async getCompanyByUrl(companyUrl) {
-        try {
-            const conn = await database.generateConnection();
-            const result = await conn.query(`
-            SELECT id, name, email, url_name, address FROM company WHERE url_name = $1;
-        `, [`${companyUrl}`]);
-
-        return result.rows[0];
+            return result.rows[0];
         } catch (error) {
             throw new Error(error);
         }
     }
 
     async getAllCompanies() {
+        let client;
         try {
             const conn = await database.generateConnection();
-            const result = await conn.query(`SELECT id, name, email, url_name, address FROM company;`);
-
-        return result.rows;
+            client = await conn.connect();
+            const result = await conn.query(`SELECT id, name, email, address, cnpj FROM company;`);
+            client.release();
+            return result.rows;
         } catch (error) {
+            if (client) {
+                client.release();
+            }
             throw new Error(error);
         }
     }
 
-    async getCompanyKeyWord(keyWord) {
+    async updateCompanyInformation(body, companyId) {
+        let client;
         try {
-            const conn = await database.generateConnection();
-            const result = await conn.query(`SELECT company.name FROM company
-            LEFT JOIN services ON services.company_id = company.id
-                WHERE company.key_word ILIKE "%$1%" 
-                    OR company.name ILIKE "%$1%"
-                    OR services.name ILIKE "%$1%"
-                    AND company.deleted_at IS NULL
-                    AND services.deleted_at IS NULL;`, [`${keyWord}`]);
 
-        return result.rows;
-        
+            const { name, address, contact_phone } = body
+
+            const conn = await database.generateConnection();
+            client = await conn.connect();
+            const result = await conn.query(`
+            UPDATE company SET name = $1, address = $2, contact_phone = $3, updated_at = NOW() WHERE id = $4 RETURNING id;
+        `, [`${name}`, `${address}`, `${contact_phone}`, companyId]);
+
+            client.release();
+
+            return result.rows.length > 0 ? true : false;
         } catch (error) {
+            if (client) {
+                client.release();
+            }
             throw new Error(error);
         }
     }
 
     async verifyRevogedToken(token) {
+        let client;
         try {
             const conn = await database.generateConnection();
+            client = await conn.connect();
             const result = await conn.query(`
             SELECT us.id, us.start_login, us.end_login, us.token FROM company_sessions us 
                 WHERE us.end_login IS NOT NULL AND us.token = $1;
         `, [token]);
 
+            client.release();
+
             return result.rows;
         } catch (error) {
+            if (client) {
+                client.release();
+            }
             throw new Error(error);
         }
     }

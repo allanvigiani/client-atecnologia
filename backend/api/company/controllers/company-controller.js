@@ -27,7 +27,7 @@ class CompanyController {
      */
     async createCompany(body) {
         try {
-            const { name, email, password, address } = body;
+            const { name, email, password, address, cnpj } = body;
 
             if (!name || !email || !password) {
                 const errorMessage = `Campos não recebidos.`;
@@ -49,14 +49,13 @@ class CompanyController {
 
             const hash = await bcrypt.hash(password, this.saltRandsPassword);
 
-            const url_name = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
 
             const company = {
                 name: name,
                 email: email,
                 password: hash,
                 address: address,
-                url_name: url_name,
+                cnpj: cnpj,
                 created_at: new Date(),
             }
 
@@ -80,9 +79,24 @@ class CompanyController {
      * @param {json} body
      * @returns {unknown}
      */
-    async changeCompanyInformation(body) {
+    async changeCompanyInformation(body, companyId) {
         try {
-            return { message: `Empresa cadastrada com sucesso!`, status: 201 };
+
+            // Tratar possibilidade de mudar EMAIL
+
+            if (!companyId) {
+                const errorMessage = `Não foi recebido o ID da empresa.`;
+                return { message: errorMessage, status: 400 };
+            }
+
+            const updated = this.companyRepository.updateCompanyInformation(body, companyId);
+
+            if (!updated) {
+                const errorMessage = `Não foi possível atualizar os dados da empresa!`;
+                return { message: errorMessage, status: 400 };
+            }
+
+            return { message: `Dados atualizados com sucesso!`, status: 201 };
         } catch (error) {
             return { message: error.message, status: 500 };
         }
@@ -127,8 +141,6 @@ class CompanyController {
 
             if (!companyUrl) {
                 result = await this.companyRepository.getAllCompanies();
-            } else {
-                result = await this.companyRepository.getCompanyByUrl(companyUrl);
             }
 
             if (!result) {
@@ -141,32 +153,6 @@ class CompanyController {
             return { message: error.message, status: 500 };
         }
     }
-
-    /**
-     * Método que busca dados da pesquisa feita pelo usuário, retornando a empresa através de palavras-chaves
-     * @date 05/03/2024 - 22:41:15
-     *
-     * @async
-     * @param {json} body
-     * @returns {json}
-     */
-        async getCompanyInformation(body) {
-            try {
-                
-                const { key_word } = body; 
-
-                const companies = await this.companyRepository.getCompanyKeyWord(key_word);
-    
-                if (!companies) {
-                    const errorMessage = `Nenhuma empresa ou serviço encontrado.`;
-                    return { message: errorMessage, status: 404 };
-                }
-    
-                return { message: companies, status: 200 };
-            } catch (error) {
-                return { message: error.message, status: 500 };
-            }
-        }
 
 }
 

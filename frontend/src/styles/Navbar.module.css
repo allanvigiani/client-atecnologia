@@ -1,70 +1,217 @@
+/* Navbar.module.css */
+
 .header {
-    position: fixed;
-    top: 5px;
+    position: relative;
+    top: 0;
     left: 0;
     width: 100vw;
     display: flex;
     justify-content: space-between;
     align-items: center;
     z-index: 99;
-    transition: transform 0.3s ease-in-out; /* animação de transição */
+    transition: transform 0.3s ease-in-out;
+    background-color: rgba(57, 16, 103);
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .hidden {
-    transform: translateY(-110%); /* esconde o navbar */
-  }
-
-.logo {
-    font-size: 2em;
-    color: #fff;
-    user-select: none;
-    margin-left: 40px;
+    transform: translateY(-110%);
 }
 
-.navigation>a {
+.hiddenUser {
+    display: none;
+}
+
+.logo {
+    width: 5vw;
+    margin-left: 10vh;
+    padding: 0%;
+    transition: transform 0.3s ease-in-out;
+}
+
+.logo:hover {
+    transform: scale(1.1);
+    transition: 0.5s;
+}
+
+.navigation {
+    display: flex;
+    align-items: center;
+}
+
+.navigation > a {
     position: relative;
     font-size: 1.1em;
     color: #fff;
     text-decoration: none;
     font-weight: 500;
     margin-left: 40px;
+    transition: color 0.3s ease-in-out;
 }
 
-.navigation>a::after {
+.navigation > a:hover {
+    color: #d4d4d4;
+}
+
+.navigation > a::after {
     content: '';
     position: absolute;
     left: 0;
     bottom: -6px;
     width: 100%;
-    height: 3px;
+    height: 2px;
     background: #fff;
     border-radius: 5px;
     transform: scaleX(0);
-    transition: transform .5s;
+    transition: transform 0.5s;
 }
 
-.navigation>a:hover::after {
+.navigation > a:hover::after {
     transform-origin: left;
     transform: scaleX(1);
 }
 
-.navigation>.btn__Login {
-    width: 130px;
-    height: 50px;
-    background: transparent;
-    border: 2px solid #fff;
-    outline: none;
-    border-radius: 6px;
+.user-pic {
+    width: 2.5vw;
+    border-radius: 50%;
     cursor: pointer;
-    font-size: 1.1em;
-    color: #fff;
-    font-weight: 500;
-    margin-left: 40px;
-    margin-right: 40px;
-    transition: .5s;
+    margin-right: 10vh;
+    margin-left: 5vh;
+    background: #e5e5e5;
+    padding: 5px;
+    transition: transform 0.3s ease-in-out;
 }
 
-.navigation>.btn__Login:hover {
+.user-pic:hover {
+    transform: scale(1.1);
+    transition: 0.5s;
+    background: #ffffff;
+}
+.img-dropdown:hover {
+    transform: scale(1.1);
+    transition: 0.5s;
+}
+
+.sub-menu-wrap {
+    position: absolute;
+    top: 100%;
+    right: 0%;
+    width: 400px;
+    border-radius: 5px;
+    max-height: 400;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out;
+    max-height: 0;
+    opacity: 0;
     background: #fff;
-    color: #162938;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.sub-menu-wrap.visible {
+    max-height: 400px;
+    opacity: 1;
+}
+
+.sub-menu {
+    padding: 20px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.user-info h3 {
+    font-weight: 500;
+}
+
+.user-info img {
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.sub-menu hr {
+    border: 0;
+    height: 1px;
+    width: 100%;
+    background: #ccc;
+    margin: 15px 0 10px;
+}
+
+.sub-menu-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #333;
+    font-size: 1.1em;
+    font-weight: 500;
+    margin: 10px 0;
+    transition: color 0.3s ease-in-out;
+}
+.sub-menu-link p {
+    margin: 0;
+    width: 100%;
+}
+
+.sub-menu-link:hover {
+    color: #4f297a;
+}
+
+.sub-menu-link img {
+    height: 30px;
+    margin-right: 10px;
+    background: #e5e5e5;
+    border-radius: 50%;
+    padding: 5px;
+    transition: transform 0.3s ease-in-out;
+}
+
+.sub-menu-link span {
+    font-size: 22px;
+    transition: transform 0.3s ease-in-out;
+}
+
+.sub-menu-link:hover img {
+    transform: scale(1.1);
+}
+
+.sub-menu-link:hover span {
+    transform: translateX(5px);
+}
+
+.sub-menu-link:hover p {
+    font-weight: 600;
+}
+
+.loadingContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(24, 23, 23, 0.8);
+    z-index: 1000;
+}
+
+@media (max-width: 768px) {
+    .navigation {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .navigation > a {
+        margin-left: 0;
+        margin-bottom: 10px;
+    }
+
+    .sub-menu-wrap {
+        width: 100%;
+        right: 0;
+    }
 }
